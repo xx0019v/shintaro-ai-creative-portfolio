@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0B0B0B;
+  --bg-soft: #141414;
+  --ivory: #F5F1EA;
+  --champagne: #C8A96A;
+  --muted: #A8A29A;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ivory);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-feature-settings: "ss01", "ss02", "cv11";
+}
+
+::selection {
+  background: rgba(200, 169, 106, 0.28);
+  color: #F7F4EF;
+}
+
+/* Subtle global grain overlay (no blend-mode — kept compositor-friendly) */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Editorial gold rule */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 169, 106, 0) 0%,
+    rgba(200, 169, 106, 0.55) 50%,
+    rgba(200, 169, 106, 0) 100%
+  );
+}
+
+.gold-vrule {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(200, 169, 106, 0) 0%,
+    rgba(200, 169, 106, 0.55) 50%,
+    rgba(200, 169, 106, 0) 100%
+  );
+}
+
+/* Hairline border tokens */
+.hairline {
+  border: 1px solid rgba(245, 241, 234, 0.08);
+}
+
+.hairline-gold {
+  border: 1px solid rgba(200, 169, 106, 0.28);
+}
+
+/* Section index numeral */
+.idx {
+  font-feature-settings: "tnum", "lnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Disable horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0B0B0B; }
+::-webkit-scrollbar-thumb { background: rgba(200,169,106,0.18); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,169,106,0.32); }
+
+/* Reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
