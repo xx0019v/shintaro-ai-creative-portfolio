@@ -2,7 +2,7 @@
 
 > *Turning Ideas into Systems, Visuals, and Experiences.*
 
-The official portfolio website of **Shintaro Avendano** — AI Creative Developer, Visual Designer, ICT Design student at Chuo Information College.
+The official portfolio website of **Avendano Shintaro** — AI Creative Developer, Visual Designer, ICT Design student at Chuo Information College.
 
 A single-page **Luxury Monochrome Editorial** portfolio — Black × Silver × White — built with Next.js + TypeScript + Tailwind CSS + Framer Motion.
 
@@ -23,7 +23,7 @@ A single-page **Luxury Monochrome Editorial** portfolio — Black × Silver × W
 ## Features
 
 - Luxury Monochrome design — inspired by Apple, Awwwards, VOGUE, Harper's BAZAAR
-- **AIKameranado** featured case study with silver dashboard, distance-zone diagram, data-flow visualization, and real exhibition panel photography
+- **AI CAMERA** featured case study with silver dashboard, distance-zone diagram, data-flow visualization, and real exhibition panel photography
 - Fragrance Vending Machine Branding — Fragrance Spot key visual + POP + installation + SNS carousel
 - Online English Service Website — pre-launch client case study
 - Teacher Character Keychain Project — AI-assisted character design (privacy-safe abstract gallery)
@@ -52,7 +52,7 @@ A single-page **Luxury Monochrome Editorial** portfolio — Black × Silver × W
 1. Header (sticky · scroll-blur · JP/EN toggle)
 2. Hero — editorial typography + portrait silhouette
 3. About — principles (Observation · Persistence · Adaptability · Execution) + editorial portrait
-4. **Featured Project — AIKameranado**
+4. **Featured Project — AI CAMERA**
 5. Creative Work — Fragrance Vending Machine Branding
 6. Client Work — Online English Service Website
 7. School Project — Teacher Character Keychain Project
@@ -67,7 +67,7 @@ A single-page **Luxury Monochrome Editorial** portfolio — Black × Silver × W
 
 ## Main Projects
 
-1. **AIKameranado** — AI camera analytics for fragrance vending machine signage
+1. **AI CAMERA** — AI camera analytics for fragrance vending machine signage
 2. **Fragrance Vending Machine Branding** — POP, SNS, installation, visual direction
 3. **Online English Service Website** — corporate website, pre-launch
 4. **Teacher Character Keychain Project** — AI-assisted character design
@@ -105,7 +105,7 @@ shintaro-portfolio-luxury/
 ├── public/
 │   └── images/
 │       ├── portrait/         ← drop the 4 character images here
-│       ├── ai-camera/        ← AIKameranado / Shitara exhibition panels
+│       ├── ai-camera/        ← AI CAMERA / Shitara exhibition panels
 │       ├── fragrance/        ← Fragrance Spot key visual + POPs
 │       ├── client-english/   ← reserved for English service screenshots
 │       ├── keychain/         ← reserved for refined keychain visuals
@@ -168,4 +168,4 @@ Typography:
 
 ## License
 
-© 2026 Shintaro Avendano. All rights reserved.
+© 2026 Avendano Shintaro. All rights reserved.

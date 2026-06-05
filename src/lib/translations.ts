@@ -11,7 +11,7 @@ export const t: Dict = {
 
   // Hero
   hero_kicker: { jp: "Portfolio — Volume 02", en: "Portfolio — Volume 02" },
-  hero_name: { jp: "Shintaro Avendano", en: "Shintaro Avendano" },
+  hero_name: { jp: "Avendano Shintaro", en: "Avendano Shintaro" },
   hero_role: { jp: "AI Creative Developer", en: "AI Creative Developer" },
   hero_h1_a: { jp: "Turning Ideas", en: "Turning Ideas" },
   hero_h1_b: { jp: "into Systems,", en: "into Systems," },
@@ -78,16 +78,16 @@ export const t: Dict = {
     en: "I do not stop at ideas. I turn them into visuals, websites, systems, documents, and presentations.",
   },
 
-  // AIKameranado
+  // AI CAMERA
   ai_label: { jp: "Featured Project", en: "Featured Project" },
-  ai_name: { jp: "AIKameranado", en: "AIKameranado" },
+  ai_name: { jp: "AI CAMERA", en: "AI CAMERA" },
   ai_subtitle: {
     jp: "香水自販機サイネージ広告の視認効果を、AIカメラで見える化する分析システム。",
     en: "AI Camera Analytics for Fragrance Vending Machine Signage.",
   },
   ai_overview: {
-    jp: "AIKameranadoは、自販機に付属するサイネージ広告がどれだけ見られたかを、AIカメラで分析するシステムです。人が近づいたか、広告を見る位置にいたか、どれくらい滞在したかを推定し、匿名データとして可視化します。",
-    en: "AIKameranado estimates how much a signage advertisement is actually seen — analyzing presence, distance zones, approach behavior, viewing possibility, and dwell time, then converting those signals into anonymous analytics.",
+    jp: "AI CAMERAは、自販機に付属するサイネージ広告がどれだけ見られたかを、AIカメラで分析するシステムです。人が近づいたか、広告を見る位置にいたか、どれくらい滞在したかを推定し、匿名データとして可視化します。",
+    en: "AI CAMERA estimates how much a signage advertisement is actually seen — analyzing presence, distance zones, approach behavior, viewing possibility, and dwell time, then converting those signals into anonymous analytics.",
   },
   ai_note: {
     jp: "自販機本体・決済・商品排出とは連携せず、サイネージ広告が「実際にどれだけ見られたか」を匿名データとして分析する。個人特定を目的としない、プライバシー優先の設計。",

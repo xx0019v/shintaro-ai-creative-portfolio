@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <div>
             <p className="font-serif text-base md:text-lg tracking-tight text-offwhite">
-              Shintaro Avendano
+              Avendano Shintaro
             </p>
             <p className="mt-2 text-[10px] tracking-wider2 uppercase text-silver-muted">
               {tr("ft_role", lang)}
@@ -47,7 +47,7 @@ export default function Footer() {
         <div className="mt-10 rule-silver" />
 
         <div className="mt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-[10px] tracking-wider2 uppercase text-silver-muted">
-          <p>© 2026 Shintaro Avendano. All rights reserved.</p>
+          <p>© 2026 Avendano Shintaro. All rights reserved.</p>
           <p>{tr("ft_built", lang)}</p>
         </div>
       </div>

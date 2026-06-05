@@ -39,7 +39,7 @@ export default function About() {
           <Reveal delay={0.08} className="lg:col-span-4">
             <PortraitFrame
               src="/images/portrait/portrait-full-01.png"
-              alt="Shintaro Avendano — editorial portrait"
+              alt="Avendano Shintaro — editorial portrait"
               variant="full"
             />
             <p className="mt-4 text-[10px] tracking-wider2 uppercase text-silver-muted">

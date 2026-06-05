@@ -68,7 +68,7 @@ export default function Hero() {
           >
             <PortraitFrame
               src="/images/portrait/portrait-headshot.png"
-              alt="Shintaro Avendano"
+              alt="Avendano Shintaro"
               variant="headshot"
               priority
             />

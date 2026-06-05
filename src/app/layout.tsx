@@ -49,11 +49,11 @@ const SITE_URL = "https://shintaro-ai-creative-portfolio.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Shintaro Avendano | AI Creative Developer Portfolio",
-    template: "%s | Shintaro Avendano",
+    default: "Avendano Shintaro | AI Creative Developer Portfolio",
+    template: "%s | Avendano Shintaro",
   },
   description:
-    "Portfolio of Shintaro Avendano — AI Creative Developer. AI camera analytics, web production, branding, visual design, and project direction.",
+    "Portfolio of Avendano Shintaro — AI Creative Developer. AI camera analytics, web production, branding, visual design, and project direction.",
   keywords: [
     "AI Creative Developer",
     "ICT Design Student",
@@ -65,22 +65,22 @@ export const metadata: Metadata = {
     "Fragrance Vending Machine",
     "Online English Website",
     "Character Design",
-    "Shintaro Avendano",
+    "Avendano Shintaro",
   ],
-  authors: [{ name: "Shintaro Avendano" }],
-  creator: "Shintaro Avendano",
+  authors: [{ name: "Avendano Shintaro" }],
+  creator: "Avendano Shintaro",
   openGraph: {
     type: "website",
     locale: "ja_JP",
     alternateLocale: "en_US",
-    title: "Shintaro Avendano | AI Creative Developer Portfolio",
+    title: "Avendano Shintaro | AI Creative Developer Portfolio",
     description:
-      "AI camera analytics, web production, branding, and visual design — by Shintaro Avendano.",
-    siteName: "Shintaro Avendano Portfolio",
+      "AI camera analytics, web production, branding, and visual design — by Avendano Shintaro.",
+    siteName: "Avendano Shintaro Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shintaro Avendano | AI Creative Developer Portfolio",
+    title: "Avendano Shintaro | AI Creative Developer Portfolio",
     description: "AI · Web · Branding · Visual Design",
   },
   robots: { index: true, follow: true },

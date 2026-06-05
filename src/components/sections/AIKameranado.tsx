@@ -75,7 +75,11 @@ export default function AIKameranado() {
         <SectionHeader
           index="02"
           labelKey="ai_label"
-          titleEn={<span className="block">AIKameranado</span>}
+          titleEn={
+            <span className="block">
+              AI <span className="metallic">CAMERA</span>
+            </span>
+          }
           jpTitleKey="ai_subtitle"
         />
 
@@ -287,7 +291,7 @@ function DashboardMock() {
       <div className="flex items-center justify-between px-5 py-3 border-b border-offwhite/[0.08] text-[10px] tracking-wider2 uppercase text-silver-muted">
         <div className="flex items-center gap-3">
           <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
-          aikameranado.console
+          ai-camera.console
         </div>
         <div className="hidden sm:flex items-center gap-6">
           <span>Site 01 · Floor 2F</span>

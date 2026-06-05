@@ -41,7 +41,7 @@ export default function Contact() {
           <Reveal className="lg:col-span-4 max-w-xs mx-auto lg:mx-0">
             <PortraitFrame
               src="/images/portrait/portrait-full-02.png"
-              alt="Shintaro Avendano — contact portrait"
+              alt="Avendano Shintaro — contact portrait"
               variant="full"
             />
             <p className="mt-4 text-center text-[10px] tracking-wider2 uppercase text-silver-muted">

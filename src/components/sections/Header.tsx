@@ -51,7 +51,7 @@ export default function Header() {
             <a href="#top" className="group flex items-center gap-3" aria-label="Home">
               <span className="h-1.5 w-1.5 rounded-full bg-silver group-hover:bg-offwhite transition-colors" />
               <span className="font-serif text-sm md:text-base tracking-wider2 uppercase text-offwhite">
-                Shintaro&nbsp;Avendano
+                Avendano&nbsp;Shintaro
               </span>
             </a>
 
