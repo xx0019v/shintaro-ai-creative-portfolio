@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050505;
+  --bg-soft: #111111;
+  --bg-charcoal: #1A1A1A;
+  --silver: #C0C0C0;
+  --silver-bright: #E5E5E5;
+  --silver-muted: #8E8E8E;
+  --offwhite: #F5F5F5;
+}
+
+html { scroll-behavior: smooth; }
+
+html, body {
+  background: var(--bg);
+  color: var(--offwhite);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(229, 229, 229, 0.22);
+  color: #ffffff;
+}
+
+/* Silver hairlines */
+.hairline { border: 1px solid rgba(229, 229, 229, 0.08); }
+.hairline-silver { border: 1px solid rgba(192, 192, 192, 0.32); }
+
+.rule-silver {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(192, 192, 192, 0) 0%,
+    rgba(229, 229, 229, 0.65) 50%,
+    rgba(192, 192, 192, 0) 100%
+  );
+}
+
+.vrule-silver {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(192, 192, 192, 0) 0%,
+    rgba(229, 229, 229, 0.5) 50%,
+    rgba(192, 192, 192, 0) 100%
+  );
+}
+
+/* Metallic text — soft chrome */
+.metallic {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e5e5e5 30%,
+    #8e8e8e 55%,
+    #c0c0c0 75%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Editorial frame for color-heavy assets */
+.editorial-frame {
+  position: relative;
+  padding: 14px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+  border: 1px solid rgba(229, 229, 229, 0.12);
+}
+.editorial-frame::before,
+.editorial-frame::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: rgba(229, 229, 229, 0.55);
+}
+.editorial-frame::before {
+  top: 4px; left: 4px;
+  border-top: 1px solid; border-left: 1px solid;
+}
+.editorial-frame::after {
+  bottom: 4px; right: 4px;
+  border-bottom: 1px solid; border-right: 1px solid;
+}
+
+/* tabular numerals for index labels */
+.idx {
+  font-feature-settings: "tnum", "lnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #050505; }
+::-webkit-scrollbar-thumb { background: rgba(192,192,192,0.18); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(229,229,229,0.32); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
