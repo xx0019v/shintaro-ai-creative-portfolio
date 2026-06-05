@@ -183,157 +183,71 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-/* ---------- Browser mock — TSC English Academy preview ---------- */
+/* ---------- Live iframe embed of the real TSC English Academy site ---------- */
 function BrowserMock() {
   return (
-    <a
-      href={LIVE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block hairline-silver overflow-hidden group hover:border-silver-bright transition-colors duration-500"
-      aria-label="Open TSC English Academy live site"
-    >
+    <div className="hairline-silver overflow-hidden">
+      {/* browser chrome */}
       <div className="bg-base/80 px-5 py-3 border-b border-offwhite/[0.08] flex items-center gap-4 text-[10px] tracking-wider2 uppercase text-silver-muted">
         <div className="flex gap-1.5">
           <span className="h-2 w-2 rounded-full bg-offwhite/15" />
           <span className="h-2 w-2 rounded-full bg-offwhite/15" />
           <span className="h-2 w-2 rounded-full bg-offwhite/15" />
         </div>
-        <div className="flex-1 text-center">
+        <div className="flex-1 text-center flex items-center justify-center gap-2">
           <span className="text-offwhite/70">xx0019v.github.io/TSC</span>
-          <span className="text-silver-bright ml-2">· live</span>
+          <span className="text-silver-bright">· live</span>
         </div>
-        <span className="hidden sm:flex items-center gap-1.5">
+        <a
+          href={LIVE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:flex items-center gap-1.5 hover:text-offwhite transition-colors"
+          aria-label="Open TSC English Academy in a new tab"
+        >
           <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
           Public
-        </span>
+          <ArrowUpRight size={11} strokeWidth={1.25} />
+        </a>
       </div>
 
-      {/* TSC editorial preview — dark luxury style consistent with the real site */}
-      <div className="relative bg-[#0a0807] text-offwhite overflow-hidden">
-        {/* gold-like sheen replaced with silver to keep palette */}
+      {/* Live embed — actual TSC English Academy site */}
+      <div className="relative w-full aspect-[16/10] bg-[#0a0807]">
+        <iframe
+          src={LIVE_URL}
+          title="TSC English Academy — Live"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          className="absolute inset-0 w-full h-full border-0"
+        />
+        {/* subtle vignette to keep the whole portfolio cohesive */}
         <div
           aria-hidden
-          className="absolute inset-0 opacity-[0.16] pointer-events-none"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 25% 30%, rgba(229,229,229,0.35) 0%, transparent 55%), radial-gradient(ellipse at 75% 70%, rgba(192,192,192,0.22) 0%, transparent 50%)",
+              "radial-gradient(ellipse at center, transparent 70%, rgba(0,0,0,0.35) 100%)",
           }}
         />
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(229,229,229,0.4) 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-
-        <div className="relative">
-          <div className="flex items-center justify-between px-6 md:px-10 py-5 border-b border-offwhite/[0.08]">
-            <span className="font-serif text-base md:text-lg tracking-wider2 uppercase">
-              TSC <span className="text-silver-bright">Academy</span>
-            </span>
-            <ul className="hidden md:flex gap-7 text-[10px] tracking-wider2 uppercase text-offwhite/70">
-              <li>Difference</li>
-              <li>Features</li>
-              <li>Voices</li>
-              <li>Pricing</li>
-              <li>FAQ</li>
-              <li>Apply</li>
-            </ul>
-            <span className="hairline-silver px-3 py-1.5 text-[10px] tracking-wider2 uppercase text-offwhite">
-              Free Trial
-            </span>
-          </div>
-
-          <div className="px-6 md:px-12 py-16 md:py-24 grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-7">
-              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                海外講師 × 日本人通訳者
-              </p>
-              <h4 className="mt-4 font-serif text-3xl md:text-5xl leading-[1.05] tracking-tight">
-                English that{" "}
-                <span className="italic font-light">trusts</span>{" "}
-                you forward.
-              </h4>
-              <p className="mt-5 font-jpserif text-sm text-offwhite/75 max-w-md leading-loose">
-                ネイティブ講師の発音と、日本人通訳者の安心感。両方を1レッスンで。
-              </p>
-              <div className="mt-6 flex gap-3 text-[10px] tracking-wider2 uppercase">
-                <span className="px-4 py-2 bg-offwhite text-base">Book Trial</span>
-                <span className="px-4 py-2 hairline-silver text-offwhite">See Plans</span>
-              </div>
-            </div>
-            <div className="md:col-span-5">
-              <div className="aspect-[4/5] hairline-silver relative overflow-hidden">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at 35% 35%, rgba(229,229,229,0.22) 0%, transparent 55%), linear-gradient(180deg, #15110f 0%, #0a0807 100%)",
-                  }}
-                />
-                {/* abstract crystal silhouette like the real site's R3F hero */}
-                <svg
-                  className="absolute inset-0 w-full h-full opacity-70"
-                  viewBox="0 0 200 250"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <defs>
-                    <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#F5F5F5" stopOpacity="0.7" />
-                      <stop offset="100%" stopColor="#8E8E8E" stopOpacity="0.2" />
-                    </linearGradient>
-                  </defs>
-                  <polygon
-                    points="100,40 150,90 130,180 70,180 50,90"
-                    fill="none"
-                    stroke="url(#cg)"
-                    strokeWidth="1"
-                  />
-                  <polygon
-                    points="100,40 150,90 100,130 50,90"
-                    fill="rgba(229,229,229,0.06)"
-                    stroke="url(#cg)"
-                    strokeWidth="0.8"
-                  />
-                  <polygon
-                    points="100,130 130,180 70,180"
-                    fill="rgba(229,229,229,0.04)"
-                    stroke="url(#cg)"
-                    strokeWidth="0.8"
-                  />
-                </svg>
-                <div className="absolute bottom-4 left-4 text-[10px] tracking-wider2 uppercase text-silver-muted">
-                  Hero · R3F Crystal
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="px-6 md:px-12 pb-12 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-offwhite/[0.08] pt-10">
-            {[
-              ["Native", "海外講師"],
-              ["Interpreter", "日本人通訳者"],
-              ["Bilingual", "JA / EN"],
-              ["Trial", "Free first lesson"],
-            ].map(([k, v]) => (
-              <div key={k}>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">{k}</p>
-                <p className="mt-2 font-serif text-lg">{v}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* hover affordance: click hint */}
-        <div className="absolute bottom-4 right-4 text-[10px] tracking-wider2 uppercase text-silver-muted opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2">
-          Open live site
-          <ArrowUpRight size={12} strokeWidth={1.25} />
-        </div>
       </div>
-    </a>
+
+      {/* footer ribbon */}
+      <div className="bg-base/80 px-5 py-3 border-t border-offwhite/[0.08] flex items-center justify-between text-[10px] tracking-wider2 uppercase text-silver-muted">
+        <span className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
+          Embedded live preview
+        </span>
+        <a
+          href={LIVE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-silver-bright hover:text-offwhite transition-colors inline-flex items-center gap-1.5"
+        >
+          Open full site
+          <ArrowUpRight size={11} strokeWidth={1.25} />
+        </a>
+      </div>
+    </div>
   );
 }
