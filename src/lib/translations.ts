@@ -140,25 +140,26 @@ export const t: Dict = {
     en: "End-to-end demonstration of visual direction, branding, SNS marketing, and commercial communication.",
   },
 
-  // Client Work — Online English
+  // Client Work — TSC English Academy
   cw_label: { jp: "Client Work", en: "Client Work" },
-  cw_name: { jp: "Online English Service Website", en: "Online English Service Website" },
+  cw_name: { jp: "TSC English Academy", en: "TSC English Academy" },
   cw_jp_title: {
-    jp: "英語オンラインサービスを展開する企業向けWebサイト制作案件。",
-    en: "Corporate website production for an online English learning service.",
+    jp: "海外講師 × 日本人通訳者のオンライン英語レッスンサービス公式サイト。",
+    en: "Official site for an online English service pairing overseas teachers with Japanese interpreters.",
   },
   cw_overview: {
-    jp: "現在、英語オンライン需要をサービス化した企業向けWebサイト制作案件に関わっています。サイト自体はすでに制作済みで、ドメイン購入・公開準備の段階。サービス内容が分かりやすく伝わる構成と、安心感のある導線を意識して制作しました。",
-    en: "Corporate website for an online English learning service. The site is built and currently in domain-purchase and launch preparation. Focus: service branding, clear communication, and trust-building.",
+    jp: "TSC English Academyは「海外講師 × 日本人通訳者」という独自の体制を持つオンライン英語レッスンサービスです。サービスの強み・コース内容・料金プランを分かりやすく伝え、安心して問い合わせ・申込につながる導線を意識して構築しました。React・Three.js・GSAPによる動きと、ダークラグジュアリーなブランド世界観を両立。日本語/英語のバイリンガル対応。",
+    en: "TSC English Academy is an online English service built on the signature pairing of overseas teachers and Japanese interpreters. The site delivers the unique value proposition, course structure, and pricing with clarity — backed by trust-building visuals and a cinematic React + Three.js + GSAP experience. Bilingual (JA / EN).",
   },
   cw_status: { jp: "Project Status", en: "Project Status" },
-  cw_status_done: { jp: "サイト制作完了", en: "Website completed" },
-  cw_status_domain: { jp: "ドメイン購入準備中", en: "Domain purchase pending" },
-  cw_status_launch: { jp: "公開準備中", en: "Preparing for launch" },
+  cw_status_done: { jp: "公開済み・本番稼働中", en: "Live · Public" },
+  cw_status_domain: { jp: "バイリンガル対応（JA / EN）", en: "Bilingual (JA / EN)" },
+  cw_status_launch: { jp: "継続的に改善中", en: "Iterative improvement" },
   cw_role: { jp: "Role", en: "Role" },
+  cw_live_url: { jp: "Live Site", en: "Live Site" },
   cw_value: {
-    jp: "英語オンライン学習の需要を、分かりやすく信頼感のあるWebサービスとして形にする案件です。",
-    en: "Turning online English learning demand into a clear and trustworthy digital service.",
+    jp: "海外講師×通訳者という独自のUSPを、ダークラグジュアリーな世界観と明快な導線で「申し込みたくなる」体験へ落とし込んだ案件です。",
+    en: "Translates a unique overseas-teacher × interpreter USP into a dark-luxury experience with a clear path to enrollment.",
   },
 
   // Keychain
