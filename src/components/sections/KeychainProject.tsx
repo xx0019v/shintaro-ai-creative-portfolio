@@ -3,6 +3,7 @@
 import Reveal from "@/components/ui/Reveal";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
+import EditorialFrame from "@/components/ui/EditorialFrame";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 
@@ -75,12 +76,105 @@ export default function KeychainProject() {
           </Reveal>
         </div>
 
-        <Reveal delay={0.15} className="mt-16">
-          <KeychainGallery />
+        {/* Hero — strongest piece: Teacher Editorial Charm Collection */}
+        <Reveal delay={0.15} className="mt-16 md:mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
+            <div className="md:col-span-7">
+              <EditorialFrame
+                src="/images/keychain/keychain-uchiike-collection.jpg"
+                alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
+                ratio="portrait"
+                caption="Teacher Editorial Charm Collection"
+                desaturate
+                sizes="(max-width: 768px) 100vw, 60vw"
+              />
+            </div>
+            <div className="md:col-span-5 space-y-6">
+              <div>
+                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                  Work 01 · Charm Collection
+                </p>
+                <h3 className="mt-3 font-serif text-3xl md:text-4xl text-offwhite tracking-tight">
+                  7 Daily Moments
+                </h3>
+                <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
+                  「日常の7つの瞬間を、いつでも、もう一度に。」FOCUS / WORK MODE / OK / CHECKING / BREAK / CHARGE / CALL ─ ひとりの先生の7表情を、コレクションとしてデザインしました。
+                </p>
+              </div>
+              <SilverRule />
+              <dl className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                    Material
+                  </dt>
+                  <dd className="text-offwhite/85 font-jpserif">アクリル / 70mm Round</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                    Attachment
+                  </dt>
+                  <dd className="text-offwhite/85 font-jpserif">メタルリング</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                    Series
+                  </dt>
+                  <dd className="text-offwhite/85 font-jpserif">7 表情 / コレクション</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                    Tone
+                  </dt>
+                  <dd className="text-offwhite/85 font-jpserif">エディトリアル写真</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Two supporting concepts side by side */}
+        <Reveal className="mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-5">
+              <EditorialFrame
+                src="/images/keychain/keychain-arisu.jpg"
+                alt="Keychain concept — A-sensei, 'やる気MAX!' edition"
+                ratio="square"
+                caption="Concept · Energetic Edition"
+                desaturate
+              />
+              <div>
+                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                  Work 02 · Energetic
+                </p>
+                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
+                  「やる気MAX！」手描きタイポと吹き出しで先生のキャラクターを増幅。元気・前向き・親しみやすさを軸にした明快な一枚。
+                </p>
+              </div>
+            </div>
+            <div className="space-y-5">
+              <EditorialFrame
+                src="/images/keychain/keychain-fukukocho.jpg"
+                alt="Keychain concept — anime-style portrait at desk"
+                ratio="square"
+                caption="Concept · Anime Portrait"
+                desaturate
+              />
+              <div>
+                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                  Work 03 · Anime Portrait
+                </p>
+                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
+                  「今日どうしたん？」ですわる先生のひと時を、アニメ調イラストで温かく描写。素材感とブラシのリズムで「日常らしさ」を残す。
+                </p>
+              </div>
+            </div>
+          </div>
         </Reveal>
 
         <SilverRule className="mt-24" />
 
+        {/* Process timeline */}
         <Reveal className="mt-20">
           <h3 className="font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
             {tr("kc_process", lang)}
@@ -106,53 +200,5 @@ export default function KeychainProject() {
         </Reveal>
       </div>
     </section>
-  );
-}
-
-function KeychainGallery() {
-  // 3 abstract concept cards — privacy-safe, monochrome
-  const concepts = [
-    { label: "Concept A", sub: "Quiet" },
-    { label: "Concept B", sub: "Bright" },
-    { label: "Concept C", sub: "Steady" },
-  ];
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {concepts.map((c, i) => (
-        <div
-          key={i}
-          className="relative aspect-[3/4] hairline overflow-hidden group hover:hairline-silver transition-colors"
-        >
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                i === 0
-                  ? "linear-gradient(180deg, #1A1A1A 0%, #050505 100%)"
-                  : i === 1
-                  ? "radial-gradient(ellipse at 35% 30%, rgba(229,229,229,0.16) 0%, transparent 60%), linear-gradient(180deg, #141414, #050505)"
-                  : "linear-gradient(180deg, #0E0E0E, #050505)",
-            }}
-          />
-          <svg
-            className="absolute top-4 left-1/2 -translate-x-1/2"
-            width="34"
-            height="34"
-            viewBox="0 0 34 34"
-            fill="none"
-          >
-            <circle cx="17" cy="17" r="6" stroke="#C0C0C0" strokeOpacity="0.6" />
-            <line x1="17" y1="23" x2="17" y2="34" stroke="#C0C0C0" strokeOpacity="0.6" />
-          </svg>
-          <div className="absolute inset-x-6 top-16 bottom-16 hairline-silver flex items-end justify-center pb-6">
-            <div className="w-12 h-12 rounded-full bg-offwhite/15 mb-3" />
-          </div>
-          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] tracking-wider2 uppercase">
-            <span className="text-offwhite/80">{c.label}</span>
-            <span className="text-silver-bright">{c.sub}</span>
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
