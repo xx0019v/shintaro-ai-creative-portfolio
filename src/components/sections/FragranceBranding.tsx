@@ -144,9 +144,9 @@ export default function FragranceBranding() {
           </div>
         </Reveal>
 
-        {/* Installation + how-to + Digital Signage video */}
+        {/* Installation + How-to (back to 2-col, signage gets its own block) */}
         <Reveal className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-5">
               <EditorialFrame
                 src="/images/fragrance/installation-panel.png"
@@ -181,19 +181,55 @@ export default function FragranceBranding() {
                 </p>
               </div>
             </div>
-            <div className="space-y-5">
+          </div>
+        </Reveal>
+
+        {/* Digital Signage — dedicated 3-up gallery */}
+        <Reveal className="mt-24">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                Work 05 · Digital Signage
+              </p>
+              <h3 className="mt-3 font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
+                On-site Signage Triptych
+              </h3>
+              <p className="mt-2 font-jpserif text-xs text-silver-muted">
+                店頭で流す3本構成 ─ 香りを「体験」として伝えるための動画ディレクション。
+              </p>
+            </div>
+            <p className="text-[10px] tracking-wider2 uppercase text-silver-muted">
+              Loop · Muted · 9:16
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="space-y-4">
               <SignageVideo
                 src="/images/fragrance/signage-kaori.mp4"
-                caption="Digital Signage — 香りを、まとう"
+                caption="01 · 香りを、まとう"
               />
-              <div>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 05 · デジタルサイネージ
-                </p>
-                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  店頭で流れる15秒の上質な合図「香りを、まとう」。商業施設の動線を「香りの体験」へと変える。
-                </p>
-              </div>
+              <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
+                メインビジュアル動画。香りを身にまとう瞬間を15秒の上質な合図に。
+              </p>
+            </div>
+            <div className="space-y-4">
+              <SignageVideo
+                src="/images/fragrance/signage-red.mp4"
+                caption="02 · RED Edition"
+              />
+              <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
+                赤を基調とした華やかな女性向けエディション。情熱と上品さの両立。
+              </p>
+            </div>
+            <div className="space-y-4">
+              <SignageVideo
+                src="/images/fragrance/signage-unisex.mp4"
+                caption="03 · Unisex Edition"
+              />
+              <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
+                男女兼用ラインアップ向け。中性的でモードな表現で新しい顧客層へ訴求。
+              </p>
             </div>
           </div>
         </Reveal>
