@@ -4,6 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
+import SignageVideo from "@/components/ui/SignageVideo";
 import { useLang } from "@/context/LanguageContext";
 import { tr, t } from "@/lib/translations";
 
@@ -143,9 +144,9 @@ export default function FragranceBranding() {
           </div>
         </Reveal>
 
-        {/* Installation + how-to side by side */}
+        {/* Installation + how-to + Digital Signage video */}
         <Reveal className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="space-y-5">
               <EditorialFrame
                 src="/images/fragrance/installation-panel.png"
@@ -177,6 +178,20 @@ export default function FragranceBranding() {
                 </p>
                 <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
                   来店者の不安を取り除く「使い方カルーセル」。タッチパネル選択から決済まで2枚で伝える。
+                </p>
+              </div>
+            </div>
+            <div className="space-y-5">
+              <SignageVideo
+                src="/images/fragrance/signage-kaori.mp4"
+                caption="Digital Signage — 香りを、まとう"
+              />
+              <div>
+                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                  Work 05 · デジタルサイネージ
+                </p>
+                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
+                  店頭で流れる15秒の上質な合図「香りを、まとう」。商業施設の動線を「香りの体験」へと変える。
                 </p>
               </div>
             </div>
