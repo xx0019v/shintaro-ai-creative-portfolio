@@ -7,7 +7,7 @@ const TEXT = "AVENDANYO";
 const STORAGE_KEY = "avendanyo-loader-seen";
 
 /**
- * Cinematic timeline (ms) — total ~2.7s
+ * Cinematic timeline (ms) — total ~6.0s
  *   scatter  : droplets fade in scattered across the screen
  *   travel   : droplets are drawn inward toward a central band
  *   flash    : silver bloom births the text
@@ -16,12 +16,12 @@ const STORAGE_KEY = "avendanyo-loader-seen";
  *   exit     : vertical wipe reveals the hero behind
  */
 const T = {
-  scatter: 220,
-  travel: 1150,
-  flash: 180,
-  text: 380,
-  hold: 720,
-  exit: 700,
+  scatter: 500,
+  travel: 2500,
+  flash: 250,
+  text: 600,
+  hold: 1500,
+  exit: 900,
 } as const;
 
 const STAGE = {
@@ -73,7 +73,7 @@ function makeDroplets(count: number, seed = 17): Droplet[] {
       toX,
       toY,
       size: 30 + rand() * 30, // 30 — 60 px (goo filter merges them visually)
-      delay: rand() * 260,
+      delay: rand() * 700, // wider stagger across the longer travel phase
     });
   }
   return out;
