@@ -287,14 +287,14 @@ export const t: Dict = {
   ed_school_b_period: { jp: "2021 — 2024", en: "2021 — 2024" },
   ed_certs: { jp: "Certifications", en: "Certifications" },
   ed_cert_1_en: { jp: "Second-Class Electrician", en: "Second-Class Electrician" },
-  ed_cert_1_jp: { jp: "第二種電気工事士", en: "第二種電気工事士" },
+  ed_cert_1_jp: { jp: "第二種電気工事士", en: "" },
   ed_cert_2_en: {
     jp: "Information Processing Engineer (Grade 2 · Part 1)",
     en: "Information Processing Engineer Ability Certification (Grade 2 · Part 1)",
   },
-  ed_cert_2_jp: { jp: "情報処理技術者能力認定試験 2級1部", en: "情報処理技術者能力認定試験 2級1部" },
+  ed_cert_2_jp: { jp: "情報処理技術者能力認定試験 2級1部", en: "" },
   ed_cert_3_en: { jp: "Business Manners (Grade 3)", en: "Business Manners Certification (Grade 3)" },
-  ed_cert_3_jp: { jp: "社会人常識マナー検定試験 3級", en: "社会人常識マナー検定試験 3級" },
+  ed_cert_3_jp: { jp: "社会人常識マナー検定試験 3級", en: "" },
   ed_now: { jp: "Now studying", en: "Now studying" },
   ed_now_body: {
     jp: "AIカメラ、実務水準のWeb制作、ブランド体験のビジュアル設計。",
@@ -318,6 +318,172 @@ export const t: Dict = {
   ft_built: { jp: "Designed & built in Japan · 2026", en: "Designed & built in Japan · 2026" },
 };
 
+/* =========================================================================
+   ADDITIONS — full bilingual coverage for every visible string
+   ========================================================================= */
+
+const additions: Dict = {
+  // ─── AI CAMERA — value list ─────────────────────────────────────────────
+  ai_value_li_1: {
+    jp: "広告効果を数値で判断できる",
+    en: "Ad performance you can measure, not guess.",
+  },
+  ai_value_li_2: {
+    jp: "時間帯別の視認傾向を把握できる",
+    en: "Attention patterns broken down by hour.",
+  },
+  ai_value_li_3: {
+    jp: "通過・接近・操作・視認を分けて分析",
+    en: "Passing, approach, operation, and view — each analysed apart.",
+  },
+  ai_value_li_4: {
+    jp: "商業施設や広告主への定量レポート",
+    en: "Quantified reports for venues and advertisers.",
+  },
+  ai_value_li_5: {
+    jp: "プライバシーに配慮した設計思想",
+    en: "Privacy-first by design.",
+  },
+
+  // ─── AIKameranado — distance zones JP descriptions ──────────────────────
+  ai_zone_op_jp: { jp: "操作している位置", en: "At the touch panel" },
+  ai_zone_ap_jp: { jp: "自販機に近づく行動", en: "Approaching the machine" },
+  ai_zone_ad_jp: { jp: "サイネージを見ている可能性", en: "Likely viewing the signage" },
+  ai_zone_pa_jp: { jp: "通過する人々", en: "Pedestrians passing through" },
+
+  // ─── AIKameranado — flow JP labels ──────────────────────────────────────
+  ai_flow_01_jp: { jp: "人が通る / 広告を見る", en: "A person passes by or sees the signage" },
+  ai_flow_02_jp: { jp: "AIカメラが人物を検知", en: "The AI camera detects them" },
+  ai_flow_03_jp: { jp: "距離・滞在・注視の可能性を推定", en: "Distance, dwell, and viewing likelihood estimated" },
+  ai_flow_04_jp: { jp: "匿名データとして保存", en: "Stored as anonymous data" },
+  ai_flow_05_jp: { jp: "ダッシュボードやレポートで可視化", en: "Visualised in dashboard and report" },
+
+  // ─── AIKameranado — privacy JP labels ───────────────────────────────────
+  ai_priv_storage_jp: { jp: "生画像保存なし", en: "Raw imagery never stored" },
+  ai_priv_face_jp: { jp: "顔認証なし", en: "No face recognition" },
+  ai_priv_anon_jp: { jp: "匿名行動データ", en: "Anonymous behavioural data only" },
+  ai_priv_edge_jp: { jp: "エッジ処理優先", en: "Edge-first processing" },
+
+  // ─── Fragrance — work block JP copy ─────────────────────────────────────
+  fr_w01_role: { jp: "ビジュアルディレクション", en: "Visual direction" },
+  fr_w01_output: { jp: "パネル・SNS・展示", en: "Panels · social · exhibition" },
+  fr_w01_jp: {
+    jp: "「香りを選ぶ」体験を一枚で伝えるメインビジュアル。高崎モントレー 3F・4F 展開のブランドキー。",
+    en: "A single image that captures the act of choosing a scent — the brand key for the 3F and 4F installation at Takasaki Monterey.",
+  },
+  fr_w02_body: {
+    jp: "選びやすさ・上品さ・体験性を両立した売場POP。香りの印象を言葉とビジュアルで整理し、「香水選び」自体を体験化。",
+    en: "A point-of-sale piece that makes choosing easy and the choice itself feel like an experience.",
+  },
+  fr_w02_t1: { jp: "エディトリアル余白", en: "Editorial spacing" },
+  fr_w02_t2: { jp: "花・布・光の質感", en: "Floral · fabric · light texture" },
+  fr_w02_t3: { jp: "上品なコピー", en: "Restrained copywriting" },
+  fr_w02_t4: { jp: "情報階層の簡素化", en: "Simplified hierarchy" },
+  fr_w03_label: { jp: "Work 03 · 設置告知", en: "Work 03 · Installation Notice" },
+  fr_w03_body: {
+    jp: "「高崎モントレー 3F・4F にて展開中」設置告知。ブランド世界観を保ったまま現地情報を伝える。",
+    en: "An on-site notice that holds the brand world intact while telling you exactly where to find it.",
+  },
+  fr_w04_label: { jp: "Work 04 · SNS導線", en: "Work 04 · Social Flow" },
+  fr_w04_body: {
+    jp: "来店者の不安を取り除く「使い方カルーセル」。タッチパネル選択から決済まで2枚で伝える。",
+    en: "A two-card carousel that removes any hesitation — from selecting on the touch panel to checking out.",
+  },
+  fr_signage_title: { jp: "Work 05 · Digital Signage", en: "Work 05 · Digital Signage" },
+  fr_signage_eyebrow: { jp: "On-site Signage Triptych", en: "On-site Signage Triptych" },
+  fr_signage_body: {
+    jp: "店頭で流す3本構成 ─ 香りを「体験」として伝えるための動画ディレクション。",
+    en: "A three-film triptych played on-site — fragrance directed as experience.",
+  },
+  fr_signage_meta: { jp: "Loop · Muted · 9:16", en: "Loop · Muted · 9:16" },
+  fr_signage_01_caption: { jp: "01 · 香りを、まとう", en: "01 · Wear the Scent" },
+  fr_signage_01_body: {
+    jp: "メインビジュアル動画。香りを身にまとう瞬間を15秒の上質な合図に。",
+    en: "The main signage film — fifteen quiet seconds of putting on a scent.",
+  },
+  fr_signage_02_caption: { jp: "02 · RED Edition", en: "02 · RED Edition" },
+  fr_signage_02_body: {
+    jp: "赤を基調とした華やかな女性向けエディション。情熱と上品さの両立。",
+    en: "A red-led edition for a feminine audience — confident and refined at once.",
+  },
+  fr_signage_03_caption: { jp: "03 · Unisex Edition", en: "03 · Unisex Edition" },
+  fr_signage_03_body: {
+    jp: "男女兼用ラインアップ向け。中性的でモードな表現で新しい顧客層へ訴求。",
+    en: "For the unisex line — a quieter, modern register that opens the brand to new audiences.",
+  },
+
+  // ─── Client Work — meta strings ─────────────────────────────────────────
+  cw_meta_usp: { jp: "海外講師 × 通訳者", en: "Overseas teachers × interpreters" },
+
+  // ─── Keychain — work + meta ─────────────────────────────────────────────
+  kc_w01_eyebrow: { jp: "Work 01 · Charm Collection", en: "Work 01 · Charm Collection" },
+  kc_w01_title: { jp: "7 Daily Moments", en: "7 Daily Moments" },
+  kc_w01_body: {
+    jp: "「日常の7つの瞬間を、いつでも、もう一度に。」FOCUS / WORK MODE / OK / CHECKING / BREAK / CHARGE / CALL ─ ひとりの先生の7表情を、コレクションとしてデザインしました。",
+    en: "Seven everyday moments — FOCUS · WORK MODE · OK · CHECKING · BREAK · CHARGE · CALL — one teacher, seven expressions, designed as a single collection.",
+  },
+  kc_w01_material: { jp: "アクリル / 70mm Round", en: "Acrylic · 70mm Round" },
+  kc_w01_attach: { jp: "メタルリング", en: "Metal ring" },
+  kc_w01_series: { jp: "7 表情 / コレクション", en: "7 expressions · collection" },
+  kc_w01_tone: { jp: "エディトリアル写真", en: "Editorial photography" },
+  kc_w02_eyebrow: { jp: "Work 02 · Energetic", en: "Work 02 · Energetic" },
+  kc_w02_caption: { jp: "Concept · Energetic Edition", en: "Concept · Energetic Edition" },
+  kc_w02_body: {
+    jp: "「やる気MAX！」手描きタイポと吹き出しで先生のキャラクターを増幅。元気・前向き・親しみやすさを軸にした明快な一枚。",
+    en: "Hand-drawn typography and a speech bubble amplify the teacher's spirit — bright, forward, approachable.",
+  },
+  kc_w03_eyebrow: { jp: "Work 03 · Anime Portrait", en: "Work 03 · Anime Portrait" },
+  kc_w03_caption: { jp: "Concept · Anime Portrait", en: "Concept · Anime Portrait" },
+  kc_w03_body: {
+    jp: "「今日どうしたん？」ですわる先生のひと時を、アニメ調イラストで温かく描写。素材感とブラシのリズムで「日常らしさ」を残す。",
+    en: "An anime-style portrait that warms a quiet moment at the desk — kept everyday by texture and brush rhythm.",
+  },
+  kc_process_jp: { jp: "制作プロセス", en: "Process" },
+  kc_note_label: { jp: "Note · 注記", en: "Note" },
+
+  // ─── Keychain — process JP labels ───────────────────────────────────────
+  kc_p01_jp: { jp: "先生ごとの特徴や雰囲気を観察", en: "Observe each teacher's traits and atmosphere" },
+  kc_p02_jp: { jp: "ビジュアル方向性を決定", en: "Lock in the visual direction" },
+  kc_p03_jp: { jp: "AIを活用して複数案を作成", en: "Generate variants with AI" },
+  kc_p04_jp: { jp: "表情・ポーズ・色・質感を調整", en: "Refine expression, pose, colour, texture" },
+  kc_p05_jp: { jp: "キーホルダー制作に向けてデータを整える", en: "Prepare print-ready files" },
+
+  // ─── Leadership — strength chips ────────────────────────────────────────
+  ld_s_leadership: { jp: "リーダーシップ", en: "Leadership" },
+  ld_s_trust: { jp: "先生からの信頼", en: "Trust from teachers" },
+  ld_s_responsibility: { jp: "責任感", en: "Responsibility" },
+  ld_s_communication: { jp: "周囲との連携", en: "Communication" },
+  ld_s_management: { jp: "進行管理", en: "Project management" },
+  ld_s_direction: { jp: "企画力", en: "Event direction" },
+  ld_s_proactive: { jp: "主体性", en: "Proactive action" },
+
+  // ─── Languages skill (new) ──────────────────────────────────────────────
+  sk_cat_lang: { jp: "Languages", en: "Languages" },
+  sk_cat_lang_jp: { jp: "語学", en: "Language Skills" },
+  sk_lang_native: {
+    jp: "日本語・タガログ語・英語を使い分け",
+    en: "Native-level Japanese, Tagalog, and English",
+  },
+  sk_lang_trilingual: {
+    jp: "3言語を活かした接客・企画・発信",
+    en: "Trilingual communication across cultures",
+  },
+  sk_lang_cultural: {
+    jp: "相手に合わせた自然なコミュニケーション",
+    en: "Tone adapted to each audience",
+  },
+  sk_lang_messaging: {
+    jp: "多文化に合わせた言葉選び",
+    en: "Brand messaging in three languages",
+  },
+  sk_lang_summary: {
+    jp: "日本語・タガログ語・英語を使い分け、相手に合わせて自然に話します。",
+    en: "I communicate naturally in Japanese, Tagalog, and English — adapting tone and message for each audience.",
+  },
+};
+
+Object.assign(t, additions);
+
 export function tr(key: keyof typeof t, lang: Lang): string {
-  return t[key]?.[lang] ?? key;
+  return t[key]?.[lang] ?? String(key);
 }

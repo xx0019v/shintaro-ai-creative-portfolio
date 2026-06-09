@@ -15,14 +15,14 @@ const ROLE = [
 ];
 
 const STRENGTHS = [
-  { en: "Leadership", jp: "リーダーシップ" },
-  { en: "Trust from teachers", jp: "先生からの信頼" },
-  { en: "Responsibility", jp: "責任感" },
-  { en: "Communication", jp: "周囲との連携" },
-  { en: "Project management", jp: "進行管理" },
-  { en: "Event direction", jp: "企画力" },
-  { en: "Proactive action", jp: "主体性" },
-];
+  { en: "Leadership", jpKey: "ld_s_leadership" },
+  { en: "Trust from teachers", jpKey: "ld_s_trust" },
+  { en: "Responsibility", jpKey: "ld_s_responsibility" },
+  { en: "Communication", jpKey: "ld_s_communication" },
+  { en: "Project management", jpKey: "ld_s_management" },
+  { en: "Event direction", jpKey: "ld_s_direction" },
+  { en: "Proactive action", jpKey: "ld_s_proactive" },
+] as const;
 
 export default function Leadership() {
   const { lang } = useLang();
@@ -99,7 +99,7 @@ export default function Leadership() {
                 className="hairline px-4 py-3 hover:hairline-silver transition-colors"
               >
                 <p className="text-sm text-offwhite/85">{s.en}</p>
-                <p className="font-jpserif text-[11px] text-silver-muted mt-1">{s.jp}</p>
+                <p className="font-jpserif text-[11px] text-silver-muted mt-1">{tr(s.jpKey, lang)}</p>
               </li>
             ))}
           </ul>

@@ -36,26 +36,26 @@ const KEYWORDS = [
 ];
 
 const ZONES = [
-  { name: "Operation", range: "0.3 – 0.8m", desc: "Actual operation position", jp: "操作している位置" },
-  { name: "Approach", range: "0.8 – 1.8m", desc: "People approaching the machine", jp: "自販機に近づく行動" },
-  { name: "AdView", range: "1.8 – 3.5m", desc: "Potential signage viewing area", jp: "サイネージを見ている可能性" },
-  { name: "Passing", range: "3.5m +", desc: "People passing by", jp: "通過する人々" },
-];
+  { name: "Operation", range: "0.3 – 0.8m", desc: "Actual operation position", jpKey: "ai_zone_op_jp" },
+  { name: "Approach", range: "0.8 – 1.8m", desc: "People approaching the machine", jpKey: "ai_zone_ap_jp" },
+  { name: "AdView", range: "1.8 – 3.5m", desc: "Potential signage viewing area", jpKey: "ai_zone_ad_jp" },
+  { name: "Passing", range: "3.5m +", desc: "People passing by", jpKey: "ai_zone_pa_jp" },
+] as const;
 
 const FLOW = [
-  { no: "01", en: "Person passes by or sees signage", jp: "人が通る / 広告を見る" },
-  { no: "02", en: "AI Camera detects a person", jp: "AIカメラが人物を検知" },
-  { no: "03", en: "Estimate distance, dwell, viewing possibility", jp: "距離・滞在・注視の可能性を推定" },
-  { no: "04", en: "Save as anonymous data", jp: "匿名データとして保存" },
-  { no: "05", en: "Visualize in dashboard and report", jp: "ダッシュボードやレポートで可視化" },
-];
+  { no: "01", en: "Person passes by or sees signage", jpKey: "ai_flow_01_jp" },
+  { no: "02", en: "AI Camera detects a person", jpKey: "ai_flow_02_jp" },
+  { no: "03", en: "Estimate distance, dwell, viewing possibility", jpKey: "ai_flow_03_jp" },
+  { no: "04", en: "Save as anonymous data", jpKey: "ai_flow_04_jp" },
+  { no: "05", en: "Visualize in dashboard and report", jpKey: "ai_flow_05_jp" },
+] as const;
 
 const PRIVACY = [
-  { icon: EyeOff, en: "No raw image storage", jp: "生画像保存なし" },
-  { icon: ShieldCheck, en: "No face recognition", jp: "顔認証なし" },
-  { icon: Activity, en: "Anonymous analytics only", jp: "匿名行動データ" },
-  { icon: Radio, en: "Edge-first processing", jp: "エッジ処理優先" },
-];
+  { icon: EyeOff, en: "No raw image storage", jpKey: "ai_priv_storage_jp" },
+  { icon: ShieldCheck, en: "No face recognition", jpKey: "ai_priv_face_jp" },
+  { icon: Activity, en: "Anonymous analytics only", jpKey: "ai_priv_anon_jp" },
+  { icon: Radio, en: "Edge-first processing", jpKey: "ai_priv_edge_jp" },
+] as const;
 
 export default function AIKameranado() {
   const { lang } = useLang();
@@ -201,7 +201,7 @@ export default function AIKameranado() {
                   <span className="text-silver-bright text-sm idx">{z.range}</span>
                 </div>
                 <p className="mt-4 text-sm text-offwhite/75">{z.desc}</p>
-                <p className="mt-2 font-jpserif text-xs text-silver-muted">{z.jp}</p>
+                <p className="mt-2 font-jpserif text-xs text-silver-muted">{tr(z.jpKey, lang)}</p>
               </Reveal>
             ))}
           </ul>
@@ -228,7 +228,7 @@ export default function AIKameranado() {
               <Reveal key={f.no} delay={0.06 * i} as="li" className="relative hairline p-6">
                 <span className="text-silver-bright idx text-[11px] tracking-wider2">{f.no}</span>
                 <p className="mt-4 text-sm text-offwhite/85 leading-relaxed">{f.en}</p>
-                <p className="mt-2 font-jpserif text-xs text-silver-muted leading-relaxed">{f.jp}</p>
+                <p className="mt-2 font-jpserif text-xs text-silver-muted leading-relaxed">{tr(f.jpKey, lang)}</p>
                 {i < FLOW.length - 1 && (
                   <span
                     aria-hidden
@@ -255,7 +255,7 @@ export default function AIKameranado() {
                   <p.icon size={18} strokeWidth={1.1} className="text-silver-bright mt-0.5" />
                   <div>
                     <p className="text-sm text-offwhite/90">{p.en}</p>
-                    <p className="mt-1 font-jpserif text-xs text-silver-muted">{p.jp}</p>
+                    <p className="mt-1 font-jpserif text-xs text-silver-muted">{tr(p.jpKey, lang)}</p>
                   </div>
                 </li>
               ))}
@@ -270,11 +270,9 @@ export default function AIKameranado() {
               {tr("ai_value_title", lang)}
             </h3>
             <ul className="mt-8 space-y-3 text-sm font-jpserif text-offwhite/85">
-              <li className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />広告効果を数値で判断できる</li>
-              <li className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />時間帯別の視認傾向を把握できる</li>
-              <li className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />通過・接近・操作・視認を分けて分析</li>
-              <li className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />商業施設や広告主への定量レポート</li>
-              <li className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />プライバシーに配慮した設計思想</li>
+              {(["ai_value_li_1","ai_value_li_2","ai_value_li_3","ai_value_li_4","ai_value_li_5"] as const).map((k)=>(
+                <li key={k} className="flex gap-3"><span className="mt-2 h-px w-4 bg-silver/60" />{tr(k, lang)}</li>
+              ))}
             </ul>
           </Reveal>
         </div>

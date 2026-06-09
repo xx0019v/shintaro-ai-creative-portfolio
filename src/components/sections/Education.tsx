@@ -91,9 +91,11 @@ export default function Education() {
               {certs.map((c, i) => (
                 <Reveal as="li" key={c.enKey} delay={i * 0.06} className="hairline p-5">
                   <p className="text-sm text-offwhite/90">{tr(c.enKey, lang)}</p>
-                  <p className="mt-2 font-jpserif text-xs text-silver-muted">
-                    {tr(c.jpKey, lang)}
-                  </p>
+                  {tr(c.jpKey, lang) && (
+                    <p className="mt-2 font-jpserif text-xs text-silver-muted">
+                      {tr(c.jpKey, lang)}
+                    </p>
+                  )}
                 </Reveal>
               ))}
             </ul>

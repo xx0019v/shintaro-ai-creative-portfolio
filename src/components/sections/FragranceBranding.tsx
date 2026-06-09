@@ -78,7 +78,7 @@ export default function FragranceBranding() {
                   Fragrance Spot Key Visual
                 </h3>
                 <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
-                  「香りを選ぶ」体験を一枚で伝えるメインビジュアル。高崎モントレー 3F・4F 展開のブランドキー。
+                  {tr("fr_w01_jp", lang)}
                 </p>
               </div>
               <SilverRule />
@@ -87,13 +87,13 @@ export default function FragranceBranding() {
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Role
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">ビジュアルディレクション</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("fr_w01_role", lang)}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Output
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">パネル・SNS・展示</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("fr_w01_output", lang)}</dd>
                 </div>
               </dl>
             </div>
@@ -123,22 +123,15 @@ export default function FragranceBranding() {
                   Fragrance Menu POP
                 </h3>
                 <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
-                  選びやすさ・上品さ・体験性を両立した売場POP。香りの印象を言葉とビジュアルで整理し、「香水選び」自体を体験化。
+                  {tr("fr_w02_body", lang)}
                 </p>
               </div>
               <ul className="grid grid-cols-2 gap-3 text-sm">
-                <li className="hairline px-4 py-3 font-jpserif text-offwhite/80">
-                  エディトリアル余白
-                </li>
-                <li className="hairline px-4 py-3 font-jpserif text-offwhite/80">
-                  花・布・光の質感
-                </li>
-                <li className="hairline px-4 py-3 font-jpserif text-offwhite/80">
-                  上品なコピー
-                </li>
-                <li className="hairline px-4 py-3 font-jpserif text-offwhite/80">
-                  情報階層の簡素化
-                </li>
+                {(["fr_w02_t1","fr_w02_t2","fr_w02_t3","fr_w02_t4"] as const).map((k)=>(
+                  <li key={k} className="hairline px-4 py-3 font-jpserif text-offwhite/80">
+                    {tr(k, lang)}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -157,10 +150,10 @@ export default function FragranceBranding() {
               />
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 03 · 設置告知
+                  {tr("fr_w03_label", lang)}
                 </p>
                 <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  「高崎モントレー 3F・4F にて展開中」設置告知。ブランド世界観を保ったまま現地情報を伝える。
+                  {tr("fr_w03_body", lang)}
                 </p>
               </div>
             </div>
@@ -174,10 +167,10 @@ export default function FragranceBranding() {
               />
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 04 · SNS導線
+                  {tr("fr_w04_label", lang)}
                 </p>
                 <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  来店者の不安を取り除く「使い方カルーセル」。タッチパネル選択から決済まで2枚で伝える。
+                  {tr("fr_w04_body", lang)}
                 </p>
               </div>
             </div>
@@ -189,17 +182,17 @@ export default function FragranceBranding() {
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <div>
               <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                Work 05 · Digital Signage
+                {tr("fr_signage_title", lang)}
               </p>
               <h3 className="mt-3 font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
-                On-site Signage Triptych
+                {tr("fr_signage_eyebrow", lang)}
               </h3>
               <p className="mt-2 font-jpserif text-xs text-silver-muted">
-                店頭で流す3本構成 ─ 香りを「体験」として伝えるための動画ディレクション。
+                {tr("fr_signage_body", lang)}
               </p>
             </div>
             <p className="text-[10px] tracking-wider2 uppercase text-silver-muted">
-              Loop · Muted · 9:16
+              {tr("fr_signage_meta", lang)}
             </p>
           </div>
 
@@ -207,28 +200,28 @@ export default function FragranceBranding() {
             <div className="space-y-4">
               <SignageVideo
                 src="/images/fragrance/signage-kaori.mp4"
-                caption="01 · 香りを、まとう"
+                caption={tr("fr_signage_01_caption", lang)}
               />
               <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
-                メインビジュアル動画。香りを身にまとう瞬間を15秒の上質な合図に。
+                {tr("fr_signage_01_body", lang)}
               </p>
             </div>
             <div className="space-y-4">
               <SignageVideo
                 src="/images/fragrance/signage-red.mp4"
-                caption="02 · RED Edition"
+                caption={tr("fr_signage_02_caption", lang)}
               />
               <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
-                赤を基調とした華やかな女性向けエディション。情熱と上品さの両立。
+                {tr("fr_signage_02_body", lang)}
               </p>
             </div>
             <div className="space-y-4">
               <SignageVideo
                 src="/images/fragrance/signage-unisex.mp4"
-                caption="03 · Unisex Edition"
+                caption={tr("fr_signage_03_caption", lang)}
               />
               <p className="font-jpserif text-xs text-offwhite/75 leading-relaxed">
-                男女兼用ラインアップ向け。中性的でモードな表現で新しい顧客層へ訴求。
+                {tr("fr_signage_03_body", lang)}
               </p>
             </div>
           </div>

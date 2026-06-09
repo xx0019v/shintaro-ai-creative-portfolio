@@ -84,7 +84,7 @@ export default function ClientWork() {
             <dl className="grid grid-cols-2 gap-x-6 gap-y-8 text-sm">
               <Meta label="Role" value="Web Direction · Build" />
               <Meta label="Service" value="Online English" />
-              <Meta label="USP" value="海外講師 × 通訳者" />
+              <Meta label="USP" value={tr("cw_meta_usp", lang)} />
               <Meta label="Pages" value="One-page · 8 sections" />
               <Meta label="Stage" value="Live · Public" />
               <Meta label="Stack" value="React · R3F · GSAP" />

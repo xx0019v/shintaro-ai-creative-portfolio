@@ -8,12 +8,12 @@ import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 
 const PROCESS = [
-  { no: "01", en: "Observe each teacher's personality and features", jp: "先生ごとの特徴や雰囲気を観察" },
-  { no: "02", en: "Decide the visual direction", jp: "ビジュアル方向性を決定" },
-  { no: "03", en: "Generate and compare AI-assisted ideas", jp: "AIを活用して複数案を作成" },
-  { no: "04", en: "Refine expression, pose, color, texture", jp: "表情・ポーズ・色・質感を調整" },
-  { no: "05", en: "Prepare design for keychain production", jp: "キーホルダー制作に向けてデータを整える" },
-];
+  { no: "01", en: "Observe each teacher's personality and features", jpKey: "kc_p01_jp" },
+  { no: "02", en: "Decide the visual direction", jpKey: "kc_p02_jp" },
+  { no: "03", en: "Generate and compare AI-assisted ideas", jpKey: "kc_p03_jp" },
+  { no: "04", en: "Refine expression, pose, color, texture", jpKey: "kc_p04_jp" },
+  { no: "05", en: "Prepare design for keychain production", jpKey: "kc_p05_jp" },
+] as const;
 
 const ROLES = [
   "Visual Design",
@@ -92,13 +92,13 @@ export default function KeychainProject() {
             <div className="md:col-span-5 space-y-6">
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 01 · Charm Collection
+                  {tr("kc_w01_eyebrow", lang)}
                 </p>
                 <h3 className="mt-3 font-serif text-3xl md:text-4xl text-offwhite tracking-tight">
-                  7 Daily Moments
+                  {tr("kc_w01_title", lang)}
                 </h3>
                 <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
-                  「日常の7つの瞬間を、いつでも、もう一度に。」FOCUS / WORK MODE / OK / CHECKING / BREAK / CHARGE / CALL ─ ひとりの先生の7表情を、コレクションとしてデザインしました。
+                  {tr("kc_w01_body", lang)}
                 </p>
               </div>
               <SilverRule />
@@ -107,25 +107,25 @@ export default function KeychainProject() {
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Material
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">アクリル / 70mm Round</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("kc_w01_material", lang)}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Attachment
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">メタルリング</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("kc_w01_attach", lang)}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Series
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">7 表情 / コレクション</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("kc_w01_series", lang)}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
                     Tone
                   </dt>
-                  <dd className="text-offwhite/85 font-jpserif">エディトリアル写真</dd>
+                  <dd className="text-offwhite/85 font-jpserif">{tr("kc_w01_tone", lang)}</dd>
                 </div>
               </dl>
             </div>
@@ -138,17 +138,17 @@ export default function KeychainProject() {
             <div className="space-y-5">
               <EditorialFrame
                 src="/images/keychain/keychain-arisu.jpg"
-                alt="Keychain concept — A-sensei, 'やる気MAX!' edition"
+                alt="Keychain concept — Energetic edition"
                 ratio="square"
-                caption="Concept · Energetic Edition"
+                caption={tr("kc_w02_caption", lang)}
                 desaturate
               />
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 02 · Energetic
+                  {tr("kc_w02_eyebrow", lang)}
                 </p>
                 <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  「やる気MAX！」手描きタイポと吹き出しで先生のキャラクターを増幅。元気・前向き・親しみやすさを軸にした明快な一枚。
+                  {tr("kc_w02_body", lang)}
                 </p>
               </div>
             </div>
@@ -162,10 +162,10 @@ export default function KeychainProject() {
               />
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 03 · Anime Portrait
+                  {tr("kc_w03_eyebrow", lang)}
                 </p>
                 <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  「今日どうしたん？」ですわる先生のひと時を、アニメ調イラストで温かく描写。素材感とブラシのリズムで「日常らしさ」を残す。
+                  {tr("kc_w03_body", lang)}
                 </p>
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function KeychainProject() {
           <h3 className="font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
             {tr("kc_process", lang)}
           </h3>
-          <p className="mt-2 font-jpserif text-xs text-silver-muted">制作プロセス</p>
+          <p className="mt-2 font-jpserif text-xs text-silver-muted">{tr("kc_process_jp", lang)}</p>
         </Reveal>
 
         <ol className="mt-10 grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -187,13 +187,13 @@ export default function KeychainProject() {
             <Reveal key={p.no} delay={0.05 * i} as="li" className="relative hairline p-6">
               <span className="text-silver-bright idx text-[11px] tracking-wider2">{p.no}</span>
               <p className="mt-4 text-sm text-offwhite/85 leading-relaxed">{p.en}</p>
-              <p className="mt-2 font-jpserif text-xs text-silver-muted leading-relaxed">{p.jp}</p>
+              <p className="mt-2 font-jpserif text-xs text-silver-muted leading-relaxed">{tr(p.jpKey, lang)}</p>
             </Reveal>
           ))}
         </ol>
 
         <Reveal delay={0.1} className="mt-12">
-          <p className="text-[10px] tracking-wider2 uppercase text-silver-muted">Note · 注記</p>
+          <p className="text-[10px] tracking-wider2 uppercase text-silver-muted">{tr("kc_note_label", lang)}</p>
           <p className="mt-2 font-jpserif text-sm text-silver-muted max-w-3xl leading-loose">
             {tr("kc_privacy", lang)}
           </p>

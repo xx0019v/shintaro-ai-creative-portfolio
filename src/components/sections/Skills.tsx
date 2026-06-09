@@ -75,6 +75,19 @@ const CATEGORIES: {
       "Leadership Support",
     ],
   },
+  {
+    no: "05",
+    titleKey: "sk_cat_lang",
+    jpKey: "sk_cat_lang_jp",
+    items: [
+      "Japanese",
+      "Tagalog",
+      "English",
+      "Trilingual Communication",
+      "Cross-cultural Communication",
+      "Brand Messaging in 3 Languages",
+    ],
+  },
 ];
 
 export default function Skills() {
@@ -95,6 +108,30 @@ export default function Skills() {
           }
           jpTitleKey="sk_jp_title"
         />
+
+        {/* Language strength — highlighted card above the skill grid */}
+        <Reveal className="mt-16 hairline-silver p-8 md:p-10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-5">
+              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                {tr("sk_cat_lang", lang)}
+              </p>
+              <h3 className="mt-3 font-serif text-2xl md:text-3xl text-offwhite tracking-tight leading-snug">
+                Japanese · Tagalog · English
+              </h3>
+              <p className="mt-3 font-jpserif text-sm text-silver-muted leading-loose">
+                {tr("sk_lang_summary", lang)}
+              </p>
+            </div>
+            <ul className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-offwhite/85">
+              {(["sk_lang_native","sk_lang_trilingual","sk_lang_cultural","sk_lang_messaging"] as const).map((k)=>(
+                <li key={k} className="hairline px-4 py-3 font-jpserif leading-relaxed">
+                  {tr(k, lang)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
 
         <ul className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
           {CATEGORIES.map((cat, i) => (
