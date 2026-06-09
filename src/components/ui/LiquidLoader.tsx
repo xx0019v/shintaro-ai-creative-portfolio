@@ -1,123 +1,117 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const TEXT = "AVENDANYO";
+const TEXT = "AVENDANO";
 
-// Two carefully chosen curves used everywhere — one slow luxurious deceleration,
-// one symmetric ease-in-out for the final dissolve. Nothing else.
+// Two carefully chosen curves used everywhere.
 const EASE = [0.19, 1, 0.22, 1] as const;
 const EASE_IO = [0.83, 0, 0.17, 1] as const;
 
 /**
- * Cinematic timeline — ~9.6s.
+ * Cinematic timeline — ≈ 10.0s
  *
- *   silence        : pure black for a beat before anything emerges
- *   emerge         : droplets ink in from depth, closest first
- *   drift          : weightless floating — quiet "alive" tempo
- *   letterForm     : ★ THE NEW MOMENT — droplets travel to their assigned
- *                    letter's coords, but each LETTER GROUP starts on a
- *                    stagger. The eye reads A forming, then V, then E,
- *                    then N, D, A, N, Y, O — calligraphy in liquid metal.
- *                    Goo filter melts each letter group into a coherent
- *                    liquid letterform as droplets arrive.
- *   liquidHold     : the iconic frame — finished liquid AVENDANYO breathes
- *   chromeFlow     : chrome polish SWEEPS left → right ACROSS the liquid,
- *                    consuming droplets as it passes
- *   chromeHold     : metallic typography settles with a single shimmer pass
- *   dissolve       : chrome and ambient lift away — gentle handoff to Hero
+ *   dark      : pure black for a beat before anything emerges
+ *   emerge    : silver droplets ink in from depth — already positioned on
+ *               their orbital ring, just becoming visible
+ *   orbit     : the SIGNATURE moment — droplets orbit the centre AND spiral
+ *               inward simultaneously. Inner rings rotate faster than outer
+ *               ones for a true vortex feel. 110 droplets across 4 rings,
+ *               each on a pre-computed circular spiral keyframe path.
+ *   fusion    : the spiral has tightened to a small cluster — droplets
+ *               settle, breathe, ambient glow blooms (mercury mass)
+ *   morph    : the liquid mass elongates outward as each droplet flies to
+ *               its target inside the AVENDANO text shape. Goo filter
+ *               melts adjacent droplets into letter strokes.
+ *   chrome    : chrome polish SWEEPS left → right across the liquid letters,
+ *               consuming droplets as it passes
+ *   hold      : metallic typography settles with a single shimmer pass +
+ *               sub-label
+ *   dissolve  : chrome and ambient lift away — gentle handoff to Hero
  */
 const T = {
-  silence: 300,
-  emerge: 800,
-  drift: 700,
-  letterForm: 3200,
-  liquidHold: 900,
-  chromeFlow: 1400,
-  chromeHold: 1400,
-  dissolve: 900,
+  dark: 250,
+  emerge: 700,
+  orbit: 3000,
+  fusion: 700,
+  morph: 2100,
+  chrome: 1100,
+  hold: 1300,
+  dissolve: 800,
 } as const;
 
 const STAGE = {
-  silence: 0,
-  emerge: T.silence,
-  drift: T.silence + T.emerge,
-  letterForm: T.silence + T.emerge + T.drift,
-  liquidHold: T.silence + T.emerge + T.drift + T.letterForm,
-  chromeFlow:
-    T.silence + T.emerge + T.drift + T.letterForm + T.liquidHold,
-  chromeHold:
-    T.silence +
-    T.emerge +
-    T.drift +
-    T.letterForm +
-    T.liquidHold +
-    T.chromeFlow,
+  dark: 0,
+  emerge: T.dark,
+  orbit: T.dark + T.emerge,
+  fusion: T.dark + T.emerge + T.orbit,
+  morph: T.dark + T.emerge + T.orbit + T.fusion,
+  chrome: T.dark + T.emerge + T.orbit + T.fusion + T.morph,
+  hold: T.dark + T.emerge + T.orbit + T.fusion + T.morph + T.chrome,
   dissolve:
-    T.silence +
+    T.dark +
     T.emerge +
-    T.drift +
-    T.letterForm +
-    T.liquidHold +
-    T.chromeFlow +
-    T.chromeHold,
+    T.orbit +
+    T.fusion +
+    T.morph +
+    T.chrome +
+    T.hold,
   end:
-    T.silence +
+    T.dark +
     T.emerge +
-    T.drift +
-    T.letterForm +
-    T.liquidHold +
-    T.chromeFlow +
-    T.chromeHold +
+    T.orbit +
+    T.fusion +
+    T.morph +
+    T.chrome +
+    T.hold +
     T.dissolve,
 } as const;
 
-const DROPLETS_PER_LETTER = 11; // AVENDANYO = 9 letters → ~99 droplets
-
-// Per-letter start stagger so the formation reads as A → V → E → … → O
-// 9 letters × 280ms = 2520ms stagger window. Each letter travels ~700ms.
-const LETTER_STAGGER_MS = 280;
-const LETTER_TRAVEL_MS = 700;
+const DROPLET_COUNT = 110;
+const ORBIT_KEYFRAMES = 22;
 
 type Phase =
-  | "silence"
+  | "dark"
   | "emerge"
-  | "drift"
-  | "letterForm"
-  | "liquidHold"
-  | "chromeFlow"
-  | "chromeHold"
+  | "orbit"
+  | "fusion"
+  | "morph"
+  | "chrome"
+  | "hold"
   | "dissolve";
 
 interface Droplet {
   id: number;
-  letterIndex: number;
-  // viewport % — converted to px at runtime for GPU transforms
+  // emerge starting position (random scatter)
   fromXp: number;
   fromYp: number;
-  driftXp: number;
-  driftYp: number;
+  // orbit params
+  ringIndex: number;        // 0 inner .. 3 outer
+  startAngle: number;       // radians
+  angularSpan: number;      // total rotation across orbit phase (rad)
+  startRadiusFactor: number;// multiplier on the ring's base radius
+  endRadiusFactor: number;  // multiplier at end of spiral
+  // morph target (text-shape coord, % of viewport)
   toXp: number;
   toYp: number;
+  // misc
   size: number;
-  depth: number;
+  depth: number;            // 0 close .. 1 deep
   emergeDelay: number;
   oscX: number;
   oscY: number;
 }
 
-/**
- * Sample each letter individually so we can group droplets per letter and
- * stagger their formation. Returns one entry per letter with its sample
- * points (normalized to the whole-word bounding box).
- */
-function sampleLetters(
+/* ─────────────────────────────────────────────────────────────────────
+   Sample the AVENDANO text shape (whole word) — used as morph targets
+   ───────────────────────────────────────────────────────────────────── */
+function sampleTextShape(
   text: string,
   fontPx: number,
   fontFamily: string,
-  samplesPerLetter: number
-): { letterIndex: number; samples: { x: number; y: number }[] }[] | null {
+  sampleCount: number
+): { x: number; y: number }[] | null {
   if (typeof document === "undefined") return null;
   try {
     const W = 1800;
@@ -127,67 +121,42 @@ function sampleLetters(
     c.height = H;
     const ctx = c.getContext("2d");
     if (!ctx) return null;
-
-    // shrink-to-fit
+    ctx.fillStyle = "#fff";
+    ctx.textBaseline = "middle";
     ctx.font = `bold ${fontPx}px ${fontFamily}`;
     const tw = ctx.measureText(text).width;
     const scale = Math.min(1, (W - 120) / tw);
     const finalPx = Math.floor(fontPx * scale);
     ctx.font = `bold ${finalPx}px ${fontFamily}`;
     const finalTw = ctx.measureText(text).width;
-    const startX = (W - finalTw) / 2;
-    const midY = H / 2;
+    ctx.fillText(text, (W - finalTw) / 2, H / 2);
 
-    ctx.fillStyle = "#fff";
-    ctx.textBaseline = "middle";
-
-    const groups: { letterIndex: number; samples: { x: number; y: number }[] }[] = [];
-    let cursorX = startX;
-
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i];
-      const chW = ctx.measureText(ch).width;
-
-      // Render ONLY this letter on a fresh canvas frame
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillText(ch, cursorX, midY);
-
-      // Sample opaque pixels — only within letter's local bbox for speed
-      const data = ctx.getImageData(0, 0, W, H).data;
-      const opaque: { x: number; y: number }[] = [];
-      const step = 4;
-      const x0 = Math.max(0, Math.floor(cursorX) - 8);
-      const x1 = Math.min(W, Math.ceil(cursorX + chW) + 8);
-      for (let y = 0; y < H; y += step) {
-        for (let x = x0; x < x1; x += step) {
-          const idx = (y * W + x) * 4;
-          if (data[idx + 3] > 120) {
-            opaque.push({ x: x / W, y: y / H });
-          }
+    const data = ctx.getImageData(0, 0, W, H).data;
+    const opaque: { x: number; y: number }[] = [];
+    const step = 4;
+    for (let y = 0; y < H; y += step) {
+      for (let x = 0; x < W; x += step) {
+        const i = (y * W + x) * 4;
+        if (data[i + 3] > 120) {
+          opaque.push({ x: x / W, y: y / H });
         }
       }
-
-      if (opaque.length >= 6) {
-        // Even-stride sampling so the droplets distribute across the letter
-        const samples: { x: number; y: number }[] = [];
-        const stride = Math.max(1, Math.floor(opaque.length / samplesPerLetter));
-        for (let s = 0; s < samplesPerLetter; s++) {
-          samples.push(opaque[(s * stride) % opaque.length]);
-        }
-        groups.push({ letterIndex: i, samples });
-      }
-
-      cursorX += chW;
     }
-
-    return groups.length ? groups : null;
+    if (opaque.length < 24) return null;
+    const out: { x: number; y: number }[] = [];
+    const stride = Math.max(1, Math.floor(opaque.length / sampleCount));
+    for (let i = 0; i < sampleCount; i++) {
+      out.push(opaque[(i * stride) % opaque.length]);
+    }
+    return out;
   } catch {
     return null;
   }
 }
 
 function makeDroplets(
-  letterGroups: { letterIndex: number; samples: { x: number; y: number }[] }[] | null
+  count: number,
+  shape: { x: number; y: number }[] | null
 ): Droplet[] {
   let s = 17;
   const rand = () => {
@@ -195,55 +164,57 @@ function makeDroplets(
     return s / 233280;
   };
 
+  // Vortex: inner rings rotate further (faster) than outer ones.
+  const ringSpec = [
+    { ringIndex: 0, count: 24, baseStart: 0.55, baseEnd: 0.08, spans: 1.55 }, // inner — fastest
+    { ringIndex: 1, count: 30, baseStart: 0.72, baseEnd: 0.09, spans: 1.30 },
+    { ringIndex: 2, count: 30, baseStart: 0.90, baseEnd: 0.10, spans: 1.05 },
+    { ringIndex: 3, count: 26, baseStart: 1.10, baseEnd: 0.12, spans: 0.80 }, // outer — slowest
+  ];
+
   const out: Droplet[] = [];
   let id = 0;
 
-  if (letterGroups && letterGroups.length) {
-    for (const group of letterGroups) {
-      for (const pt of group.samples) {
-        // Map sampled coord (0..1, 0..1) onto a centred letter band
-        const toXp = 8 + pt.x * 84;
-        const toYp = 39 + pt.y * 22;
-        const fromXp = rand() * 100;
-        const fromYp = rand() * 100;
-        const depth = rand();
-        out.push({
-          id: id++,
-          letterIndex: group.letterIndex,
-          fromXp,
-          fromYp,
-          driftXp: fromXp + (rand() - 0.5) * 8,
-          driftYp: fromYp + (rand() - 0.5) * 8,
-          toXp,
-          toYp,
-          size: 20 + rand() * 18, // 20..38 px
-          depth,
-          emergeDelay: depth * 350,
-          oscX: (rand() - 0.5) * 1.2,
-          oscY: (rand() - 0.5) * 1.2,
-        });
+  for (const ring of ringSpec) {
+    for (let i = 0; i < ring.count && id < count; i++) {
+      // distribute around the ring with mild jitter
+      const baseAngle = (i / ring.count) * Math.PI * 2;
+      const startAngle = baseAngle + (rand() - 0.5) * 0.5;
+      const startR = ring.baseStart * (0.9 + rand() * 0.2);
+      const endR = ring.baseEnd * (0.7 + rand() * 0.6);
+      const span = ring.spans * Math.PI * 2 * (0.92 + rand() * 0.16);
+
+      // morph target inside text shape
+      let toXp = 50 + (rand() - 0.5) * 60;
+      let toYp = 50 + (rand() - 0.5) * 6;
+      if (shape && shape.length) {
+        const pt = shape[id % shape.length];
+        toXp = 10 + pt.x * 80;
+        toYp = 39 + pt.y * 22;
       }
-    }
-  } else {
-    // Fallback: scattered band (canvas API unavailable)
-    for (let i = 0; i < DROPLETS_PER_LETTER * TEXT.length; i++) {
+
       const fromXp = rand() * 100;
       const fromYp = rand() * 100;
+      const depth = (ring.ringIndex + rand() * 0.6) / 4; // outer rings have more depth blur
+
       out.push({
-        id: id++,
-        letterIndex: Math.floor((i / (DROPLETS_PER_LETTER * TEXT.length)) * TEXT.length),
+        id,
         fromXp,
         fromYp,
-        driftXp: fromXp + (rand() - 0.5) * 8,
-        driftYp: fromYp + (rand() - 0.5) * 8,
-        toXp: 12 + (i / (DROPLETS_PER_LETTER * TEXT.length)) * 76,
-        toYp: 50 + (rand() - 0.5) * 4,
-        size: 22 + rand() * 18,
-        depth: rand(),
-        emergeDelay: rand() * 350,
-        oscX: 0,
-        oscY: 0,
+        ringIndex: ring.ringIndex,
+        startAngle,
+        angularSpan: span,
+        startRadiusFactor: startR,
+        endRadiusFactor: endR,
+        toXp,
+        toYp,
+        size: 18 + rand() * 20, // 18..38 px
+        depth,
+        emergeDelay: depth * 320,
+        oscX: (rand() - 0.5) * 1.2,
+        oscY: (rand() - 0.5) * 1.2,
       });
+      id++;
     }
   }
   return out;
@@ -253,12 +224,12 @@ export default function LiquidLoader() {
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(true);
-  const [phase, setPhase] = useState<Phase>("silence");
+  const [phase, setPhase] = useState<Phase>("dark");
   const [droplets, setDroplets] = useState<Droplet[]>([]);
   const [viewport, setViewport] = useState({ w: 1280, h: 800 });
   const startedRef = useRef(false);
 
-  // Mount: sample each letter + build droplets
+  // Mount: sample shape + build droplets
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -268,19 +239,19 @@ export default function LiquidLoader() {
       setActive(false);
       return;
     }
-    const letterGroups = sampleLetters(
+    const shape = sampleTextShape(
       TEXT,
       280,
       "'Playfair Display','DM Serif Display',serif",
-      DROPLETS_PER_LETTER
+      DROPLET_COUNT
     );
-    setDroplets(makeDroplets(letterGroups));
+    setDroplets(makeDroplets(DROPLET_COUNT, shape));
   }, [reduced]);
 
   // Lock scroll + manual scroll restoration
   useEffect(() => {
     if (!mounted || !active) return;
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     if ("scrollRestoration" in history)
       history.scrollRestoration = "manual";
@@ -289,7 +260,7 @@ export default function LiquidLoader() {
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     window.addEventListener("resize", onResize);
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
       window.removeEventListener("resize", onResize);
     };
   }, [active, mounted]);
@@ -301,11 +272,11 @@ export default function LiquidLoader() {
     startedRef.current = true;
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(setTimeout(() => setPhase("emerge"), STAGE.emerge));
-    timers.push(setTimeout(() => setPhase("drift"), STAGE.drift));
-    timers.push(setTimeout(() => setPhase("letterForm"), STAGE.letterForm));
-    timers.push(setTimeout(() => setPhase("liquidHold"), STAGE.liquidHold));
-    timers.push(setTimeout(() => setPhase("chromeFlow"), STAGE.chromeFlow));
-    timers.push(setTimeout(() => setPhase("chromeHold"), STAGE.chromeHold));
+    timers.push(setTimeout(() => setPhase("orbit"), STAGE.orbit));
+    timers.push(setTimeout(() => setPhase("fusion"), STAGE.fusion));
+    timers.push(setTimeout(() => setPhase("morph"), STAGE.morph));
+    timers.push(setTimeout(() => setPhase("chrome"), STAGE.chrome));
+    timers.push(setTimeout(() => setPhase("hold"), STAGE.hold));
     timers.push(setTimeout(() => setPhase("dissolve"), STAGE.dissolve));
     timers.push(
       setTimeout(() => {
@@ -316,6 +287,44 @@ export default function LiquidLoader() {
     return () => timers.forEach(clearTimeout);
   }, [mounted, active, droplets.length]);
 
+  // Pre-compute orbit keyframes (one set per droplet) — keeps motion smooth
+  // and GPU-friendly via Framer's keyframe interpolation.
+  const orbitKeyframes = useMemo(() => {
+    const cx = viewport.w / 2;
+    const cy = viewport.h / 2;
+    const baseRadius = Math.min(viewport.w, viewport.h) * 0.42;
+    return droplets.map((d) => {
+      const xKeys: number[] = [];
+      const yKeys: number[] = [];
+      const startR = baseRadius * d.startRadiusFactor;
+      const endR = baseRadius * d.endRadiusFactor;
+      for (let k = 0; k <= ORBIT_KEYFRAMES; k++) {
+        const t = k / ORBIT_KEYFRAMES;
+        // ease-in spiral: radius shrinks slowly first, then faster
+        const radius = startR + (endR - startR) * (t * t * (3 - 2 * t));
+        const angle = d.startAngle + d.angularSpan * t;
+        xKeys.push(cx + radius * Math.cos(angle));
+        yKeys.push(cy + radius * Math.sin(angle));
+      }
+      return { x: xKeys, y: yKeys };
+    });
+  }, [droplets, viewport]);
+
+  // The "settled" position at end of orbit phase — start of fusion.
+  const settled = useMemo(() => {
+    const cx = viewport.w / 2;
+    const cy = viewport.h / 2;
+    const baseRadius = Math.min(viewport.w, viewport.h) * 0.42;
+    return droplets.map((d) => {
+      const finalAngle = d.startAngle + d.angularSpan;
+      const finalR = baseRadius * d.endRadiusFactor;
+      return {
+        x: cx + finalR * Math.cos(finalAngle),
+        y: cy + finalR * Math.sin(finalAngle),
+      };
+    });
+  }, [droplets, viewport]);
+
   if (!mounted) return null;
 
   const pct = (xp: number, yp: number) => ({
@@ -324,9 +333,7 @@ export default function LiquidLoader() {
   });
 
   const chromeOn =
-    phase === "chromeFlow" ||
-    phase === "chromeHold" ||
-    phase === "dissolve";
+    phase === "chrome" || phase === "hold" || phase === "dissolve";
 
   return (
     <AnimatePresence>
@@ -342,7 +349,7 @@ export default function LiquidLoader() {
           role="presentation"
         >
           <div className="absolute inset-0 bg-base">
-            {/* SVG defs */}
+            {/* SVG defs — goo filter + scan grid */}
             <svg
               className="absolute inset-0 w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
@@ -389,23 +396,27 @@ export default function LiquidLoader() {
               <rect width="100%" height="100%" fill="url(#loaderGrid)" />
             </svg>
 
-            {/* ambient silver glow */}
+            {/* Ambient silver glow — intensifies during fusion */}
             <motion.div
               className="absolute inset-0 pointer-events-none"
-              initial={{ opacity: 0.6 }}
+              initial={{ opacity: 0.45 }}
               animate={{
                 opacity:
-                  phase === "liquidHold" || phase === "chromeFlow" ? 1 : 0.6,
+                  phase === "fusion" || phase === "morph" || phase === "chrome"
+                    ? 1
+                    : phase === "orbit"
+                    ? 0.75
+                    : 0.5,
               }}
-              transition={{ duration: 1.6, ease: EASE }}
+              transition={{ duration: 1.4, ease: EASE }}
               style={{
                 background:
-                  "radial-gradient(circle at 50% 50%, rgba(229,229,229,0.12) 0%, rgba(229,229,229,0.04) 38%, transparent 72%)",
+                  "radial-gradient(circle at 50% 50%, rgba(229,229,229,0.14) 0%, rgba(229,229,229,0.05) 36%, transparent 72%)",
               }}
               aria-hidden
             />
 
-            {/* DROPLETS — goo-merged, GPU-transformed, per-letter staggered */}
+            {/* DROPLETS — goo-merged, GPU-transformed */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{ filter: "url(#liquidGoo)" }}
@@ -413,79 +424,89 @@ export default function LiquidLoader() {
             >
               {droplets.map((d) => {
                 const from = pct(d.fromXp, d.fromYp);
-                const drift = pct(d.driftXp, d.driftYp);
                 const target = pct(d.toXp, d.toYp);
+                const orbit = orbitKeyframes[d.id];
+                const settle = settled[d.id];
 
                 const blurForDepth = `${d.depth * 1.6}px`;
                 const opacityNear = 0.8 + (1 - d.depth) * 0.2;
 
-                // Chrome wavefront delay (per-droplet, by X position)
-                const chromeReachSec = (d.toXp / 100) * (T.chromeFlow / 1000);
-                // Per-letter formation delay
-                const letterDelaySec = (d.letterIndex * LETTER_STAGGER_MS) / 1000;
+                // Initial emerge position: slightly along the orbit ring
+                // so the transition into orbit is seamless.
+                const emergeX = orbit ? orbit.x[0] : from.x;
+                const emergeY = orbit ? orbit.y[0] : from.y;
+
+                // Chrome wavefront timing
+                const chromeReachSec = (d.toXp / 100) * (T.chrome / 1000);
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let animateProps: any = {};
-                let duration = T.emerge / 1000;
+                let duration = 0.4;
                 let delay = 0;
                 let times: number[] | undefined;
+                let ease: typeof EASE | "linear" = EASE;
 
-                if (phase === "silence") {
+                if (phase === "dark") {
                   animateProps = {
                     x: from.x,
                     y: from.y,
                     opacity: 0,
-                    scale: 0.5,
+                    scale: 0.4,
                   };
                   duration = 0.001;
                 } else if (phase === "emerge") {
                   animateProps = {
-                    x: from.x,
-                    y: from.y,
+                    x: emergeX,
+                    y: emergeY,
                     opacity: opacityNear,
                     scale: 1,
                   };
                   duration = T.emerge / 1000;
                   delay = d.emergeDelay / 1000;
-                } else if (phase === "drift") {
+                } else if (phase === "orbit") {
+                  // ★ Vortex motion — 110 droplets traverse pre-computed
+                  // spiral keyframe paths, all rotating into the centre.
                   animateProps = {
-                    x: drift.x,
-                    y: drift.y,
-                    opacity: opacityNear,
+                    x: orbit.x,
+                    y: orbit.y,
+                    opacity: 1,
                     scale: 1,
                   };
-                  duration = T.drift / 1000;
-                } else if (phase === "letterForm") {
-                  // ★ Each LETTER GROUP travels at its own start time.
-                  // Letter 0 (A) leaves first, letter 8 (O) last.
+                  duration = T.orbit / 1000;
+                  ease = "linear"; // linear between keyframes = smooth orbit
+                } else if (phase === "fusion") {
+                  // settled near the centre, micro-oscillation suggests liquid
+                  animateProps = {
+                    x: [settle.x, settle.x + d.oscX * 2, settle.x],
+                    y: [settle.y, settle.y + d.oscY * 2, settle.y],
+                    opacity: 1,
+                    scale: [1, 1.06, 1],
+                  };
+                  duration = T.fusion / 1000;
+                  times = [0, 0.5, 1];
+                } else if (phase === "morph") {
+                  // The liquid mass elongates outward — each droplet flies
+                  // to its target inside the AVENDANO text shape. Goo filter
+                  // melts adjacent droplets into letter strokes.
                   animateProps = {
                     x: target.x,
                     y: target.y,
                     opacity: 1,
                     scale: 1,
                   };
-                  duration = LETTER_TRAVEL_MS / 1000;
-                  delay = letterDelaySec;
-                } else if (phase === "liquidHold") {
-                  animateProps = {
-                    x: [target.x, target.x + d.oscX, target.x],
-                    y: [target.y, target.y + d.oscY, target.y],
-                    opacity: 1,
-                    scale: [1, 1.02, 1],
-                  };
-                  duration = T.liquidHold / 1000;
-                  times = [0, 0.5, 1];
-                } else if (phase === "chromeFlow") {
-                  // Exit timed to chrome wavefront
+                  duration = T.morph / 1000;
+                } else if (phase === "chrome") {
+                  // exit timed to chrome wavefront L→R
                   animateProps = {
                     x: target.x,
                     y: target.y,
                     opacity: 0,
                     scale: 0.88,
                   };
-                  duration = 0.35;
+                  duration = 0.4;
                   delay = chromeReachSec;
                 } else {
+                  // hold + dissolve — droplets already gone
                   animateProps = {
                     x: target.x,
                     y: target.y,
@@ -502,13 +523,13 @@ export default function LiquidLoader() {
                       x: from.x,
                       y: from.y,
                       opacity: 0,
-                      scale: 0.5,
+                      scale: 0.4,
                     }}
                     animate={animateProps}
                     transition={{
                       duration,
                       delay,
-                      ease: EASE,
+                      ease,
                       times,
                     }}
                     style={{
@@ -532,7 +553,7 @@ export default function LiquidLoader() {
               })}
             </div>
 
-            {/* CHROME TEXT — clip-path sweep L→R ACROSS the liquid letters */}
+            {/* CHROME TEXT — clip-path sweep L→R across the formed liquid */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative px-6">
                 <motion.h1
@@ -542,7 +563,7 @@ export default function LiquidLoader() {
                       ? { clipPath: "inset(0 0% 0 0)" }
                       : { clipPath: "inset(0 100% 0 0)" }
                   }
-                  transition={{ duration: T.chromeFlow / 1000, ease: EASE }}
+                  transition={{ duration: T.chrome / 1000, ease: EASE }}
                   className="relative font-serif text-[clamp(2.2rem,9.5vw,8rem)] leading-none tracking-[0.18em] m-0 select-none"
                   style={{
                     background:
@@ -554,13 +575,14 @@ export default function LiquidLoader() {
                   }}
                 >
                   {TEXT}
+                  {/* shimmer sweep during hold */}
                   <motion.span
                     aria-hidden
                     initial={{ x: "-140%" }}
                     animate={
-                      phase === "chromeHold" ? { x: "140%" } : { x: "-140%" }
+                      phase === "hold" ? { x: "140%" } : { x: "-140%" }
                     }
-                    transition={{ duration: T.chromeHold / 1000, ease: EASE }}
+                    transition={{ duration: T.hold / 1000, ease: EASE }}
                     className="absolute inset-0 pointer-events-none"
                     style={{
                       background:
@@ -572,20 +594,19 @@ export default function LiquidLoader() {
                   />
                 </motion.h1>
 
-                {/* hairline under text */}
                 <motion.div
                   initial={{ scaleX: 0, opacity: 0 }}
                   animate={{
                     scaleX: chromeOn ? 1 : 0,
                     opacity:
-                      phase === "chromeHold" || phase === "chromeFlow"
+                      phase === "hold" || phase === "chrome"
                         ? 1
                         : phase === "dissolve"
                         ? 0
                         : 0,
                   }}
                   transition={{
-                    duration: T.chromeFlow / 1000,
+                    duration: T.chrome / 1000,
                     ease: EASE,
                     delay: 0.1,
                   }}
@@ -599,8 +620,8 @@ export default function LiquidLoader() {
                 <motion.p
                   initial={{ opacity: 0, y: 6 }}
                   animate={{
-                    opacity: phase === "chromeHold" ? 0.8 : 0,
-                    y: phase === "chromeHold" ? 0 : 6,
+                    opacity: phase === "hold" ? 0.8 : 0,
+                    y: phase === "hold" ? 0 : 6,
                   }}
                   transition={{ duration: 0.9, ease: EASE }}
                   className="mt-4 text-center text-[10px] tracking-[0.46em] uppercase text-silver-bright"
@@ -624,8 +645,8 @@ export default function LiquidLoader() {
               animate={{
                 opacity:
                   phase === "emerge" ||
-                  phase === "drift" ||
-                  phase === "letterForm"
+                  phase === "orbit" ||
+                  phase === "fusion"
                     ? 0.55
                     : 0,
               }}
