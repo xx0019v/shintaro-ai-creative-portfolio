@@ -2,7 +2,8 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ArrowDown } from "lucide-react";
-import { easeLuxe } from "@/lib/motion";
+
+const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 import PortraitFrame from "@/components/ui/PortraitFrame";

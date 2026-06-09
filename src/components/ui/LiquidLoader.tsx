@@ -1,116 +1,117 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TEXT = "AVENDANYO";
-const EASE = [0.22, 1, 0.36, 1] as const;
+
+// Two carefully chosen curves used everywhere — one slow luxurious deceleration,
+// one symmetric ease-in-out for the final dissolve. Nothing else.
+const EASE = [0.19, 1, 0.22, 1] as const;
+const EASE_IO = [0.83, 0, 0.17, 1] as const;
 
 /**
- * Cinematic timeline (ms) — total ≈ 9.4s
+ * Cinematic timeline — designed as ONE sustained gesture, not stitched-together
+ * phases. Each transition overlaps so the eye never sees a snap.
  *
- *   appearance     : droplets fade in scattered across a deep black space
- *   floating       : droplets drift gently — depth illusion via blur+opacity
- *   attraction     : liquid is drawn toward the central letter band
- *   formation      : droplets snap onto coordinates sampled from the text
- *                    shape — the goo filter melts neighbours together, so
- *                    convergence ≡ the letter form itself
- *   formationHold  : the LIQUID LETTERS settle and "breathe" for a moment
- *                    (this is the iconic frame — liquid IS the typography)
- *   flash          : silver bloom flares over the merged liquid
- *   text           : chrome typography RESOLVES the liquid into crisp form
- *                    (droplets fade out as chrome fades in — a transition,
- *                    not a stack)
- *   hold           : metallic shimmer sweeps + sub-label settles
- *   spill          : droplets re-emerge and cascade downward toward Hero
- *   exit           : vertical clip-path wipe completes the handoff
+ *   silence        : pure black for a beat before anything emerges
+ *   emerge         : droplets ink in from depth, closest first
+ *   drift          : weightless floating — quiet "alive" tempo
+ *   migrate        : single coherent pull toward letter coordinates
+ *                    (per-droplet delay tightened so it reads as ONE motion)
+ *   settle         : final precise alignment onto the text shape
+ *   liquidHold     : ★ the iconic frame — letters are liquid, breathing
+ *   chromeFlow     : chrome polish SWEEPS left → right ACROSS the liquid,
+ *                    consuming droplets as it passes (each droplet's exit
+ *                    delay matches its X position so the dissolve tracks
+ *                    the chrome wavefront — not a global crossfade)
+ *   chromeHold     : metallic typography settles with a single shimmer pass
+ *   dissolve       : chrome and ambient lift away — gentle handoff to Hero
+ *
+ *   Total ≈ 9.3s
  */
 const T = {
-  appearance: 700,
-  floating: 1000,
-  attraction: 1100,
-  formation: 1200,
-  formationHold: 700,
-  flash: 280,
-  text: 900,
-  hold: 1600,
-  spill: 900,
-  exit: 1000,
+  silence: 300,
+  emerge: 900,
+  drift: 800,
+  migrate: 1800,
+  settle: 500,
+  liquidHold: 1300,
+  chromeFlow: 1400,
+  chromeHold: 1400,
+  dissolve: 900,
 } as const;
 
 const STAGE = {
-  appearance: 0,
-  floating: T.appearance,
-  attraction: T.appearance + T.floating,
-  formation: T.appearance + T.floating + T.attraction,
-  formationHold:
-    T.appearance + T.floating + T.attraction + T.formation,
-  flash:
-    T.appearance + T.floating + T.attraction + T.formation + T.formationHold,
-  text:
-    T.appearance + T.floating + T.attraction + T.formation + T.formationHold,
-  hold:
-    T.appearance +
-    T.floating +
-    T.attraction +
-    T.formation +
-    T.formationHold +
-    T.text,
-  spill:
-    T.appearance +
-    T.floating +
-    T.attraction +
-    T.formation +
-    T.formationHold +
-    T.text +
-    T.hold,
-  exit:
-    T.appearance +
-    T.floating +
-    T.attraction +
-    T.formation +
-    T.formationHold +
-    T.text +
-    T.hold +
-    T.spill,
+  silence: 0,
+  emerge: T.silence,
+  drift: T.silence + T.emerge,
+  migrate: T.silence + T.emerge + T.drift,
+  settle: T.silence + T.emerge + T.drift + T.migrate,
+  liquidHold: T.silence + T.emerge + T.drift + T.migrate + T.settle,
+  chromeFlow:
+    T.silence + T.emerge + T.drift + T.migrate + T.settle + T.liquidHold,
+  chromeHold:
+    T.silence +
+    T.emerge +
+    T.drift +
+    T.migrate +
+    T.settle +
+    T.liquidHold +
+    T.chromeFlow,
+  dissolve:
+    T.silence +
+    T.emerge +
+    T.drift +
+    T.migrate +
+    T.settle +
+    T.liquidHold +
+    T.chromeFlow +
+    T.chromeHold,
   end:
-    T.appearance +
-    T.floating +
-    T.attraction +
-    T.formation +
-    T.formationHold +
-    T.text +
-    T.hold +
-    T.spill +
-    T.exit,
+    T.silence +
+    T.emerge +
+    T.drift +
+    T.migrate +
+    T.settle +
+    T.liquidHold +
+    T.chromeFlow +
+    T.chromeHold +
+    T.dissolve,
 } as const;
 
-const DROPLET_COUNT = 120;
+// Fewer, larger, more deliberate. Each droplet is meant to be seen.
+const DROPLET_COUNT = 78;
+
+type Phase =
+  | "silence"
+  | "emerge"
+  | "drift"
+  | "migrate"
+  | "settle"
+  | "liquidHold"
+  | "chromeFlow"
+  | "chromeHold"
+  | "dissolve";
 
 interface Droplet {
   id: number;
-  // % of viewport — converted to pixels at runtime so we can use GPU transforms
+  // viewport % — converted to px at runtime for GPU transforms
   fromXp: number;
   fromYp: number;
   driftXp: number;
   driftYp: number;
-  midXp: number;
-  midYp: number;
   toXp: number;
   toYp: number;
-  spillYp: number;
   size: number;
-  depth: number;     // 0 close .. 1 deep — drives blur + opacity
-  travelDelay: number;
-  spillDelay: number;
-  oscX: number;      // micro-oscillation amplitude during formationHold
+  depth: number;       // 0 close .. 1 deep
+  emergeDelay: number; // close droplets first
+  migrateDelay: number;// tight spread so it reads as ONE gesture
+  oscX: number;
   oscY: number;
 }
 
-/**
- * Sample target positions from the rendered text shape via an offscreen
- * canvas. Returns coords normalized to 0..1.
- */
+/** Sample target positions from the rendered text shape. */
 function sampleTextShape(
   text: string,
   fontPx: number,
@@ -129,19 +130,15 @@ function sampleTextShape(
     ctx.fillStyle = "#fff";
     ctx.textBaseline = "middle";
     ctx.font = `bold ${fontPx}px ${fontFamily}`;
-
-    // shrink-to-fit
-    const m = ctx.measureText(text);
-    const tw = m.width;
+    const tw = ctx.measureText(text).width;
     const scale = Math.min(1, (W - 80) / tw);
     const finalPx = Math.floor(fontPx * scale);
     ctx.font = `bold ${finalPx}px ${fontFamily}`;
-    const m2 = ctx.measureText(text);
-    ctx.fillText(text, (W - m2.width) / 2, H / 2);
+    const w2 = ctx.measureText(text).width;
+    ctx.fillText(text, (W - w2) / 2, H / 2);
 
     const data = ctx.getImageData(0, 0, W, H).data;
     const opaque: { x: number; y: number }[] = [];
-    // denser sampling for crisper letter forms
     const step = 4;
     for (let y = 0; y < H; y += step) {
       for (let x = 0; x < W; x += step) {
@@ -152,8 +149,6 @@ function sampleTextShape(
       }
     }
     if (opaque.length < 24) return null;
-
-    // even-stride sampling so letters get proportional droplet density
     const out: { x: number; y: number }[] = [];
     const stride = Math.max(1, Math.floor(opaque.length / sampleCount));
     for (let i = 0; i < sampleCount; i++) {
@@ -176,35 +171,28 @@ function makeDroplets(
   };
   const out: Droplet[] = [];
   for (let i = 0; i < count; i++) {
-    // Default target spreads across a central horizontal band — used only
-    // when the canvas API isn't available (very rare fallback).
     let toXp = 50 + (rand() - 0.5) * 60;
     let toYp = 48 + (rand() - 0.5) * 6;
     if (shape && shape.length) {
       const pt = shape[i % shape.length];
-      // Map sampled shape (0..1, 0..1) onto a centred letter band:
-      //   horizontally pad 12% L/R, vertically 38..62%
       toXp = 12 + pt.x * 76;
       toYp = 39 + pt.y * 22;
     }
     const fromXp = rand() * 100;
     const fromYp = rand() * 100;
+    const depth = rand();
     out.push({
       id: i,
       fromXp,
       fromYp,
-      driftXp: fromXp + (rand() - 0.5) * 14,
-      driftYp: fromYp + (rand() - 0.5) * 14,
-      midXp: (fromXp + toXp) / 2 + (rand() - 0.5) * 18,
-      midYp: (fromYp + toYp) / 2 + (rand() - 0.5) * 18,
+      driftXp: fromXp + (rand() - 0.5) * 8,  // gentler drift
+      driftYp: fromYp + (rand() - 0.5) * 8,
       toXp,
       toYp,
-      spillYp: toYp + 45 + rand() * 35,
-      // Smaller droplets — crisper letter formation
-      size: 14 + rand() * 18, // 14..32 px
-      depth: rand(),
-      travelDelay: rand() * 750,
-      spillDelay: rand() * 380,
+      size: 22 + rand() * 18,                // 22..40 px — bigger, more deliberate
+      depth,
+      emergeDelay: depth * 350,              // close droplets first
+      migrateDelay: rand() * 280,            // ★ tightened from 750 to 280 → ONE gesture
       oscX: (rand() - 0.5) * 1.2,
       oscY: (rand() - 0.5) * 1.2,
     });
@@ -212,28 +200,16 @@ function makeDroplets(
   return out;
 }
 
-type Phase =
-  | "appearance"
-  | "floating"
-  | "attraction"
-  | "formation"
-  | "formationHold"
-  | "text"
-  | "hold"
-  | "spill"
-  | "exit";
-
 export default function LiquidLoader() {
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(true);
-  const [phase, setPhase] = useState<Phase>("appearance");
-  const [flash, setFlash] = useState(false);
+  const [phase, setPhase] = useState<Phase>("silence");
   const [droplets, setDroplets] = useState<Droplet[]>([]);
   const [viewport, setViewport] = useState({ w: 1280, h: 800 });
   const startedRef = useRef(false);
 
-  // Sample text shape on mount + build droplets
+  // Mount: sample shape + build droplets
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -252,7 +228,7 @@ export default function LiquidLoader() {
     setDroplets(makeDroplets(DROPLET_COUNT, shape));
   }, [reduced]);
 
-  // Lock scroll + force scroll to top while loader visible
+  // Lock scroll + manual scroll restoration
   useEffect(() => {
     if (!mounted || !active) return;
     const prev = document.body.style.overflow;
@@ -269,42 +245,40 @@ export default function LiquidLoader() {
     };
   }, [active, mounted]);
 
-  // Drive the phase timeline
+  // Phase timeline
   useEffect(() => {
     if (!mounted || !active || startedRef.current || droplets.length === 0)
       return;
     startedRef.current = true;
-
     const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setPhase("floating"), STAGE.floating));
-    timers.push(setTimeout(() => setPhase("attraction"), STAGE.attraction));
-    timers.push(setTimeout(() => setPhase("formation"), STAGE.formation));
-    timers.push(
-      setTimeout(() => setPhase("formationHold"), STAGE.formationHold)
-    );
-    timers.push(setTimeout(() => setFlash(true), STAGE.flash));
-    timers.push(setTimeout(() => setFlash(false), STAGE.flash + T.flash));
-    timers.push(setTimeout(() => setPhase("text"), STAGE.text));
-    timers.push(setTimeout(() => setPhase("hold"), STAGE.hold));
-    timers.push(setTimeout(() => setPhase("spill"), STAGE.spill));
-    timers.push(setTimeout(() => setPhase("exit"), STAGE.exit));
+    timers.push(setTimeout(() => setPhase("emerge"), STAGE.emerge));
+    timers.push(setTimeout(() => setPhase("drift"), STAGE.drift));
+    timers.push(setTimeout(() => setPhase("migrate"), STAGE.migrate));
+    timers.push(setTimeout(() => setPhase("settle"), STAGE.settle));
+    timers.push(setTimeout(() => setPhase("liquidHold"), STAGE.liquidHold));
+    timers.push(setTimeout(() => setPhase("chromeFlow"), STAGE.chromeFlow));
+    timers.push(setTimeout(() => setPhase("chromeHold"), STAGE.chromeHold));
+    timers.push(setTimeout(() => setPhase("dissolve"), STAGE.dissolve));
     timers.push(
       setTimeout(() => {
         setActive(false);
         if (typeof window !== "undefined") window.scrollTo(0, 0);
       }, STAGE.end)
     );
-
     return () => timers.forEach(clearTimeout);
   }, [mounted, active, droplets.length]);
 
   if (!mounted) return null;
 
-  // Convert % to px for GPU-friendly transforms
   const pct = (xp: number, yp: number) => ({
     x: (xp / 100) * viewport.w,
     y: (yp / 100) * viewport.h,
   });
+
+  const chromeOn =
+    phase === "chromeFlow" ||
+    phase === "chromeHold" ||
+    phase === "dissolve";
 
   return (
     <AnimatePresence>
@@ -312,25 +286,18 @@ export default function LiquidLoader() {
         <motion.div
           key="liquid-loader"
           initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: phase === "dissolve" ? 0 : 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: T.exit / 1000, ease: EASE }}
+          transition={{
+            duration: T.dissolve / 1000,
+            ease: EASE_IO,
+          }}
           className="fixed inset-0 z-[100] pointer-events-auto overflow-hidden"
           aria-hidden
           role="presentation"
         >
-          {/* CINEMATIC BACKDROP with vertical wipe on exit */}
-          <motion.div
-            initial={{ clipPath: "inset(0% 0% 0% 0%)" }}
-            animate={
-              phase === "exit"
-                ? { clipPath: "inset(50% 0% 50% 0%)" }
-                : { clipPath: "inset(0% 0% 0% 0%)" }
-            }
-            transition={{ duration: T.exit / 1000, ease: [0.76, 0, 0.24, 1] }}
-            className="absolute inset-0 bg-base"
-          >
-            {/* SVG defs — goo filter + grid */}
+          <div className="absolute inset-0 bg-base">
+            {/* SVG defs */}
             <svg
               className="absolute inset-0 w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
@@ -360,35 +327,40 @@ export default function LiquidLoader() {
                 </filter>
               </defs>
 
-              {/* faint scan grid for depth */}
               <pattern
                 id="loaderGrid"
-                width="80"
-                height="80"
+                width="96"
+                height="96"
                 patternUnits="userSpaceOnUse"
               >
                 <path
-                  d="M 80 0 L 0 0 0 80"
+                  d="M 96 0 L 0 0 0 96"
                   fill="none"
                   stroke="#E5E5E5"
-                  strokeOpacity="0.05"
+                  strokeOpacity="0.045"
                   strokeWidth="0.5"
                 />
               </pattern>
               <rect width="100%" height="100%" fill="url(#loaderGrid)" />
             </svg>
 
-            {/* ambient silver radial glow */}
-            <div
+            {/* ambient silver glow — breathes during liquidHold */}
+            <motion.div
               className="absolute inset-0 pointer-events-none"
+              initial={{ opacity: 0.6 }}
+              animate={{
+                opacity:
+                  phase === "liquidHold" || phase === "chromeFlow" ? 1 : 0.6,
+              }}
+              transition={{ duration: 1.6, ease: EASE }}
               style={{
                 background:
-                  "radial-gradient(circle at 50% 50%, rgba(229,229,229,0.10) 0%, rgba(229,229,229,0.04) 35%, transparent 70%)",
+                  "radial-gradient(circle at 50% 50%, rgba(229,229,229,0.12) 0%, rgba(229,229,229,0.04) 38%, transparent 72%)",
               }}
               aria-hidden
             />
 
-            {/* DROPLETS — wrapped in goo container; GPU-accelerated transforms */}
+            {/* DROPLETS — goo-merged, GPU-transformed */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{ filter: "url(#liquidGoo)" }}
@@ -397,79 +369,92 @@ export default function LiquidLoader() {
               {droplets.map((d) => {
                 const from = pct(d.fromXp, d.fromYp);
                 const drift = pct(d.driftXp, d.driftYp);
-                const mid = pct(d.midXp, d.midYp);
                 const target = pct(d.toXp, d.toYp);
-                const spill = pct(d.toXp, d.spillYp);
 
-                // depth illusion
-                const blurForDepth = `${d.depth * 1.4}px`;
-                const opacityNear = 0.78 + (1 - d.depth) * 0.22;
+                const blurForDepth = `${d.depth * 1.6}px`;
+                const opacityNear = 0.8 + (1 - d.depth) * 0.2;
 
-                const animateProps =
-                  phase === "appearance"
-                    ? { x: from.x, y: from.y, opacity: opacityNear, scale: 1 }
-                    : phase === "floating"
-                    ? { x: drift.x, y: drift.y, opacity: opacityNear, scale: 1 }
-                    : phase === "attraction"
-                    ? {
-                        x: [drift.x, mid.x, target.x],
-                        y: [drift.y, mid.y, target.y],
-                        opacity: 1,
-                        scale: [1, 1.06, 1],
-                      }
-                    : phase === "formation"
-                    ? {
-                        x: target.x,
-                        y: target.y,
-                        opacity: 1,
-                        scale: 1,
-                      }
-                    : phase === "formationHold"
-                    ? {
-                        // micro-oscillation so the liquid letters "breathe"
-                        x: [target.x, target.x + d.oscX, target.x],
-                        y: [target.y, target.y + d.oscY, target.y],
-                        opacity: 1,
-                        scale: [1, 1.02, 1],
-                      }
-                    : phase === "text"
-                    ? {
-                        // droplets fade out as chrome takes over (transformation, not stack)
-                        x: target.x,
-                        y: target.y,
-                        opacity: 0,
-                        scale: 0.9,
-                      }
-                    : phase === "hold"
-                    ? { x: target.x, y: target.y, opacity: 0, scale: 0.9 }
-                    : phase === "spill"
-                    ? {
-                        // re-emerge briefly and cascade down toward Hero
-                        x: spill.x,
-                        y: spill.y,
-                        opacity: [0, 0.7, 0],
-                        scale: [0.8, 1, 0.7],
-                      }
-                    : { opacity: 0, scale: 0.85 };
+                // Droplet exit during chromeFlow tracks the chrome wavefront L→R
+                // chrome reaches X at time = (d.toXp / 100) * T.chromeFlow
+                const chromeReachSec = (d.toXp / 100) * (T.chromeFlow / 1000);
 
-                const duration =
-                  phase === "appearance"
-                    ? T.appearance / 1000
-                    : phase === "floating"
-                    ? T.floating / 1000
-                    : phase === "attraction"
-                    ? T.attraction / 1000
-                    : phase === "formation"
-                    ? T.formation / 1000
-                    : phase === "formationHold"
-                    ? T.formationHold / 1000
-                    : phase === "text"
-                    ? T.text / 1000
-                    : phase === "hold"
-                    ? T.hold / 1000
-                    : phase === "spill"
-                    ? T.spill / 1000
-                    : T.exit / 1000;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                let animateProps: any = {};
+                let duration = T.emerge / 1000;
+                let delay = 0;
+                let times: number[] | undefined;
+
+                if (phase === "silence") {
+                  animateProps = {
+                    x: from.x,
+                    y: from.y,
+                    opacity: 0,
+                    scale: 0.5,
+                  };
+                  duration = 0.001;
+                } else if (phase === "emerge") {
+                  animateProps = {
+                    x: from.x,
+                    y: from.y,
+                    opacity: opacityNear,
+                    scale: 1,
+                  };
+                  duration = T.emerge / 1000;
+                  delay = d.emergeDelay / 1000;
+                } else if (phase === "drift") {
+                  animateProps = {
+                    x: drift.x,
+                    y: drift.y,
+                    opacity: opacityNear,
+                    scale: 1,
+                  };
+                  duration = T.drift / 1000;
+                } else if (phase === "migrate") {
+                  animateProps = {
+                    x: target.x,
+                    y: target.y,
+                    opacity: 1,
+                    scale: 1,
+                  };
+                  duration = T.migrate / 1000;
+                  delay = d.migrateDelay / 1000;
+                } else if (phase === "settle") {
+                  animateProps = {
+                    x: target.x,
+                    y: target.y,
+                    opacity: 1,
+                    scale: 1,
+                  };
+                  duration = T.settle / 1000;
+                } else if (phase === "liquidHold") {
+                  animateProps = {
+                    x: [target.x, target.x + d.oscX, target.x],
+                    y: [target.y, target.y + d.oscY, target.y],
+                    opacity: 1,
+                    scale: [1, 1.02, 1],
+                  };
+                  duration = T.liquidHold / 1000;
+                  times = [0, 0.5, 1];
+                } else if (phase === "chromeFlow") {
+                  // exit timed to chrome wavefront
+                  animateProps = {
+                    x: target.x,
+                    y: target.y,
+                    opacity: 0,
+                    scale: 0.88,
+                  };
+                  duration = 0.35;
+                  delay = chromeReachSec;
+                } else {
+                  // chromeHold + dissolve — droplets already gone
+                  animateProps = {
+                    x: target.x,
+                    y: target.y,
+                    opacity: 0,
+                    scale: 0.85,
+                  };
+                  duration = 0.4;
+                }
 
                 return (
                   <motion.span
@@ -483,19 +468,9 @@ export default function LiquidLoader() {
                     animate={animateProps}
                     transition={{
                       duration,
-                      delay:
-                        phase === "attraction"
-                          ? d.travelDelay / 1000
-                          : phase === "spill"
-                          ? d.spillDelay / 1000
-                          : 0,
+                      delay,
                       ease: EASE,
-                      times:
-                        phase === "attraction" || phase === "formationHold"
-                          ? [0, 0.5, 1]
-                          : phase === "spill"
-                          ? [0, 0.45, 1]
-                          : undefined,
+                      times,
                     }}
                     style={{
                       position: "absolute",
@@ -518,45 +493,20 @@ export default function LiquidLoader() {
               })}
             </div>
 
-            {/* MERGE FLASH — silver bloom births the chrome text */}
-            <AnimatePresence>
-              {flash && (
-                <motion.div
-                  key="flash"
-                  initial={{ opacity: 0, scale: 0.4 }}
-                  animate={{ opacity: 0.9, scale: 1.45 }}
-                  exit={{ opacity: 0, scale: 1.95 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                  className="absolute inset-0 pointer-events-none flex items-center justify-center"
-                  aria-hidden
-                >
-                  <div
-                    className="h-[58vh] w-[82vw] max-w-[1200px]"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse at center, rgba(255,255,255,0.65) 0%, rgba(229,229,229,0.3) 22%, rgba(192,192,192,0.1) 48%, transparent 70%)",
-                      filter: "blur(8px)",
-                    }}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* CHROME TEXT — resolves the liquid into crisp form */}
+            {/* CHROME TEXT — clip-path sweep L→R ACROSS the liquid letters */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{
-                  opacity:
-                    phase === "text" || phase === "hold" || phase === "spill"
-                      ? 1
-                      : 0,
-                  scale: phase === "exit" || phase === "spill" ? 1.04 : 1,
-                }}
-                transition={{ duration: T.text / 1000, ease: EASE }}
-                className="relative px-6"
-              >
-                <h1
+              <div className="relative px-6">
+                <motion.h1
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={
+                    chromeOn
+                      ? { clipPath: "inset(0 0% 0 0)" }
+                      : { clipPath: "inset(0 100% 0 0)" }
+                  }
+                  transition={{
+                    duration: T.chromeFlow / 1000,
+                    ease: EASE,
+                  }}
                   className="relative font-serif text-[clamp(2.2rem,9.5vw,8rem)] leading-none tracking-[0.18em] m-0 select-none"
                   style={{
                     background:
@@ -568,14 +518,17 @@ export default function LiquidLoader() {
                   }}
                 >
                   {TEXT}
-                  {/* shimmer sweep during hold */}
+                  {/* shimmer sweep during chromeHold */}
                   <motion.span
                     aria-hidden
                     initial={{ x: "-140%" }}
                     animate={
-                      phase === "hold" ? { x: "140%" } : { x: "-140%" }
+                      phase === "chromeHold" ? { x: "140%" } : { x: "-140%" }
                     }
-                    transition={{ duration: T.hold / 1000, ease: EASE }}
+                    transition={{
+                      duration: T.chromeHold / 1000,
+                      ease: EASE,
+                    }}
                     className="absolute inset-0 pointer-events-none"
                     style={{
                       background:
@@ -585,47 +538,48 @@ export default function LiquidLoader() {
                       mixBlendMode: "screen",
                     }}
                   />
-                </h1>
+                </motion.h1>
 
-                {/* hairline */}
+                {/* hairline under text — slides in with chrome */}
                 <motion.div
                   initial={{ scaleX: 0, opacity: 0 }}
                   animate={{
-                    scaleX:
-                      phase === "text" || phase === "hold" || phase === "spill"
-                        ? 1
-                        : 0,
+                    scaleX: chromeOn ? 1 : 0,
                     opacity:
-                      phase === "text" || phase === "hold" ? 1 : 0,
+                      phase === "chromeHold" || phase === "chromeFlow"
+                        ? 1
+                        : phase === "dissolve"
+                        ? 0
+                        : 0,
                   }}
                   transition={{
-                    duration: 0.95,
+                    duration: T.chromeFlow / 1000,
                     ease: EASE,
-                    delay: 0.15,
+                    delay: 0.1,
                   }}
-                  className="origin-center mt-5 h-px mx-auto"
+                  className="origin-left mt-5 h-px"
                   style={{
-                    width: "65%",
                     background:
                       "linear-gradient(90deg, transparent 0%, rgba(229,229,229,0.85) 50%, transparent 100%)",
                   }}
                 />
 
+                {/* sub-label */}
                 <motion.p
                   initial={{ opacity: 0, y: 6 }}
                   animate={{
-                    opacity: phase === "hold" ? 0.8 : 0,
-                    y: phase === "hold" ? 0 : 6,
+                    opacity: phase === "chromeHold" ? 0.8 : 0,
+                    y: phase === "chromeHold" ? 0 : 6,
                   }}
-                  transition={{ duration: 0.6, ease: EASE }}
+                  transition={{ duration: 0.9, ease: EASE }}
                   className="mt-4 text-center text-[10px] tracking-[0.46em] uppercase text-silver-bright"
                 >
                   AI Creative Developer
                 </motion.p>
-              </motion.div>
+              </div>
             </div>
 
-            {/* futuristic corner ticks */}
+            {/* corner ticks */}
             <div className="absolute inset-6 pointer-events-none" aria-hidden>
               <CornerTick className="top-0 left-0" />
               <CornerTick className="top-0 right-0" flipX />
@@ -633,18 +587,18 @@ export default function LiquidLoader() {
               <CornerTick className="bottom-0 right-0" flipX flipY />
             </div>
 
-            {/* bottom kicker — visible only during early phases */}
+            {/* bottom kicker */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{
                 opacity:
-                  phase === "appearance" ||
-                  phase === "floating" ||
-                  phase === "attraction"
+                  phase === "emerge" ||
+                  phase === "drift" ||
+                  phase === "migrate"
                     ? 0.55
                     : 0,
               }}
-              transition={{ duration: 0.6, ease: EASE }}
+              transition={{ duration: 0.9, ease: EASE }}
               className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-3 text-[10px] tracking-[0.4em] uppercase text-silver-muted"
               aria-hidden
             >
@@ -652,7 +606,7 @@ export default function LiquidLoader() {
               <span>Portfolio · Volume 02</span>
               <span className="h-px w-8 bg-silver/40" />
             </motion.div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

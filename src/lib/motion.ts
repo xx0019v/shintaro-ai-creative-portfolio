@@ -1,4 +1,5 @@
-export const easeLuxe = [0.22, 1, 0.36, 1] as const;
+// Single luxurious deceleration curve used everywhere — slow, no bounce.
+export const easeLuxe = [0.19, 1, 0.22, 1] as const;
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 24 },
