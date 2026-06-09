@@ -11,32 +11,29 @@ const EASE = [0.19, 1, 0.22, 1] as const;
 const EASE_IO = [0.83, 0, 0.17, 1] as const;
 
 /**
- * Cinematic timeline — designed as ONE sustained gesture, not stitched-together
- * phases. Each transition overlaps so the eye never sees a snap.
+ * Cinematic timeline — ~9.6s.
  *
  *   silence        : pure black for a beat before anything emerges
  *   emerge         : droplets ink in from depth, closest first
  *   drift          : weightless floating — quiet "alive" tempo
- *   migrate        : single coherent pull toward letter coordinates
- *                    (per-droplet delay tightened so it reads as ONE motion)
- *   settle         : final precise alignment onto the text shape
- *   liquidHold     : ★ the iconic frame — letters are liquid, breathing
+ *   letterForm     : ★ THE NEW MOMENT — droplets travel to their assigned
+ *                    letter's coords, but each LETTER GROUP starts on a
+ *                    stagger. The eye reads A forming, then V, then E,
+ *                    then N, D, A, N, Y, O — calligraphy in liquid metal.
+ *                    Goo filter melts each letter group into a coherent
+ *                    liquid letterform as droplets arrive.
+ *   liquidHold     : the iconic frame — finished liquid AVENDANYO breathes
  *   chromeFlow     : chrome polish SWEEPS left → right ACROSS the liquid,
- *                    consuming droplets as it passes (each droplet's exit
- *                    delay matches its X position so the dissolve tracks
- *                    the chrome wavefront — not a global crossfade)
+ *                    consuming droplets as it passes
  *   chromeHold     : metallic typography settles with a single shimmer pass
  *   dissolve       : chrome and ambient lift away — gentle handoff to Hero
- *
- *   Total ≈ 9.3s
  */
 const T = {
   silence: 300,
-  emerge: 900,
-  drift: 800,
-  migrate: 1800,
-  settle: 500,
-  liquidHold: 1300,
+  emerge: 800,
+  drift: 700,
+  letterForm: 3200,
+  liquidHold: 900,
   chromeFlow: 1400,
   chromeHold: 1400,
   dissolve: 900,
@@ -46,25 +43,22 @@ const STAGE = {
   silence: 0,
   emerge: T.silence,
   drift: T.silence + T.emerge,
-  migrate: T.silence + T.emerge + T.drift,
-  settle: T.silence + T.emerge + T.drift + T.migrate,
-  liquidHold: T.silence + T.emerge + T.drift + T.migrate + T.settle,
+  letterForm: T.silence + T.emerge + T.drift,
+  liquidHold: T.silence + T.emerge + T.drift + T.letterForm,
   chromeFlow:
-    T.silence + T.emerge + T.drift + T.migrate + T.settle + T.liquidHold,
+    T.silence + T.emerge + T.drift + T.letterForm + T.liquidHold,
   chromeHold:
     T.silence +
     T.emerge +
     T.drift +
-    T.migrate +
-    T.settle +
+    T.letterForm +
     T.liquidHold +
     T.chromeFlow,
   dissolve:
     T.silence +
     T.emerge +
     T.drift +
-    T.migrate +
-    T.settle +
+    T.letterForm +
     T.liquidHold +
     T.chromeFlow +
     T.chromeHold,
@@ -72,23 +66,25 @@ const STAGE = {
     T.silence +
     T.emerge +
     T.drift +
-    T.migrate +
-    T.settle +
+    T.letterForm +
     T.liquidHold +
     T.chromeFlow +
     T.chromeHold +
     T.dissolve,
 } as const;
 
-// Fewer, larger, more deliberate. Each droplet is meant to be seen.
-const DROPLET_COUNT = 78;
+const DROPLETS_PER_LETTER = 11; // AVENDANYO = 9 letters → ~99 droplets
+
+// Per-letter start stagger so the formation reads as A → V → E → … → O
+// 9 letters × 280ms = 2520ms stagger window. Each letter travels ~700ms.
+const LETTER_STAGGER_MS = 280;
+const LETTER_TRAVEL_MS = 700;
 
 type Phase =
   | "silence"
   | "emerge"
   | "drift"
-  | "migrate"
-  | "settle"
+  | "letterForm"
   | "liquidHold"
   | "chromeFlow"
   | "chromeHold"
@@ -96,6 +92,7 @@ type Phase =
 
 interface Droplet {
   id: number;
+  letterIndex: number;
   // viewport % — converted to px at runtime for GPU transforms
   fromXp: number;
   fromYp: number;
@@ -104,98 +101,150 @@ interface Droplet {
   toXp: number;
   toYp: number;
   size: number;
-  depth: number;       // 0 close .. 1 deep
-  emergeDelay: number; // close droplets first
-  migrateDelay: number;// tight spread so it reads as ONE gesture
+  depth: number;
+  emergeDelay: number;
   oscX: number;
   oscY: number;
 }
 
-/** Sample target positions from the rendered text shape. */
-function sampleTextShape(
+/**
+ * Sample each letter individually so we can group droplets per letter and
+ * stagger their formation. Returns one entry per letter with its sample
+ * points (normalized to the whole-word bounding box).
+ */
+function sampleLetters(
   text: string,
   fontPx: number,
   fontFamily: string,
-  sampleCount: number
-): { x: number; y: number }[] | null {
+  samplesPerLetter: number
+): { letterIndex: number; samples: { x: number; y: number }[] }[] | null {
   if (typeof document === "undefined") return null;
   try {
-    const W = 1600;
+    const W = 1800;
     const H = 360;
     const c = document.createElement("canvas");
     c.width = W;
     c.height = H;
     const ctx = c.getContext("2d");
     if (!ctx) return null;
-    ctx.fillStyle = "#fff";
-    ctx.textBaseline = "middle";
+
+    // shrink-to-fit
     ctx.font = `bold ${fontPx}px ${fontFamily}`;
     const tw = ctx.measureText(text).width;
-    const scale = Math.min(1, (W - 80) / tw);
+    const scale = Math.min(1, (W - 120) / tw);
     const finalPx = Math.floor(fontPx * scale);
     ctx.font = `bold ${finalPx}px ${fontFamily}`;
-    const w2 = ctx.measureText(text).width;
-    ctx.fillText(text, (W - w2) / 2, H / 2);
+    const finalTw = ctx.measureText(text).width;
+    const startX = (W - finalTw) / 2;
+    const midY = H / 2;
 
-    const data = ctx.getImageData(0, 0, W, H).data;
-    const opaque: { x: number; y: number }[] = [];
-    const step = 4;
-    for (let y = 0; y < H; y += step) {
-      for (let x = 0; x < W; x += step) {
-        const i = (y * W + x) * 4;
-        if (data[i + 3] > 120) {
-          opaque.push({ x: x / W, y: y / H });
+    ctx.fillStyle = "#fff";
+    ctx.textBaseline = "middle";
+
+    const groups: { letterIndex: number; samples: { x: number; y: number }[] }[] = [];
+    let cursorX = startX;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const chW = ctx.measureText(ch).width;
+
+      // Render ONLY this letter on a fresh canvas frame
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillText(ch, cursorX, midY);
+
+      // Sample opaque pixels — only within letter's local bbox for speed
+      const data = ctx.getImageData(0, 0, W, H).data;
+      const opaque: { x: number; y: number }[] = [];
+      const step = 4;
+      const x0 = Math.max(0, Math.floor(cursorX) - 8);
+      const x1 = Math.min(W, Math.ceil(cursorX + chW) + 8);
+      for (let y = 0; y < H; y += step) {
+        for (let x = x0; x < x1; x += step) {
+          const idx = (y * W + x) * 4;
+          if (data[idx + 3] > 120) {
+            opaque.push({ x: x / W, y: y / H });
+          }
         }
       }
+
+      if (opaque.length >= 6) {
+        // Even-stride sampling so the droplets distribute across the letter
+        const samples: { x: number; y: number }[] = [];
+        const stride = Math.max(1, Math.floor(opaque.length / samplesPerLetter));
+        for (let s = 0; s < samplesPerLetter; s++) {
+          samples.push(opaque[(s * stride) % opaque.length]);
+        }
+        groups.push({ letterIndex: i, samples });
+      }
+
+      cursorX += chW;
     }
-    if (opaque.length < 24) return null;
-    const out: { x: number; y: number }[] = [];
-    const stride = Math.max(1, Math.floor(opaque.length / sampleCount));
-    for (let i = 0; i < sampleCount; i++) {
-      out.push(opaque[(i * stride) % opaque.length]);
-    }
-    return out;
+
+    return groups.length ? groups : null;
   } catch {
     return null;
   }
 }
 
 function makeDroplets(
-  count: number,
-  shape: { x: number; y: number }[] | null
+  letterGroups: { letterIndex: number; samples: { x: number; y: number }[] }[] | null
 ): Droplet[] {
   let s = 17;
   const rand = () => {
     s = (s * 9301 + 49297) % 233280;
     return s / 233280;
   };
+
   const out: Droplet[] = [];
-  for (let i = 0; i < count; i++) {
-    let toXp = 50 + (rand() - 0.5) * 60;
-    let toYp = 48 + (rand() - 0.5) * 6;
-    if (shape && shape.length) {
-      const pt = shape[i % shape.length];
-      toXp = 12 + pt.x * 76;
-      toYp = 39 + pt.y * 22;
+  let id = 0;
+
+  if (letterGroups && letterGroups.length) {
+    for (const group of letterGroups) {
+      for (const pt of group.samples) {
+        // Map sampled coord (0..1, 0..1) onto a centred letter band
+        const toXp = 8 + pt.x * 84;
+        const toYp = 39 + pt.y * 22;
+        const fromXp = rand() * 100;
+        const fromYp = rand() * 100;
+        const depth = rand();
+        out.push({
+          id: id++,
+          letterIndex: group.letterIndex,
+          fromXp,
+          fromYp,
+          driftXp: fromXp + (rand() - 0.5) * 8,
+          driftYp: fromYp + (rand() - 0.5) * 8,
+          toXp,
+          toYp,
+          size: 20 + rand() * 18, // 20..38 px
+          depth,
+          emergeDelay: depth * 350,
+          oscX: (rand() - 0.5) * 1.2,
+          oscY: (rand() - 0.5) * 1.2,
+        });
+      }
     }
-    const fromXp = rand() * 100;
-    const fromYp = rand() * 100;
-    const depth = rand();
-    out.push({
-      id: i,
-      fromXp,
-      fromYp,
-      driftXp: fromXp + (rand() - 0.5) * 8,  // gentler drift
-      driftYp: fromYp + (rand() - 0.5) * 8,
-      toXp,
-      toYp,
-      size: 22 + rand() * 18,                // 22..40 px — bigger, more deliberate
-      depth,
-      emergeDelay: depth * 350,              // close droplets first
-      migrateDelay: rand() * 280,            // ★ tightened from 750 to 280 → ONE gesture
-      oscX: (rand() - 0.5) * 1.2,
-      oscY: (rand() - 0.5) * 1.2,
-    });
+  } else {
+    // Fallback: scattered band (canvas API unavailable)
+    for (let i = 0; i < DROPLETS_PER_LETTER * TEXT.length; i++) {
+      const fromXp = rand() * 100;
+      const fromYp = rand() * 100;
+      out.push({
+        id: id++,
+        letterIndex: Math.floor((i / (DROPLETS_PER_LETTER * TEXT.length)) * TEXT.length),
+        fromXp,
+        fromYp,
+        driftXp: fromXp + (rand() - 0.5) * 8,
+        driftYp: fromYp + (rand() - 0.5) * 8,
+        toXp: 12 + (i / (DROPLETS_PER_LETTER * TEXT.length)) * 76,
+        toYp: 50 + (rand() - 0.5) * 4,
+        size: 22 + rand() * 18,
+        depth: rand(),
+        emergeDelay: rand() * 350,
+        oscX: 0,
+        oscY: 0,
+      });
+    }
   }
   return out;
 }
@@ -209,7 +258,7 @@ export default function LiquidLoader() {
   const [viewport, setViewport] = useState({ w: 1280, h: 800 });
   const startedRef = useRef(false);
 
-  // Mount: sample shape + build droplets
+  // Mount: sample each letter + build droplets
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -219,13 +268,13 @@ export default function LiquidLoader() {
       setActive(false);
       return;
     }
-    const shape = sampleTextShape(
+    const letterGroups = sampleLetters(
       TEXT,
       280,
       "'Playfair Display','DM Serif Display',serif",
-      DROPLET_COUNT
+      DROPLETS_PER_LETTER
     );
-    setDroplets(makeDroplets(DROPLET_COUNT, shape));
+    setDroplets(makeDroplets(letterGroups));
   }, [reduced]);
 
   // Lock scroll + manual scroll restoration
@@ -253,8 +302,7 @@ export default function LiquidLoader() {
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(setTimeout(() => setPhase("emerge"), STAGE.emerge));
     timers.push(setTimeout(() => setPhase("drift"), STAGE.drift));
-    timers.push(setTimeout(() => setPhase("migrate"), STAGE.migrate));
-    timers.push(setTimeout(() => setPhase("settle"), STAGE.settle));
+    timers.push(setTimeout(() => setPhase("letterForm"), STAGE.letterForm));
     timers.push(setTimeout(() => setPhase("liquidHold"), STAGE.liquidHold));
     timers.push(setTimeout(() => setPhase("chromeFlow"), STAGE.chromeFlow));
     timers.push(setTimeout(() => setPhase("chromeHold"), STAGE.chromeHold));
@@ -288,10 +336,7 @@ export default function LiquidLoader() {
           initial={{ opacity: 1 }}
           animate={{ opacity: phase === "dissolve" ? 0 : 1 }}
           exit={{ opacity: 0 }}
-          transition={{
-            duration: T.dissolve / 1000,
-            ease: EASE_IO,
-          }}
+          transition={{ duration: T.dissolve / 1000, ease: EASE_IO }}
           className="fixed inset-0 z-[100] pointer-events-auto overflow-hidden"
           aria-hidden
           role="presentation"
@@ -344,7 +389,7 @@ export default function LiquidLoader() {
               <rect width="100%" height="100%" fill="url(#loaderGrid)" />
             </svg>
 
-            {/* ambient silver glow — breathes during liquidHold */}
+            {/* ambient silver glow */}
             <motion.div
               className="absolute inset-0 pointer-events-none"
               initial={{ opacity: 0.6 }}
@@ -360,7 +405,7 @@ export default function LiquidLoader() {
               aria-hidden
             />
 
-            {/* DROPLETS — goo-merged, GPU-transformed */}
+            {/* DROPLETS — goo-merged, GPU-transformed, per-letter staggered */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{ filter: "url(#liquidGoo)" }}
@@ -374,9 +419,10 @@ export default function LiquidLoader() {
                 const blurForDepth = `${d.depth * 1.6}px`;
                 const opacityNear = 0.8 + (1 - d.depth) * 0.2;
 
-                // Droplet exit during chromeFlow tracks the chrome wavefront L→R
-                // chrome reaches X at time = (d.toXp / 100) * T.chromeFlow
+                // Chrome wavefront delay (per-droplet, by X position)
                 const chromeReachSec = (d.toXp / 100) * (T.chromeFlow / 1000);
+                // Per-letter formation delay
+                const letterDelaySec = (d.letterIndex * LETTER_STAGGER_MS) / 1000;
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let animateProps: any = {};
@@ -409,23 +455,17 @@ export default function LiquidLoader() {
                     scale: 1,
                   };
                   duration = T.drift / 1000;
-                } else if (phase === "migrate") {
+                } else if (phase === "letterForm") {
+                  // ★ Each LETTER GROUP travels at its own start time.
+                  // Letter 0 (A) leaves first, letter 8 (O) last.
                   animateProps = {
                     x: target.x,
                     y: target.y,
                     opacity: 1,
                     scale: 1,
                   };
-                  duration = T.migrate / 1000;
-                  delay = d.migrateDelay / 1000;
-                } else if (phase === "settle") {
-                  animateProps = {
-                    x: target.x,
-                    y: target.y,
-                    opacity: 1,
-                    scale: 1,
-                  };
-                  duration = T.settle / 1000;
+                  duration = LETTER_TRAVEL_MS / 1000;
+                  delay = letterDelaySec;
                 } else if (phase === "liquidHold") {
                   animateProps = {
                     x: [target.x, target.x + d.oscX, target.x],
@@ -436,7 +476,7 @@ export default function LiquidLoader() {
                   duration = T.liquidHold / 1000;
                   times = [0, 0.5, 1];
                 } else if (phase === "chromeFlow") {
-                  // exit timed to chrome wavefront
+                  // Exit timed to chrome wavefront
                   animateProps = {
                     x: target.x,
                     y: target.y,
@@ -446,7 +486,6 @@ export default function LiquidLoader() {
                   duration = 0.35;
                   delay = chromeReachSec;
                 } else {
-                  // chromeHold + dissolve — droplets already gone
                   animateProps = {
                     x: target.x,
                     y: target.y,
@@ -503,10 +542,7 @@ export default function LiquidLoader() {
                       ? { clipPath: "inset(0 0% 0 0)" }
                       : { clipPath: "inset(0 100% 0 0)" }
                   }
-                  transition={{
-                    duration: T.chromeFlow / 1000,
-                    ease: EASE,
-                  }}
+                  transition={{ duration: T.chromeFlow / 1000, ease: EASE }}
                   className="relative font-serif text-[clamp(2.2rem,9.5vw,8rem)] leading-none tracking-[0.18em] m-0 select-none"
                   style={{
                     background:
@@ -518,17 +554,13 @@ export default function LiquidLoader() {
                   }}
                 >
                   {TEXT}
-                  {/* shimmer sweep during chromeHold */}
                   <motion.span
                     aria-hidden
                     initial={{ x: "-140%" }}
                     animate={
                       phase === "chromeHold" ? { x: "140%" } : { x: "-140%" }
                     }
-                    transition={{
-                      duration: T.chromeHold / 1000,
-                      ease: EASE,
-                    }}
+                    transition={{ duration: T.chromeHold / 1000, ease: EASE }}
                     className="absolute inset-0 pointer-events-none"
                     style={{
                       background:
@@ -540,7 +572,7 @@ export default function LiquidLoader() {
                   />
                 </motion.h1>
 
-                {/* hairline under text — slides in with chrome */}
+                {/* hairline under text */}
                 <motion.div
                   initial={{ scaleX: 0, opacity: 0 }}
                   animate={{
@@ -564,7 +596,6 @@ export default function LiquidLoader() {
                   }}
                 />
 
-                {/* sub-label */}
                 <motion.p
                   initial={{ opacity: 0, y: 6 }}
                   animate={{
@@ -587,14 +618,14 @@ export default function LiquidLoader() {
               <CornerTick className="bottom-0 right-0" flipX flipY />
             </div>
 
-            {/* bottom kicker */}
+            {/* bottom kicker — visible only during early phases */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{
                 opacity:
                   phase === "emerge" ||
                   phase === "drift" ||
-                  phase === "migrate"
+                  phase === "letterForm"
                     ? 0.55
                     : 0,
               }}
