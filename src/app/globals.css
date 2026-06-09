@@ -112,3 +112,38 @@ html, body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Editorial polish — section caps for breathing room on mobile */
+@media (max-width: 640px) {
+  section { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+}
+
+/* Smooth chrome on focus rings */
+:focus-visible {
+  outline: 1px solid rgba(229, 229, 229, 0.55);
+  outline-offset: 3px;
+}
+
+/* Image quality */
+img, video {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Subtle glass-card token */
+.glass {
+  background: linear-gradient(180deg, rgba(20,20,20,0.55) 0%, rgba(10,10,10,0.35) 100%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(229,229,229,0.08);
+}
+
+/* Soft chrome border that brightens on hover */
+.chrome-edge {
+  border: 1px solid rgba(192,192,192,0.18);
+  transition: border-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chrome-edge:hover {
+  border-color: rgba(229,229,229,0.55);
+}

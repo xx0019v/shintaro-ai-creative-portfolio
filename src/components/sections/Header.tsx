@@ -40,9 +40,9 @@ export default function Header() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: easeLuxe, delay: 0.2 }}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-700 ${
           scrolled
-            ? "bg-base/70 backdrop-blur-xl border-b border-offwhite/[0.06]"
+            ? "bg-base/60 backdrop-blur-2xl border-b border-offwhite/[0.05]"
             : "bg-transparent"
         }`}
       >
