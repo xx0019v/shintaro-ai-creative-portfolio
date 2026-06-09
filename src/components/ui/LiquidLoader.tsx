@@ -289,13 +289,24 @@ export default function LiquidLoader() {
 
   // Pre-compute orbit keyframes (one set per droplet) — keeps motion smooth
   // and GPU-friendly via Framer's keyframe interpolation.
+  //
+  // Each path PREPENDS the scatter position so the orbit phase begins by
+  // pulling droplets from their random scatter onto the orbital ring.
+  // The first 18% of the phase = "gather onto ring", the remaining 82% =
+  // the actual vortex spiral. This way the visual starts as a wide, airy
+  // scatter — not a pre-organised clump.
+  const GATHER_FRACTION = 0.18;
   const orbitKeyframes = useMemo(() => {
     const cx = viewport.w / 2;
     const cy = viewport.h / 2;
     const baseRadius = Math.min(viewport.w, viewport.h) * 0.42;
     return droplets.map((d) => {
-      const xKeys: number[] = [];
-      const yKeys: number[] = [];
+      const fromX = (d.fromXp / 100) * viewport.w;
+      const fromY = (d.fromYp / 100) * viewport.h;
+      const xKeys: number[] = [fromX];
+      const yKeys: number[] = [fromY];
+      const times: number[] = [0];
+
       const startR = baseRadius * d.startRadiusFactor;
       const endR = baseRadius * d.endRadiusFactor;
       for (let k = 0; k <= ORBIT_KEYFRAMES; k++) {
@@ -305,8 +316,10 @@ export default function LiquidLoader() {
         const angle = d.startAngle + d.angularSpan * t;
         xKeys.push(cx + radius * Math.cos(angle));
         yKeys.push(cy + radius * Math.sin(angle));
+        // remap so orbit keyframes occupy 0.18..1.0 of the phase
+        times.push(GATHER_FRACTION + (1 - GATHER_FRACTION) * t);
       }
-      return { x: xKeys, y: yKeys };
+      return { x: xKeys, y: yKeys, times };
     });
   }, [droplets, viewport]);
 
@@ -431,10 +444,11 @@ export default function LiquidLoader() {
                 const blurForDepth = `${d.depth * 1.6}px`;
                 const opacityNear = 0.8 + (1 - d.depth) * 0.2;
 
-                // Initial emerge position: slightly along the orbit ring
-                // so the transition into orbit is seamless.
-                const emergeX = orbit ? orbit.x[0] : from.x;
-                const emergeY = orbit ? orbit.y[0] : from.y;
+                // emerge → at the random scatter position (wide, airy).
+                // orbit phase will pull droplets onto the ring during its
+                // first 18% before the actual spiral begins.
+                const emergeX = from.x;
+                const emergeY = from.y;
 
                 // Chrome wavefront timing
                 const chromeReachSec = (d.toXp / 100) * (T.chrome / 1000);
@@ -464,8 +478,9 @@ export default function LiquidLoader() {
                   duration = T.emerge / 1000;
                   delay = d.emergeDelay / 1000;
                 } else if (phase === "orbit") {
-                  // ★ Vortex motion — 110 droplets traverse pre-computed
-                  // spiral keyframe paths, all rotating into the centre.
+                  // ★ Vortex motion — droplets first GATHER from their
+                  // scatter onto the orbital ring (first 18% of the phase),
+                  // then traverse the spiral keyframe path into the centre.
                   animateProps = {
                     x: orbit.x,
                     y: orbit.y,
@@ -473,6 +488,7 @@ export default function LiquidLoader() {
                     scale: 1,
                   };
                   duration = T.orbit / 1000;
+                  times = orbit.times;
                   ease = "linear"; // linear between keyframes = smooth orbit
                 } else if (phase === "fusion") {
                   // settled near the centre, micro-oscillation suggests liquid
