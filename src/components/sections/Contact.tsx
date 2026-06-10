@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Mail, ArrowUpRight } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import PortraitFrame from "@/components/ui/PortraitFrame";
+import MagneticButton from "@/components/ui/MagneticButton";
 import { easeLuxe } from "@/lib/motion";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
@@ -72,35 +73,41 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={0.25} className="mt-10">
-              <a
-                href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
-                className="group inline-flex items-center gap-6 hairline-silver px-8 py-5 hover:bg-offwhite/[0.04] transition-colors duration-500"
-              >
-                <Mail size={18} strokeWidth={1.1} className="text-silver-bright" />
-                <span className="font-serif text-lg md:text-xl tracking-tight">{EMAIL}</span>
-                <ArrowUpRight
-                  size={16}
-                  strokeWidth={1.25}
-                  className="text-offwhite/70 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                />
-              </a>
+              <MagneticButton>
+                <a
+                  href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
+                  className="group inline-flex items-center gap-6 hairline-silver px-8 py-5 hover:bg-offwhite/[0.04] transition-colors duration-500"
+                >
+                  <Mail size={18} strokeWidth={1.1} className="text-silver-bright" />
+                  <span className="font-serif text-lg md:text-xl tracking-tight">{EMAIL}</span>
+                  <ArrowUpRight
+                    size={16}
+                    strokeWidth={1.25}
+                    className="text-offwhite/70 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
+                </a>
+              </MagneticButton>
             </Reveal>
 
             <Reveal delay={0.32} className="mt-10 flex flex-wrap justify-center lg:justify-start gap-3">
-              <a
-                href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-offwhite text-base text-[11px] tracking-wider2 uppercase hover:bg-silver transition-colors duration-500"
-              >
-                {tr("ct_send", lang)}
-                <ArrowUpRight size={14} strokeWidth={1.25} />
-              </a>
-              <a
-                href="#projects"
-                className="inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
-              >
-                {tr("ct_view", lang)}
-                <ArrowUpRight size={14} strokeWidth={1.25} />
-              </a>
+              <MagneticButton>
+                <a
+                  href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
+                  className="inline-flex items-center gap-3 px-6 py-3 bg-offwhite text-base text-[11px] tracking-wider2 uppercase hover:bg-silver transition-colors duration-500"
+                >
+                  {tr("ct_send", lang)}
+                  <ArrowUpRight size={14} strokeWidth={1.25} />
+                </a>
+              </MagneticButton>
+              <MagneticButton>
+                <a
+                  href="#projects"
+                  className="inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
+                >
+                  {tr("ct_view", lang)}
+                  <ArrowUpRight size={14} strokeWidth={1.25} />
+                </a>
+              </MagneticButton>
             </Reveal>
 
             <Reveal delay={0.4} className="mt-16">

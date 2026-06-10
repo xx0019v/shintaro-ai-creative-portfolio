@@ -15,6 +15,8 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionIndex from "@/components/ui/SectionIndex";
+import AmbientBackdrop from "@/components/ui/AmbientBackdrop";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
@@ -107,10 +109,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguageProvider>
           <ScrollToTop />
           <LiquidLoader />
+          <AmbientBackdrop />
           <ScrollProgress />
           <SectionIndex />
           <CustomCursor />
           {children}
+          <ChatWidget />
         </LanguageProvider>
       </body>
     </html>

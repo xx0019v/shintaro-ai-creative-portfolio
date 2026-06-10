@@ -480,6 +480,29 @@ const additions: Dict = {
     jp: "日本語・タガログ語・英語を使い分け、相手に合わせて自然に話します。",
     en: "I communicate naturally in Japanese, Tagalog, and English — adapting tone and message for each audience.",
   },
+
+  // ─── Chat widget ────────────────────────────────────────────────────────
+  chat_open: { jp: "AIに聞く", en: "Ask AI" },
+  chat_title: { jp: "Concierge", en: "Concierge" },
+  chat_subtitle: {
+    jp: "ポートフォリオに関するご質問にお答えします",
+    en: "Ask anything about the portfolio",
+  },
+  chat_input_ph: {
+    jp: "メッセージを入力…",
+    en: "Type a message…",
+  },
+  chat_send: { jp: "送信", en: "Send" },
+  chat_close: { jp: "閉じる", en: "Close" },
+  chat_thinking: { jp: "考えています…", en: "Thinking…" },
+  chat_welcome: {
+    jp: "こんにちは。AVENDANO のポートフォリオへようこそ。プロジェクト、スキル、お問い合わせなど、何でも聞いてください。",
+    en: "Welcome to AVENDANO's portfolio. Ask about any project, skill, or how to get in touch.",
+  },
+  chat_q_ai: { jp: "AI CAMERAについて", en: "Tell me about AI CAMERA" },
+  chat_q_tsc: { jp: "TSC English Academy", en: "TSC English Academy" },
+  chat_q_hire: { jp: "インターン・案件相談", en: "Internship & projects" },
+  chat_q_lang: { jp: "語学スキル", en: "Languages" },
 };
 
 Object.assign(t, additions);

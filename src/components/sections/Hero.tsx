@@ -7,6 +7,7 @@ const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 import PortraitFrame from "@/components/ui/PortraitFrame";
+import MagneticButton from "@/components/ui/MagneticButton";
 
 const TAGS = [
   "AI",
@@ -96,24 +97,28 @@ export default function Hero() {
           </div>
 
           <div className="md:col-span-5 md:justify-self-end flex flex-wrap gap-3">
-            <a
-              href="#projects"
-              className="group inline-flex items-center gap-3 px-6 py-3 hairline-silver text-[11px] tracking-wider2 uppercase text-offwhite hover:bg-offwhite hover:text-base transition-colors duration-500"
-            >
-              {tr("hero_cta_projects", lang)}
-              <ArrowUpRight
-                size={14}
-                strokeWidth={1.25}
-                className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </a>
-            <a
-              href="#contact"
-              className="group inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
-            >
-              {tr("hero_cta_contact", lang)}
-              <ArrowUpRight size={14} strokeWidth={1.25} />
-            </a>
+            <MagneticButton>
+              <a
+                href="#projects"
+                className="group inline-flex items-center gap-3 px-6 py-3 hairline-silver text-[11px] tracking-wider2 uppercase text-offwhite hover:bg-offwhite hover:text-base transition-colors duration-500"
+              >
+                {tr("hero_cta_projects", lang)}
+                <ArrowUpRight
+                  size={14}
+                  strokeWidth={1.25}
+                  className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </a>
+            </MagneticButton>
+            <MagneticButton>
+              <a
+                href="#contact"
+                className="group inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
+              >
+                {tr("hero_cta_contact", lang)}
+                <ArrowUpRight size={14} strokeWidth={1.25} />
+              </a>
+            </MagneticButton>
           </div>
         </motion.div>
 
