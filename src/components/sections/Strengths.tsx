@@ -18,7 +18,7 @@ export default function Strengths() {
   const { lang } = useLang();
 
   return (
-    <section className="relative py-32 md:py-48 bg-soft/40">
+    <section id="strengths" className="relative py-32 md:py-48 bg-soft/40">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
           index="08"

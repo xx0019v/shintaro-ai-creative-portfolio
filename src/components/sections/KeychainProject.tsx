@@ -28,7 +28,7 @@ export default function KeychainProject() {
   const { lang } = useLang();
 
   return (
-    <section className="relative py-32 md:py-48">
+    <section id="keychain" className="relative py-32 md:py-48">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
           index="05"

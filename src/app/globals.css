@@ -130,6 +130,12 @@ img, video {
   user-select: none;
 }
 
+/* Hide native cursor on hover-capable devices — CustomCursor takes over */
+@media (hover: hover) and (pointer: fine) {
+  html, body { cursor: none; }
+  a, button, [role="button"], input, textarea, select { cursor: none; }
+}
+
 /* Subtle glass-card token */
 .glass {
   background: linear-gradient(180deg, rgba(20,20,20,0.55) 0%, rgba(10,10,10,0.35) 100%);
