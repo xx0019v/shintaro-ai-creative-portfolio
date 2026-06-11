@@ -136,6 +136,20 @@ img, video {
   a, button, [role="button"], input, textarea, select { cursor: none; }
 }
 
+/* Translation strings use embedded \n for editorial line breaks.
+   Apply pre-line to all body copy so dictionary-set breaks render. */
+.font-jpserif, .font-jpsans,
+p.font-jpserif, p.font-jpsans,
+h2, h3, p {
+  white-space: pre-line;
+}
+/* But not inside nav, header chrome, or button labels */
+header *, nav *, button, a button, .idx, [role="button"] *,
+.tracking-wider2, .tracking-wider, .tracking-editorial,
+[class*="tracking-["] {
+  white-space: normal;
+}
+
 /* Subtle glass-card token */
 .glass {
   background: linear-gradient(180deg, rgba(20,20,20,0.55) 0%, rgba(10,10,10,0.35) 100%);

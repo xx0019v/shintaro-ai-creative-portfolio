@@ -17,21 +17,21 @@ export const t: Dict = {
   hero_h1_b: { jp: "into Systems,", en: "into Systems," },
   hero_h1_c: { jp: "Visuals, & Experiences.", en: "Visuals, & Experiences." },
   hero_jp_main: {
-    jp: "アイデアを、システム・ビジュアル・体験に変える。",
-    en: "Turning ideas into systems, visuals, and experiences.",
+    jp: "アイデアを\nかたちに変える",
+    en: "Turning ideas\ninto things people move through",
   },
   hero_sub: {
-    jp: "AI、Web制作、ブランディング、ビジュアルデザインを横断し、アイデアを実際に使える体験として形にします。",
-    en: "I create projects that connect AI, web production, branding, visual design, and human behavior.",
+    jp: "AIとWeb 制作 ブランディングを横断しながら\n人の動きまで届くものを作る",
+    en: "Working across AI web branding and visual design\nbuilding what people actually move through",
   },
-  hero_cta_projects: { jp: "プロジェクトを見る", en: "View Projects" },
-  hero_cta_contact: { jp: "お問い合わせ", en: "Contact Me" },
+  hero_cta_projects: { jp: "作品を見る", en: "See the work" },
+  hero_cta_contact: { jp: "話してみる", en: "Get in touch" },
   hero_currently: { jp: "Currently building", en: "Currently building" },
   hero_currently_desc: {
-    jp: "AIカメラ分析・香水ブランディング・クライアント案件・学校創作プロジェクト。",
-    en: "AI camera analytics · fragrance branding · client websites · school creative projects.",
+    jp: "AI カメラ分析 香水ブランディング\nクライアント案件 学校創作",
+    en: "AI camera analytics · fragrance branding\nclient websites · school creative work",
   },
-  hero_scroll: { jp: "Scroll to read", en: "Scroll to read" },
+  hero_scroll: { jp: "Scroll", en: "Scroll" },
 
   // About
   about_label: { jp: "About", en: "About" },
@@ -39,10 +39,10 @@ export const t: Dict = {
   about_title_b: { jp: "technology,", en: "technology," },
   about_title_c: { jp: "observation,", en: "observation," },
   about_title_d: { jp: "and intention.", en: "and intention." },
-  about_jp_title: { jp: "技術・観察・意図でデザインする。", en: "Technology, observation, intention." },
+  about_jp_title: { jp: "技術と観察 そして意図で組み立てる", en: "Built from technology, attention, and intent" },
   about_body_1: {
-    jp: "中央情報大学校 高度ICTデザイン学科で、AI・Web制作・デザイン・ブランディング・企画を横断して学んでいます。見た目だけでなく、目的・伝わり方・使う人の行動まで考えながら、実際に使える形へ落とし込むことを大切にしています。",
-    en: "I am an ICT Design student at Chuo Information College, learning and creating across AI, web production, visual design, branding, and project planning. My goal is not only to make things look good, but to design meaningful experiences that solve problems, communicate clearly, and move people to action.",
+    jp: "中央情報大学校 高度 ICT デザイン学科で AI と Web 制作 ブランディング 企画を横断して学んでいる\n見た目を整えることより 目的と伝わり方 使う人の動きまで考えて かたちにすることを大切にしている",
+    en: "I'm an ICT design student at Chuo Information College — working across AI, web, branding, and direction.\nMy work isn't about polish for its own sake. It's about reading what's needed, then building something that quietly moves someone forward.",
   },
   about_meta_role: { jp: "Role", en: "Role" },
   about_meta_role_v: { jp: "AI Creative Developer", en: "AI Creative Developer" },
@@ -59,60 +59,60 @@ export const t: Dict = {
 
   principle_observation_t: { jp: "Observation", en: "Observation" },
   principle_observation_b: {
-    jp: "人や状況、小さな変化を観察し、必要な行動を考えることを意識しています。",
-    en: "I observe people, situations, and small details to understand what is needed.",
+    jp: "人と場と空気を見て\n必要なことを先に考える",
+    en: "Reading the room before reading the brief\nthen acting on what's actually needed",
   },
   principle_persistence_t: { jp: "Persistence", en: "Persistence" },
   principle_persistence_b: {
-    jp: "うまくいかない時も改善を重ね、最後まで粘り強く取り組みます。",
-    en: "I keep improving even when things do not work at first.",
+    jp: "うまくいかない時こそ\nもう一度ていねいに組み直す",
+    en: "When something stops working\nI quietly rebuild it from the ground up",
   },
   principle_adaptability_t: { jp: "Adaptability", en: "Adaptability" },
   principle_adaptability_b: {
-    jp: "環境や相手、目的に合わせて動き方を調整しながら行動できます。",
-    en: "I adjust my approach depending on the environment, people, and project needs.",
+    jp: "相手と現場に合わせて\n動き方を変えられる",
+    en: "I move differently depending\non the room and what it asks for",
   },
   principle_execution_t: { jp: "Execution", en: "Execution" },
   principle_execution_b: {
-    jp: "アイデアで終わらせず、ビジュアル・Webサイト・システム・資料・発表まで形にします。",
-    en: "I do not stop at ideas. I turn them into visuals, websites, systems, documents, and presentations.",
+    jp: "アイデアで止めず\nビジュアル サイト 資料 発表まで届ける",
+    en: "Ideas don't stop at ideas\nthey become visuals, sites, decks, and rooms",
   },
 
   // AI CAMERA
   ai_label: { jp: "Featured Project", en: "Featured Project" },
   ai_name: { jp: "AI CAMERA", en: "AI CAMERA" },
   ai_subtitle: {
-    jp: "香水自販機サイネージ広告の視認効果を、AIカメラで見える化する分析システム。",
-    en: "AI Camera Analytics for Fragrance Vending Machine Signage.",
+    jp: "香水自販機のサイネージが\nどれだけ見られたか AI カメラで読み解く",
+    en: "AI camera analytics\nfor fragrance vending machine signage",
   },
   ai_overview: {
-    jp: "AI CAMERAは、自販機に付属するサイネージ広告がどれだけ見られたかを、AIカメラで分析するシステムです。人が近づいたか、広告を見る位置にいたか、どれくらい滞在したかを推定し、匿名データとして可視化します。",
-    en: "AI CAMERA estimates how much a signage advertisement is actually seen — analyzing presence, distance zones, approach behavior, viewing possibility, and dwell time, then converting those signals into anonymous analytics.",
+    jp: "AI CAMERA は自販機のサイネージがどれだけ見られたかを読み解くシステム\n人が近づいたか 広告を見る位置にいたか どれくらい立ち止まったかを匿名のデータとして可視化する",
+    en: "AI CAMERA reads how much a vending-machine signage is actually seen.\nApproach, distance, dwell, and gaze probability — all surfaced as anonymous, decision-grade data.",
   },
   ai_note: {
-    jp: "自販機本体・決済・商品排出とは連携せず、サイネージ広告が「実際にどれだけ見られたか」を匿名データとして分析する。個人特定を目的としない、プライバシー優先の設計。",
-    en: "This system does not control the vending machine, payment, UI, or product dispensing. It focuses on signage attention as anonymous analytics — no personal identification.",
+    jp: "自販機の決済や商品排出には触れない\n見られた かどうかだけを匿名で扱う プライバシー優先の設計",
+    en: "It doesn't touch payment or product dispensing.\nOnly attention is measured — anonymously, by design.",
   },
   ai_purpose_label: { jp: "Project Purpose", en: "Project Purpose" },
   ai_purpose: {
-    jp: "サイネージ広告の効果を、感覚ではなくデータで判断できるようにする。",
-    en: "Make signage performance measurable through AI camera analysis.",
+    jp: "サイネージ広告の効果を\n感覚ではなくデータで判断できるようにする",
+    en: "Turn ad performance from a feeling\ninto something you can read on a chart",
   },
   ai_analyzes: { jp: "What it analyzes", en: "What it analyzes" },
   ai_stack: { jp: "System Keywords", en: "System Keywords" },
   ai_zones_label: { jp: "Distance Zone Model", en: "Distance Zone Model" },
-  ai_zones_jp: { jp: "距離ゾーンによる行動分類モデル", en: "Behavior classification by distance" },
+  ai_zones_jp: { jp: "距離で行動を分けて読む", en: "Behaviour read by distance" },
   ai_flow_label: { jp: "Data Flow", en: "Data Flow" },
-  ai_flow_jp: { jp: "検知から可視化までのデータフロー", en: "From detection to visualization" },
+  ai_flow_jp: { jp: "検知から可視化までの流れ", en: "From detection to dashboard" },
   ai_privacy_label: { jp: "Privacy-first Design", en: "Privacy-first Design" },
   ai_privacy_title: {
-    jp: "視認データを測るための設計。個人を特定するためではない。",
-    en: "Designed to measure attention — not to identify people.",
+    jp: "視線を測る設計\n人を識別する設計ではない",
+    en: "Built to measure attention\nnot to identify the people behind it",
   },
   ai_value_label: { jp: "Value", en: "Value" },
   ai_value_title: {
-    jp: "人の動きと広告への視認を、データとして見える化する。",
-    en: "Transforms physical attention into measurable insight.",
+    jp: "通りすがりの視線を\n読めるデータに変える",
+    en: "Turning passing glances\ninto insight you can act on",
   },
 
   // Fragrance
@@ -122,12 +122,12 @@ export const t: Dict = {
     en: "Fragrance Vending Machine Branding",
   },
   fr_jp_title: {
-    jp: "香水自販機を、ただの販売機ではなく「体験」として見せるためのビジュアル制作。",
-    en: "A new fragrance ritual you choose with one push.",
+    jp: "自販機ではなく\n香りを選ぶ時間として見せる",
+    en: "Designed not as a machine\nbut as the moment you choose a scent",
   },
   fr_overview: {
-    jp: "香水自販機を多くの人に知ってもらうために、POP、SNS投稿、キャンペーン、イベント導線を企画・制作しました。高級感と親しみやすさを両立し、写真を撮りたくなる体験設計を意識しています。",
-    en: "POP design, SNS visuals, campaign planning, and visual direction for a fragrance vending machine in a commercial facility — luxury feel, approachable tone, and shareability built in.",
+    jp: "POP SNS キャンペーン イベント導線まで一貫してディレクション\n高級感と親しみやすさを両立させ 写真を撮りたくなる時間を設計した",
+    en: "POP, social, campaign, and on-site flow — directed end to end.\nLuxury and approachable held in the same frame, designed to be photographed.",
   },
   fr_cat_pop: { jp: "POP Design", en: "POP Design" },
   fr_cat_sns: { jp: "SNS Campaign", en: "SNS Campaign" },
@@ -136,76 +136,76 @@ export const t: Dict = {
   fr_cat_direction: { jp: "Visual Direction", en: "Visual Direction" },
   fr_cat_copy: { jp: "Copywriting", en: "Copywriting" },
   fr_value: {
-    jp: "ビジュアルディレクション、ブランディング、SNSマーケティング、商業施設における発信力を一気通貫で見せる案件。",
-    en: "End-to-end demonstration of visual direction, branding, SNS marketing, and commercial communication.",
+    jp: "ビジュアル ブランディング SNS 商業施設での発信を\nひとつの流れとして組み立てた案件",
+    en: "Visual direction, brand, social, and on-site flow\nheld together as one continuous gesture",
   },
 
   // Client Work — TSC English Academy
   cw_label: { jp: "Client Work", en: "Client Work" },
   cw_name: { jp: "TSC English Academy", en: "TSC English Academy" },
   cw_jp_title: {
-    jp: "海外講師 × 日本人通訳者のオンライン英語レッスンサービス公式サイト。",
-    en: "Official site for an online English service pairing overseas teachers with Japanese interpreters.",
+    jp: "海外講師と日本人通訳者がひとつの授業に立つ\nオンライン英語サービスの公式サイト",
+    en: "An online English service where overseas teachers\nand Japanese interpreters share the same lesson",
   },
   cw_overview: {
-    jp: "TSC English Academyは「海外講師 × 日本人通訳者」という独自の体制を持つオンライン英語レッスンサービスです。サービスの強み・コース内容・料金プランを分かりやすく伝え、安心して問い合わせ・申込につながる導線を意識して構築しました。React・Three.js・GSAPによる動きと、ダークラグジュアリーなブランド世界観を両立。日本語/英語のバイリンガル対応。",
-    en: "TSC English Academy is an online English service built on the signature pairing of overseas teachers and Japanese interpreters. The site delivers the unique value proposition, course structure, and pricing with clarity — backed by trust-building visuals and a cinematic React + Three.js + GSAP experience. Bilingual (JA / EN).",
+    jp: "TSC English Academy は 海外講師と日本人通訳者がひとつのレッスンに並ぶサービス\n強み コース 料金を素直に伝え 申込まで自然に進む流れを意識して組み立てた\nReact と Three.js GSAP で動きを設計し ダークラグジュアリーな世界観と読みやすさを両立",
+    en: "TSC English Academy pairs overseas teachers with Japanese interpreters inside the same lesson.\nThe site states the value clearly, lets the courses breathe, and leads you to a trial without selling at you.\nBuilt in React with Three.js and GSAP — dark luxury that still reads cleanly. Bilingual (JA / EN).",
   },
   cw_status: { jp: "Project Status", en: "Project Status" },
-  cw_status_done: { jp: "公開済み・本番稼働中", en: "Live · Public" },
-  cw_status_domain: { jp: "バイリンガル対応（JA / EN）", en: "Bilingual (JA / EN)" },
-  cw_status_launch: { jp: "継続的に改善中", en: "Iterative improvement" },
+  cw_status_done: { jp: "公開済み 本番稼働中", en: "Live · Public" },
+  cw_status_domain: { jp: "JP / EN バイリンガル対応", en: "Bilingual (JA / EN)" },
+  cw_status_launch: { jp: "改善を重ねている段階", en: "Iterating in production" },
   cw_role: { jp: "Role", en: "Role" },
   cw_live_url: { jp: "Live Site", en: "Live Site" },
   cw_value: {
-    jp: "海外講師×通訳者という独自のUSPを、ダークラグジュアリーな世界観と明快な導線で「申し込みたくなる」体験へ落とし込んだ案件です。",
-    en: "Translates a unique overseas-teacher × interpreter USP into a dark-luxury experience with a clear path to enrollment.",
+    jp: "海外講師と通訳者が並ぶという強みを\n申し込みたくなる体験へ静かに翻訳した",
+    en: "A signature teacher × interpreter pairing\nquietly translated into a path you want to take",
   },
 
   // Keychain
   kc_label: { jp: "School Project", en: "School Project" },
   kc_name: { jp: "Teacher Character Keychain Project", en: "Teacher Character Keychain Project" },
   kc_jp_title: {
-    jp: "先生方をモデルにした、AI活用型キャラクターキーホルダー制作プロジェクト。",
-    en: "AI-assisted character design based on teachers' personalities and visual features.",
+    jp: "先生をモデルに キーホルダーをデザインする\nAI を相棒に進めた校内プロジェクト",
+    en: "Keychain characters drawn from real teachers\nco-created with AI as a quiet collaborator",
   },
   kc_overview: {
-    jp: "現在、学校内で先生方をモデルにしたキーホルダー制作プロジェクトに参加し、主にデザイン面を担当しています。先生ごとの雰囲気・表情・特徴・仕草が伝わるように、ビジュアル方向性や仕上がりを意識して制作しています。",
-    en: "I participate in a school project creating original keychain designs based on teachers. My role is visual design — capturing each teacher's atmosphere, expression, and memorable features as appealing character visuals.",
+    jp: "校内で 先生ごとのキャラクターキーホルダーをデザインするプロジェクトに参加している\n表情 仕草 空気感が伝わるように方向性と仕上がりを整えながら 一人ひとりの ぽさ を形にしている",
+    en: "I work on a school project designing keychain characters based on real teachers.\nThe job is to read each person's mood, gesture, and warmth — then shape that into something you'd happily carry every day.",
   },
   kc_ai_label: { jp: "AI as a creative partner", en: "AI as a creative partner" },
   kc_ai_body: {
-    jp: "AIを単なる自動生成ツールではなく、案出し・キャラクター表現・方向性確認・質感検討・仕上がり改善のための制作パートナーとして活用しています。",
-    en: "I use AI not as a shortcut, but as a creative partner for ideation, character direction, visual variation, texture study, and design refinement.",
+    jp: "AI は近道ではなく相棒として使っている\n案出し 表現の方向性 質感の検討 仕上がりの磨き込みまで 並走させながら進める",
+    en: "AI isn't a shortcut here — it's a collaborator.\nI use it for ideation, character direction, texture study, and that final round of polish.",
   },
   kc_process: { jp: "Creative Process", en: "Creative Process" },
   kc_role: { jp: "Role", en: "Role" },
   kc_privacy: {
-    jp: "先生の顔写真や実名は許可なく公開せず、本ポートフォリオでは抽象化・サンプル表示で取り扱っています。",
-    en: "Real photographs and names are never shown without permission. Abstracted or sample visuals are used.",
+    jp: "先生の顔写真や実名は許可なく出さない\nこのページでも抽象化したサンプルとして扱っている",
+    en: "No real faces or real names without consent.\nWhat you see here is held at an abstracted, sample level.",
   },
 
   // Leadership
   ld_label: { jp: "Leadership", en: "Leadership" },
   ld_name: { jp: "School Children's Program Event Director", en: "School Children's Program Event Director" },
   ld_jp_title: {
-    jp: "学校主催の学童イベントにおいて、担当教員から直接任命された実行委員長。",
-    en: "Appointed directly by a teacher to lead a school-hosted children's program event.",
+    jp: "学校主催の学童イベントで\n担当の先生から実行委員長を任された",
+    en: "Asked by a teacher to take the lead\non a school-hosted children's programme",
   },
   ld_overview: {
-    jp: "学校主催の学童イベントにおいて、担当の先生から直接任命され、実行委員長として企画・準備・進行に関わっています。責任を持って周囲と連携し、プロジェクトを前に進める経験として取り組んでいます。",
-    en: "I was appointed directly by a teacher as the executive director for a school-hosted children's program event. I support planning, preparation, communication, and progress — taking responsibility and moving the project forward.",
+    jp: "学校主催の学童イベントで 先生から直接任されて実行委員長として企画 準備 進行を見ている\n人と段取りを動かす役回りに 静かに責任を持って取り組んでいる",
+    en: "A school-hosted children's programme — I was asked directly by a teacher to lead it.\nI hold the planning, the preparation, and the people side, and I keep the project moving forward.",
   },
   ld_role: { jp: "Role", en: "Role" },
   ld_statement: { jp: "Portfolio Statement", en: "Portfolio Statement" },
   ld_statement_body: {
-    jp: "デザインや技術だけでなく、責任ある立場で人や企画を動かす力を示す経験です。",
-    en: "Trusted with responsibility — to support a project beyond design or technology.",
+    jp: "デザインや技術だけでなく\n責任を預けてもらえる側として動けたこと",
+    en: "Beyond design or code\ntrusted with the kind of work that holds people together",
   },
   ld_appointment: { jp: "Appointment", en: "Appointment" },
   ld_appointment_body: {
-    jp: "担当教員より直接任命。責任感・連携・実行力への信頼を意味する任命。",
-    en: "Directly appointed by a teacher — a signal of trust in responsibility, communication, and execution.",
+    jp: "先生からの直接の任命は\n責任 連携 実行への信頼を意味する",
+    en: "Being asked directly by a teacher\nmeans they trusted me with the room",
   },
 
   // Skills
@@ -214,8 +214,8 @@ export const t: Dict = {
   sk_title_b: { jp: "vocabulary", en: "vocabulary" },
   sk_title_c: { jp: "across AI, web, and design.", en: "across AI, web, and design." },
   sk_jp_title: {
-    jp: "AI・Web・デザイン・企画を横断する実務スキルセット。",
-    en: "A practical skill set across AI, web, design, and direction.",
+    jp: "AI と Web デザイン 企画を\n横断して持っている実務の語彙",
+    en: "A working vocabulary across\nAI, web, design, and direction",
   },
   sk_cat_ai: { jp: "AI / System", en: "AI / System" },
   sk_cat_ai_jp: { jp: "AI・システム", en: "AI / System" },
@@ -232,42 +232,42 @@ export const t: Dict = {
   st_title_b: { jp: "projects", en: "projects" },
   st_title_c: { jp: "forward.", en: "forward." },
   st_jp_title: {
-    jp: "状況を読み、必要なことを実行に変える。",
-    en: "Reading the situation, turning needs into action.",
+    jp: "場を読み 必要なことを\nそのまま実行に変える",
+    en: "Reading the room\nturning what's needed into what's done",
   },
   st_body: {
-    jp: "状況を見て、必要なことを考え、周囲と連携しながらプロジェクトを前に進めることを大切にしています。学校プロジェクト、AIを使った制作、Web制作、イベント運営の中で、伝わり方・改善・実行力を意識して行動しています。",
-    en: "I observe the situation, understand what needs to be done, and take action. In school projects, AI-assisted design, web development, and event work, I focus on communication, improvement, and execution.",
+    jp: "場を見て 必要なことを考え 周りと並んで動かす\n学校でも AI を使った制作でも Web 制作でもイベントでも 伝わり方と改善 実行力を軸に進めている",
+    en: "I read the room, see what's needed, and move things forward with the people in it.\nSchool projects, AI-assisted work, web builds, events — same instinct: clarity, iteration, and follow-through.",
   },
   strength_obs_t: { jp: "Observation", en: "Observation" },
   strength_obs_b: {
-    jp: "人・空間・流れの小さな変化に気づき、より良い判断につなげます。",
-    en: "I notice small changes in people, space, and workflow, then turn them into better decisions.",
+    jp: "人 空間 流れの小さな変化に気づき\nそれを判断につなげる",
+    en: "Catching the small shifts in people, space, and flow\nbefore they become decisions",
   },
   strength_comm_t: { jp: "Communication", en: "Communication" },
   strength_comm_b: {
-    jp: "さまざまなタイプの人と関わりながら、前向きに進める雰囲気を作ります。",
-    en: "I work with different types of people and keep the project atmosphere positive.",
+    jp: "違うタイプの人と並んで動きながら\n前向きな空気を保てる",
+    en: "Different kinds of people, same project — I keep\nthe room warm without losing the goal",
   },
   strength_solve_t: { jp: "Problem Solving", en: "Problem Solving" },
   strength_solve_b: {
-    jp: "うまくいかない時に原因を考え、現実的な改善策を提案します。",
-    en: "When something doesn't work, I look for the cause and propose a practical solution.",
+    jp: "うまくいかないときは原因から戻り\n現実的な打ち手を渡す",
+    en: "When it stops working I go back to the cause\nand hand over something we can actually use",
   },
   strength_direction_t: { jp: "Creative Direction", en: "Creative Direction" },
   strength_direction_b: {
-    jp: "見た目だけでなく、雰囲気・伝わり方・印象・仕上がりまで考えて制作します。",
-    en: "I think about mood, message, impression, and final output quality — not just visuals.",
+    jp: "見た目だけでなく 空気と伝わり方\n仕上がりの呼吸まで設計する",
+    en: "Beyond the look — the mood, the message,\nand the breath the finish carries",
   },
   strength_exec_t: { jp: "Execution", en: "Execution" },
   strength_exec_b: {
-    jp: "アイデアで終わらせず、ビジュアル・資料・システム・Webサイト・発表まで形にします。",
-    en: "I don't stop at ideas. I turn them into visuals, documents, systems, websites, and presentations.",
+    jp: "アイデアで止めず\nビジュアル サイト 資料 発表まで届ける",
+    en: "Ideas don't stop at ideas\nthey become visuals, sites, decks, and rooms",
   },
   strength_adapt_t: { jp: "Adaptability", en: "Adaptability" },
   strength_adapt_b: {
-    jp: "プロジェクトや相手、状況に合わせて動き方を調整できます。",
-    en: "I adjust my approach depending on the project, people, and situation.",
+    jp: "プロジェクト 相手 状況に合わせて\n動き方の方を変える",
+    en: "I change the way I move\nto match what the project asks for",
   },
 
   // Education
@@ -276,7 +276,7 @@ export const t: Dict = {
   ed_title_b: { jp: "learning,", en: "learning," },
   ed_title_c: { jp: "proof, and", en: "proof, and" },
   ed_title_d: { jp: "practice.", en: "practice." },
-  ed_jp_title: { jp: "学びと、その証明。", en: "Learning — and proof of it." },
+  ed_jp_title: { jp: "学んだこと そしてその証明", en: "What I've learned, and the proof of it" },
   ed_education: { jp: "Education", en: "Education" },
   ed_school_a: { jp: "中央情報大学校", en: "Chuo Information College" },
   ed_school_a_dept: { jp: "高度ICTデザイン学科", en: "Advanced ICT Design Department" },
@@ -297,8 +297,8 @@ export const t: Dict = {
   ed_cert_3_jp: { jp: "社会人常識マナー検定試験 3級", en: "" },
   ed_now: { jp: "Now studying", en: "Now studying" },
   ed_now_body: {
-    jp: "AIカメラ、実務水準のWeb制作、ブランド体験のビジュアル設計。",
-    en: "AI camera systems, production-grade web production, brand experience visual direction.",
+    jp: "AI カメラと 実務水準の Web 制作\nそしてブランド体験のビジュアル設計",
+    en: "AI camera systems, production-grade web work\nand the visual direction behind brand experience",
   },
 
   // Contact
@@ -306,16 +306,16 @@ export const t: Dict = {
   ct_title_a: { jp: "Let's create", en: "Let's create" },
   ct_title_b: { jp: "something meaningful.", en: "something meaningful." },
   ct_body: {
-    jp: "インターンシップ、プロジェクト相談、Web制作、ポートフォリオに関するお問い合わせはこちらから。",
-    en: "For internship opportunities, project collaboration, website production, or portfolio inquiries — feel free to reach out.",
+    jp: "インターン プロジェクト相談 Web 制作\nどんな話でも まずは一通お送りください",
+    en: "Internships, projects, websites, or just a conversation —\nstart with a single line and we'll take it from there",
   },
-  ct_send: { jp: "Send Email", en: "Send Email" },
-  ct_view: { jp: "View Projects", en: "View Projects" },
+  ct_send: { jp: "メールを送る", en: "Send a message" },
+  ct_view: { jp: "作品を見る", en: "See the work" },
 
   // Footer
   ft_role: { jp: "AI Creative Developer Portfolio", en: "AI Creative Developer Portfolio" },
   ft_back: { jp: "Back to top", en: "Back to top" },
-  ft_built: { jp: "Designed & built in Japan · 2026", en: "Designed & built in Japan · 2026" },
+  ft_built: { jp: "Crafted in Japan · 2026", en: "Crafted in Japan · 2026" },
 };
 
 /* =========================================================================
@@ -325,24 +325,24 @@ export const t: Dict = {
 const additions: Dict = {
   // ─── AI CAMERA — value list ─────────────────────────────────────────────
   ai_value_li_1: {
-    jp: "広告効果を数値で判断できる",
-    en: "Ad performance you can measure, not guess.",
+    jp: "効果を勘ではなく数値で読める",
+    en: "Measure performance — don't guess at it",
   },
   ai_value_li_2: {
-    jp: "時間帯別の視認傾向を把握できる",
-    en: "Attention patterns broken down by hour.",
+    jp: "時間帯ごとの見られ方が分かる",
+    en: "Attention shaped by hour of day",
   },
   ai_value_li_3: {
-    jp: "通過・接近・操作・視認を分けて分析",
-    en: "Passing, approach, operation, and view — each analysed apart.",
+    jp: "通過 接近 操作 視認をそれぞれ分けて読む",
+    en: "Passing, approach, operation, and gaze — each told apart",
   },
   ai_value_li_4: {
-    jp: "商業施設や広告主への定量レポート",
-    en: "Quantified reports for venues and advertisers.",
+    jp: "施設や広告主に渡せるレポートまで",
+    en: "Reports ready to hand to venues and advertisers",
   },
   ai_value_li_5: {
-    jp: "プライバシーに配慮した設計思想",
-    en: "Privacy-first by design.",
+    jp: "プライバシー優先で組み立てた設計",
+    en: "Privacy-first from the first line of code",
   },
 
   // ─── AIKameranado — distance zones JP descriptions ──────────────────────
@@ -461,48 +461,48 @@ const additions: Dict = {
   sk_cat_lang: { jp: "Languages", en: "Languages" },
   sk_cat_lang_jp: { jp: "語学", en: "Language Skills" },
   sk_lang_native: {
-    jp: "日本語・タガログ語・英語を使い分け",
-    en: "Native-level Japanese, Tagalog, and English",
+    jp: "日本語 タガログ語 英語をネイティブで使い分け",
+    en: "Japanese, Tagalog, and English at a native level",
   },
   sk_lang_trilingual: {
-    jp: "3言語を活かした接客・企画・発信",
-    en: "Trilingual communication across cultures",
+    jp: "3 言語で接客 企画 発信ができる",
+    en: "Three languages, used across cultures",
   },
   sk_lang_cultural: {
-    jp: "相手に合わせた自然なコミュニケーション",
-    en: "Tone adapted to each audience",
+    jp: "相手に合わせて トーンを自然に変えられる",
+    en: "Tone shifts to match who I'm speaking with",
   },
   sk_lang_messaging: {
-    jp: "多文化に合わせた言葉選び",
-    en: "Brand messaging in three languages",
+    jp: "ブランドの言葉を 3 言語に運べる",
+    en: "Brand voice carried into three languages",
   },
   sk_lang_summary: {
-    jp: "日本語・タガログ語・英語を使い分け、相手に合わせて自然に話します。",
-    en: "I communicate naturally in Japanese, Tagalog, and English — adapting tone and message for each audience.",
+    jp: "日本語 タガログ語 英語を使い分け\n相手と場面に合わせて自然に話す",
+    en: "Japanese, Tagalog, and English — used naturally,\nshifting register for the room I'm in",
   },
 
   // ─── Chat widget ────────────────────────────────────────────────────────
-  chat_open: { jp: "AIに聞く", en: "Ask AI" },
+  chat_open: { jp: "話を聞く", en: "Ask AVENDANO" },
   chat_title: { jp: "Concierge", en: "Concierge" },
   chat_subtitle: {
-    jp: "ポートフォリオに関するご質問にお答えします",
-    en: "Ask anything about the portfolio",
+    jp: "気になることを そのまま聞いてください",
+    en: "Ask anything — I'll walk you through it",
   },
   chat_input_ph: {
-    jp: "メッセージを入力…",
-    en: "Type a message…",
+    jp: "ここに入力",
+    en: "Type here",
   },
   chat_send: { jp: "送信", en: "Send" },
   chat_close: { jp: "閉じる", en: "Close" },
-  chat_thinking: { jp: "考えています…", en: "Thinking…" },
+  chat_thinking: { jp: "考えています", en: "Thinking" },
   chat_welcome: {
-    jp: "こんにちは。AVENDANO のポートフォリオへようこそ。プロジェクト、スキル、お問い合わせなど、何でも聞いてください。",
-    en: "Welcome to AVENDANO's portfolio. Ask about any project, skill, or how to get in touch.",
+    jp: "AVENDANO のポートフォリオへ\n気になる作品やスキル 連絡方法 どれでも聞いてください",
+    en: "Welcome to AVENDANO's portfolio.\nAsk about any project, any skill, or how to get in touch.",
   },
-  chat_q_ai: { jp: "AI CAMERAについて", en: "Tell me about AI CAMERA" },
-  chat_q_tsc: { jp: "TSC English Academy", en: "TSC English Academy" },
-  chat_q_hire: { jp: "インターン・案件相談", en: "Internship & projects" },
-  chat_q_lang: { jp: "語学スキル", en: "Languages" },
+  chat_q_ai: { jp: "AI CAMERA について", en: "About AI CAMERA" },
+  chat_q_tsc: { jp: "TSC English Academy について", en: "About TSC English Academy" },
+  chat_q_hire: { jp: "インターン 案件相談", en: "Internship or a project" },
+  chat_q_lang: { jp: "語学のこと", en: "About languages" },
 };
 
 Object.assign(t, additions);
