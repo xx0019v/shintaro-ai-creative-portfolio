@@ -5,6 +5,7 @@ import { Mail, ArrowUpRight } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import PortraitFrame from "@/components/ui/PortraitFrame";
 import MagneticButton from "@/components/ui/MagneticButton";
+import ShatterText from "@/components/ui/ShatterText";
 import { easeLuxe } from "@/lib/motion";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
@@ -61,7 +62,8 @@ export default function Contact() {
 
             <Reveal delay={0.08}>
               <h2 className="mt-8 font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight text-offwhite">
-                {tr("ct_title_a", lang)} <br />
+                <ShatterText text={tr("ct_title_a", lang)} as="span" />
+                <br />
                 <span className="italic font-light">{tr("ct_title_b", lang)}</span>
               </h2>
             </Reveal>

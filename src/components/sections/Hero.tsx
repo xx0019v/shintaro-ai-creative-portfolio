@@ -8,6 +8,7 @@ import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 import PortraitFrame from "@/components/ui/PortraitFrame";
 import MagneticButton from "@/components/ui/MagneticButton";
+import ShatterText from "@/components/ui/ShatterText";
 
 const TAGS = [
   "AI",
@@ -28,6 +29,24 @@ export default function Hero() {
       className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden pt-32 md:pt-40 pb-12"
     >
       <Ambient reduced={!!reduced} />
+
+      {/* Editorial side hairlines — quiet luxury framing */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-6 md:left-10 lg:left-16 top-32 bottom-32 w-px hidden md:block"
+        style={{
+          background:
+            "linear-gradient(180deg, transparent 0%, rgba(229,229,229,0.18) 30%, rgba(229,229,229,0.18) 70%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-6 md:right-10 lg:right-16 top-32 bottom-32 w-px hidden md:block"
+        style={{
+          background:
+            "linear-gradient(180deg, transparent 0%, rgba(229,229,229,0.18) 30%, rgba(229,229,229,0.18) 70%, transparent 100%)",
+        }}
+      />
 
       <div className="relative z-10 max-w-editorial mx-auto px-6 md:px-10 lg:px-16 w-full">
         {/* meta row */}
@@ -52,12 +71,16 @@ export default function Hero() {
             </motion.p>
 
             <h1 className="mt-6 font-serif tracking-tight leading-[0.92] text-offwhite text-[clamp(2.75rem,9vw,9rem)]">
-              <RevealLine delay={0.2}>{tr("hero_h1_a", lang)}</RevealLine>
+              <RevealLine delay={0.2}>
+                <ShatterText text={tr("hero_h1_a", lang)} as="span" />
+              </RevealLine>
               <RevealLine delay={0.32}>
                 <span className="italic font-light text-offwhite/85">into</span>{" "}
                 <span className="metallic">Systems,</span>
               </RevealLine>
-              <RevealLine delay={0.44}>{tr("hero_h1_c", lang)}</RevealLine>
+              <RevealLine delay={0.44}>
+                <ShatterText text={tr("hero_h1_c", lang)} as="span" />
+              </RevealLine>
             </h1>
           </div>
 

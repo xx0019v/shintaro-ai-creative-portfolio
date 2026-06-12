@@ -10,8 +10,25 @@ export default function Footer() {
   const { lang } = useLang();
 
   return (
-    <footer className="relative border-t border-offwhite/[0.08]">
-      <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16 py-12">
+    <footer className="relative border-t border-offwhite/[0.08] overflow-hidden">
+      {/* Lingering silver fade — the last breath of light */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(229,229,229,0.45) 50%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[680px] opacity-30 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(229,229,229,0.14) 0%, transparent 70%)",
+        }}
+      />
+      <div className="relative max-w-editorial mx-auto px-6 md:px-10 lg:px-16 py-14">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <div>
             <p className="font-serif text-base md:text-lg tracking-tight text-offwhite">
