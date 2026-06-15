@@ -85,14 +85,103 @@ const INTENTS: Intent[] = [
   },
 ];
 
-function fallback(text: string, lang: Lang): string {
+/**
+ * Detect short affirmative / negative replies (はい / yes / うん / no / etc).
+ * Returns 'yes', 'no', or null.
+ */
+function shortAnswer(t: string): "yes" | "no" | null {
+  const s = t.trim().toLowerCase();
+  if (s.length > 24) return null;
+  if (/^(はい|うん|ええ|そう|そうです|もちろん|お願い(します)?|ぜひ|見たい|見せて|教えて|知りたい|聞きたい|yes|y|yeah|yep|sure|please|ok|okay|go ahead|tell me|let me see|i'd like to|i would)/i.test(s)) {
+    return "yes";
+  }
+  if (/^(いいえ|いえ|違う|大丈夫|結構|no|nope|nah|not really|skip)/i.test(s)) {
+    return "no";
+  }
+  return null;
+}
+
+/**
+ * Context-aware follow-up: when the user replies "yes/no" to a previous
+ * assistant question, surface the intended next step instead of falling
+ * back to a generic prompt.
+ */
+function contextualReply(
+  prevAssistant: string,
+  answer: "yes" | "no",
+  lang: Lang
+): string | null {
+  const p = prevAssistant;
+
+  // TSC — "サイトを実際に見たい / point you to the live site"
+  if (/サイトを実際に見たい|point you to the live site|live site/i.test(p)) {
+    if (answer === "yes")
+      return lang === "jp"
+        ? "ライブはこちら https://xx0019v.github.io/TSC/\n海外講師×通訳者の体制 コース 料金 申込までひと続きで見られます"
+        : "Here it is — https://xx0019v.github.io/TSC/\nYou'll see the teacher × interpreter pairing, the courses, pricing, and the path to a trial, all in one flow.";
+    return lang === "jp"
+      ? "了解です\n他に気になる案件はありますか AI CAMERA や 香水自販機 デジタルサイネージなど"
+      : "Got it.\nAnything else you'd like to explore — AI CAMERA, the fragrance vending machine, or the digital signage?";
+  }
+
+  // Fragrance Spot — "プロセスと仕上がり どちら / process or the finish"
+  if (/プロセスと仕上がり|process or the finish/i.test(p)) {
+    if (answer === "yes")
+      return lang === "jp"
+        ? "では制作プロセスから\n店舗側と『ひと押しで香りを体験できる時間』というコンセプトを共有して キービジュアル POP SNS 店頭サイネージまで一気通貫で設計した\nどの工程を掘りますか"
+        : "Let's start with the process.\nWe aligned with the venue on a single idea — 'a fragrance you choose with one push' — then built every touchpoint from there: visuals, social, and the on-site films.\nWhich step would you like to go deeper on?";
+    return lang === "jp"
+      ? "了解です\n仕上がりの方を見るなら キービジュアル POP デジタルサイネージ どれが気になりますか"
+      : "Got it.\nIf it's the finish, would you like to see the key visual, the POPs, or the digital signage triptych?";
+  }
+
+  // Digital signage — "どの 1 本 / which one"
+  if (/どの 1 本|どの一本|which one/i.test(p)) {
+    if (answer === "yes")
+      return lang === "jp"
+        ? "迷ったらまず『香りを まとう』からおすすめします\n15秒で香りを身にまとう瞬間を切り取った 静かなのに記憶に残る1本です"
+        : "If you're unsure, start with 'Wear the Scent.'\nFifteen seconds, one quiet gesture — a fragrance being put on. Small in scale, lingering in memory.";
+    return lang === "jp"
+      ? "了解です\nまた気になる時にどうぞ"
+      : "Understood — come back to it whenever you'd like.";
+  }
+
+  // AI CAMERA — "詳しく聞きたい部分 / dig into"
+  if (/詳しく聞きたい部分|dig into/i.test(p)) {
+    if (answer === "yes")
+      return lang === "jp"
+        ? "では距離ゾーンの話から\n操作 接近 視認 通過の4つに分けて AIカメラが視認の可能性を判定する\n個人特定はしない設計です"
+        : "Let's start with the distance zones.\nFour zones — operation, approach, view, passing — and the AI camera estimates which one a person is in.\nNo identification, ever.";
+    return lang === "jp"
+      ? "了解です\n他のプロジェクトも気になればどうぞ"
+      : "Understood — happy to walk you through another project whenever you want.";
+  }
+
+  return null;
+}
+
+function fallback(text: string, lang: Lang, messages: Message[] = []): string {
   const t = text.trim();
+
+  // 1) Context-aware: detect short yes/no after a question
+  const ans = shortAnswer(t);
+  if (ans) {
+    const prevAssistant = [...messages]
+      .reverse()
+      .find((m) => m.role === "assistant")?.content ?? "";
+    const ctx = contextualReply(prevAssistant, ans, lang);
+    if (ctx) return ctx;
+  }
+
+  // 2) Intent matching against current user text
   for (const intent of INTENTS) {
     if (intent.match.test(t)) return lang === "jp" ? intent.jp : intent.en;
   }
+
+  // 3) Generic fallback (friendlier than before)
   return lang === "jp"
-    ? "もう少し具体的に教えてください。プロジェクト名、スキル、または問い合わせ方法など、お聞きしたいことを教えてください。"
-    : "Tell me a little more — a project name, a skill, or how you'd like to get in touch. I'll take it from there.";
+    ? "もう少し詳しく聞かせてください\n気になるプロジェクト 例えば AI CAMERA や 香水自販機 デジタルサイネージ TSC English Academy など 自由に投げてください"
+    : "Tell me a little more.\nAny project — AI CAMERA, the fragrance vending machine, the digital signage, or TSC English Academy — just drop the name.";
 }
 
 /* ---------------- POST handler ---------------- */
@@ -133,7 +222,7 @@ export async function POST(req: Request) {
         if (r.ok) {
           const json = await r.json();
           const text =
-            json?.content?.[0]?.text?.toString() ?? fallback(userText, lang);
+            json?.content?.[0]?.text?.toString() ?? fallback(userText, lang, messages);
           return NextResponse.json({ reply: text });
         }
       } catch {
@@ -141,7 +230,7 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ reply: fallback(userText, lang) });
+    return NextResponse.json({ reply: fallback(userText, lang, messages) });
   } catch {
     return NextResponse.json(
       { reply: "Something went wrong. Please try again." },
