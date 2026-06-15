@@ -500,6 +500,8 @@ const additions: Dict = {
     en: "Welcome to AVENDANO's portfolio.\nAsk about any project, any skill, or how to get in touch.",
   },
   chat_q_ai: { jp: "AI CAMERA について", en: "About AI CAMERA" },
+  chat_q_fragrance: { jp: "香水自動販売機", en: "Fragrance vending machine" },
+  chat_q_signage: { jp: "デジタルサイネージ", en: "Digital signage" },
   chat_q_tsc: { jp: "TSC English Academy について", en: "About TSC English Academy" },
   chat_q_hire: { jp: "インターン 案件相談", en: "Internship or a project" },
   chat_q_lang: { jp: "語学のこと", en: "About languages" },

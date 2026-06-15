@@ -16,6 +16,8 @@ const EASE = [0.19, 1, 0.22, 1] as const;
 
 const QUICK_KEYS = [
   "chat_q_ai",
+  "chat_q_fragrance",
+  "chat_q_signage",
   "chat_q_tsc",
   "chat_q_hire",
   "chat_q_lang",
