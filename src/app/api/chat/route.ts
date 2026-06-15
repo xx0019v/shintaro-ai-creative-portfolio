@@ -15,18 +15,28 @@ interface Intent {
 
 const INTENTS: Intent[] = [
   {
-    match: /(ai\s*camera|kameranado|カメラ|分析|サイネージ|広告効果)/i,
+    // AI CAMERA — analytics system (kept first; specific keywords only)
+    match: /(ai\s*camera|kameranado|aiカメラ|広告効果|匿名分析|attention\s*analytics|距離ゾーン|dwell)/i,
     jp:
-      "AI CAMERAは香水自販機のサイネージがどれだけ見られたかをAIカメラで匿名分析するシステムです。距離ゾーン、滞在、注視を可視化します。詳しく聞きたい部分はありますか?",
+      "AI CAMERA は香水自販機のサイネージがどれだけ見られたかを匿名で読み解くシステム\n距離ゾーン 滞在 視認の可能性を可視化する 詳しく聞きたい部分はありますか",
     en:
-      "AI CAMERA is the analytics system I built — it estimates how much a vending-machine signage is actually seen, anonymously. Distance zones, dwell, viewing likelihood. What would you like to dig into?",
+      "AI CAMERA reads how much a vending-machine signage is actually seen — anonymously.\nDistance zones, dwell, viewing likelihood. What would you like to dig into?",
   },
   {
-    match: /(fragrance|香水|spot|自販機|ブランディング)/i,
+    // Digital signage triptych — 3 films played on-site
+    match: /(signage|サイネージ|店頭|動画|three\s*films|triptych|香りを|まとう|red\s*edition|unisex|ユニセックス)/i,
     jp:
-      "Fragrance Spotは香水自販機のブランディング案件で、キービジュアル・POP・SNS・3本のサイネージ動画まで一貫してディレクションしました。気になるのは制作プロセス、それとも仕上がりですか?",
+      "店頭で流すデジタルサイネージは 3 本構成\n01 『香りを まとう』15 秒の上質な合図 香りを身にまとう瞬間を切り取る\n02 RED Edition 赤を基調にした華やかな女性向けエディション\n03 Unisex Edition 中性的でモードな表現 新しい顧客層へ\nどの 1 本の話を聞きたいですか",
     en:
-      "Fragrance Spot is a fragrance-vending-machine brand I directed end-to-end — key visual, POPs, social, three signage films. Want to hear about the process or the deliverables?",
+      "The on-site signage is a three-film triptych.\n01 'Wear the Scent' — fifteen quiet seconds of putting on a fragrance\n02 RED Edition — feminine, confident, led by red\n03 Unisex Edition — quieter and modern, opening the brand to new audiences\nWhich one would you like to hear more about?",
+  },
+  {
+    // Fragrance vending machine — the project + the place + the brand world
+    match: /(香水自動販売機|香水自販機|fragrance\s*spot|vending\s*machine|香水|fragrance|spot|自販機|ブランディング|高崎モントレー|monterey)/i,
+    jp:
+      "高崎モントレー 3F・4F に設置されている香水自販機 Fragrance Spot のブランディングを一貫して担当した\nキービジュアル POP SNS イベント導線 そして店頭サイネージ 3 本まで\n所有から体験へ という香りの新しい在り方を ひと押しで選べる時間として設計している\n制作プロセスと仕上がり どちらの話を聞きたいですか",
+    en:
+      "Fragrance Spot — the fragrance vending machine installed on the 3F and 4F of Takasaki Monterey.\nI directed the whole brand world end to end: key visual, POPs, social, on-site flow, and the three signage films.\nThe idea: fragrance moving from ownership into experience — a scent you choose with a single push.\nWant to hear about the process or the finish?",
   },
   {
     match: /(tsc|english|英語|オンライン|レッスン|授業)/i,
