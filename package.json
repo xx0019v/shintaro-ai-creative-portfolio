@@ -9,11 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/fiber": "^8.18.0",
+    "@shadergradient/react": "^2.4.20",
+    "@types/three": "^0.171.0",
+    "framer-motion": "^11.11.0",
+    "liquid-glass-js": "^0.1.0",
+    "lucide-react": "^0.453.0",
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "framer-motion": "^11.11.0",
-    "lucide-react": "^0.453.0"
+    "three": "^0.171.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.10",

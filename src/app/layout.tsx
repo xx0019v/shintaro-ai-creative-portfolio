@@ -16,6 +16,7 @@ import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionIndex from "@/components/ui/SectionIndex";
 import AmbientBackdrop from "@/components/ui/AmbientBackdrop";
+import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import ChatWidget from "@/components/chat/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -109,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguageProvider>
           <ScrollToTop />
           <LiquidLoader />
+          <ShaderBackdrop />
           <AmbientBackdrop />
           <ScrollProgress />
           <SectionIndex />
