@@ -91,7 +91,7 @@ export default function ChatWidget() {
         transition={{ duration: 1, ease: EASE, delay: 0.8 }}
         onClick={() => setOpen(true)}
         aria-label={tr("chat_open", lang)}
-        className="fixed bottom-6 left-6 z-[60] hidden md:flex items-center gap-2 px-4 py-3 text-[10px] tracking-[0.32em] uppercase text-offwhite hairline-silver glass hover:border-silver-bright transition-colors duration-500"
+        className="liquid-glass fixed bottom-6 left-6 z-[60] hidden md:flex items-center gap-2 px-4 py-3 text-[10px] tracking-[0.32em] uppercase text-offwhite hover:border-silver-bright transition-colors duration-500"
       >
         <MessageCircle size={14} strokeWidth={1.4} className="text-silver-bright" />
         {tr("chat_open", lang)}
@@ -118,7 +118,7 @@ export default function ChatWidget() {
               exit={{ y: 40, opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.6, ease: EASE }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full md:w-[420px] md:mr-8 h-[80vh] md:h-[600px] glass hairline-silver flex flex-col overflow-hidden"
+              className="liquid-glass relative w-full md:w-[420px] md:mr-8 h-[80vh] md:h-[600px] flex flex-col overflow-hidden"
               role="dialog"
               aria-modal="true"
               aria-labelledby="chat-title"

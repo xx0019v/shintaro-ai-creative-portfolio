@@ -158,6 +158,56 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   border: 1px solid rgba(229,229,229,0.08);
 }
 
+/* Liquid glass — Apple-style refraction surrogate built in pure CSS.
+   A heavy backdrop blur reads the silver shader behind it; layered
+   highlights fake the specular sheen + inner refraction of real glass.
+   Robust everywhere, zero JS, mobile-safe. */
+.liquid-glass {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(26,26,26,0.50) 0%, rgba(10,10,10,0.30) 100%);
+  backdrop-filter: blur(22px) saturate(135%) brightness(1.05);
+  -webkit-backdrop-filter: blur(22px) saturate(135%) brightness(1.05);
+  border: 1px solid rgba(229,229,229,0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),       /* top edge catch-light */
+    inset 0 0 28px rgba(255,255,255,0.04),       /* inner refraction wash */
+    0 24px 60px -24px rgba(0,0,0,0.7);           /* lifted depth shadow */
+  isolation: isolate;
+}
+/* Diagonal specular streak — the sheen that sells the glass */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(125deg,
+      rgba(255,255,255,0.14) 0%,
+      rgba(255,255,255,0.04) 18%,
+      transparent 38%,
+      transparent 72%,
+      rgba(229,229,229,0.06) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+/* Bright hairline rim that brightens the convex edge */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg,
+      rgba(255,255,255,0.22), transparent 40%,
+      transparent 60%, rgba(192,192,192,0.16)) border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
 /* Soft chrome border that brightens on hover */
 .chrome-edge {
   border: 1px solid rgba(192,192,192,0.18);
