@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PremiumHover from "./PremiumHover";
 
 interface Props {
   src: string;
@@ -9,6 +10,8 @@ interface Props {
   className?: string;
   priority?: boolean;
   sizes?: string;
+  /** Adds extra glass shimmer (fragrance section). */
+  glare?: boolean;
 }
 
 const ratioClass = {
@@ -31,9 +34,11 @@ export default function EditorialFrame({
   className = "",
   priority,
   sizes,
+  glare = false,
 }: Props) {
   return (
-    <figure className={`editorial-frame group/ef ${className}`} data-cursor="VIEW">
+    <PremiumHover cursor="VIEW" glare={glare} focusable className="block">
+    <figure className={`editorial-frame group/ef ${className}`}>
       <div className={`relative overflow-hidden ${ratioClass[ratio]} bg-charcoal`}>
         <Image
           src={src}
@@ -60,5 +65,6 @@ export default function EditorialFrame({
         </figcaption>
       )}
     </figure>
+    </PremiumHover>
   );
 }

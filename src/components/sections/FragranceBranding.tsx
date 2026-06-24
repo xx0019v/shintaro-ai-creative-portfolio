@@ -65,6 +65,7 @@ export default function FragranceBranding() {
                 ratio="portrait"
                 caption="Fragrance Spot · Key Visual"
                 desaturate
+                glare
                 priority
                 sizes="(max-width: 768px) 100vw, 60vw"
               />

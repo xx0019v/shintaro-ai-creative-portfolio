@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import PremiumHover from "./PremiumHover";
 
 interface Props {
   src: string;
@@ -17,7 +18,8 @@ export default function SignageVideo({ src, poster, caption, className = "" }: P
   const [errored, setErrored] = useState(false);
 
   return (
-    <figure className={`editorial-frame ${className}`} data-cursor="PLAY">
+    <PremiumHover cursor="PLAY" focusable className="block">
+    <figure className={`editorial-frame ${className}`}>
       <div className="relative aspect-[9/16] overflow-hidden bg-charcoal max-h-[640px] mx-auto">
         {!errored ? (
           <video
@@ -62,5 +64,6 @@ export default function SignageVideo({ src, poster, caption, className = "" }: P
         </figcaption>
       )}
     </figure>
+    </PremiumHover>
   );
 }

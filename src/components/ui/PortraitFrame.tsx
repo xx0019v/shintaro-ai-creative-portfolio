@@ -29,7 +29,7 @@ export default function PortraitFrame({
   const aspect = variant === "headshot" ? "aspect-square" : "aspect-[3/4]";
 
   return (
-    <div className={`relative ${aspect} ${className} group`}>
+    <div className={`premium-hover relative ${aspect} ${className} group`}>
       {/* silver frame ring */}
       <div className="absolute -inset-px hairline-silver pointer-events-none" aria-hidden />
       {/* faint silver glow */}
@@ -76,6 +76,10 @@ export default function PortraitFrame({
           style={{ background: "rgba(245,245,245,0.04)" }}
         />
       </div>
+
+      {/* premium hover — silver edge + sheen sweep (no tilt, keeps ticks stable) */}
+      <span className="ph-sweep" aria-hidden />
+      <span className="ph-edge" aria-hidden />
 
       {/* corner ticks */}
       <CornerTick className="-top-2 -left-2" />
