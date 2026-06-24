@@ -33,7 +33,7 @@ export default function EditorialFrame({
   sizes,
 }: Props) {
   return (
-    <figure className={`editorial-frame ${className}`}>
+    <figure className={`editorial-frame group/ef ${className}`} data-cursor="VIEW">
       <div className={`relative overflow-hidden ${ratioClass[ratio]} bg-charcoal`}>
         <Image
           src={src}

@@ -186,7 +186,7 @@ function Meta({ label, value }: { label: string; value: string }) {
 /* ---------- Live iframe embed of the real TSC English Academy site ---------- */
 function BrowserMock() {
   return (
-    <div className="hairline-silver overflow-hidden">
+    <div className="hairline-silver overflow-hidden" data-cursor="OPEN">
       {/* browser chrome */}
       <div className="bg-base/80 px-5 py-3 border-b border-offwhite/[0.08] flex items-center gap-4 text-[10px] tracking-wider2 uppercase text-silver-muted">
         <div className="flex gap-1.5">

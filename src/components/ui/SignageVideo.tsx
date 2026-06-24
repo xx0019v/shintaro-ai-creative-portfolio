@@ -17,7 +17,7 @@ export default function SignageVideo({ src, poster, caption, className = "" }: P
   const [errored, setErrored] = useState(false);
 
   return (
-    <figure className={`editorial-frame ${className}`}>
+    <figure className={`editorial-frame ${className}`} data-cursor="PLAY">
       <div className="relative aspect-[9/16] overflow-hidden bg-charcoal max-h-[640px] mx-auto">
         {!errored ? (
           <video
