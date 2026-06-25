@@ -28,11 +28,12 @@ export default function EntrySphere() {
   const { lang } = useLang();
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const firedRef = useRef(false);
   const dustLayerRef = useRef<HTMLDivElement>(null);
 
-  // deterministic dust ring around the sphere
+  // deterministic dust ring around the sphere (PC — rAF driven)
   const dust = useMemo(() => {
     let s = 23;
     const rand = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
@@ -50,9 +51,36 @@ export default function EntrySphere() {
     });
   }, []);
 
+  // lightweight CSS motes around the sphere (mobile — no rAF, 8 dots)
+  const motes = useMemo(() => {
+    let s = 71;
+    const rand = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+    return Array.from({ length: 8 }, (_, i) => {
+      const ang = (i / 8) * Math.PI * 2 + rand() * 0.3;
+      const rad = 92 + rand() * 54; // tight ring around the sphere
+      return {
+        id: i,
+        tx: Math.cos(ang) * rad,
+        ty: Math.sin(ang) * rad * 0.92,
+        size: 2 + rand() * 2,
+        fx: (rand() - 0.5) * 14,
+        fy: (rand() - 0.5) * 14,
+        op: 0.3 + rand() * 0.25,
+        dur: 6 + rand() * 4,
+        delay: rand() * 3,
+      };
+    });
+  }, []);
+
   useEffect(() => {
     setMounted(true);
     if (typeof window === "undefined") return;
+    // Treat coarse-pointer OR narrow viewport as "mobile": both get the
+    // lightweight CSS motes instead of the rAF dust.
+    setIsTouch(
+      window.matchMedia("(hover: none), (pointer: coarse)").matches ||
+        window.matchMedia("(max-width: 768px)").matches
+    );
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     const prev = document.body.style.overflow;
@@ -180,32 +208,67 @@ export default function EntrySphere() {
             }}
           />
 
-          {/* dust ring */}
-          <div
-            ref={dustLayerRef}
-            aria-hidden
-            className="absolute left-1/2 top-1/2 pointer-events-none"
-            style={{ transform: "translate(-50%, -50%)" }}
-          >
-            {dust.map((d) => (
-              <span
-                key={d.id}
-                data-dust
-                className="absolute rounded-full"
-                style={{
-                  left: 0,
-                  top: 0,
-                  width: d.size,
-                  height: d.size,
-                  marginLeft: -d.size / 2,
-                  marginTop: -d.size / 2,
-                  background:
-                    "radial-gradient(circle, rgba(245,245,245,0.9), rgba(192,192,192,0))",
-                  willChange: "transform, opacity",
-                }}
-              />
-            ))}
-          </div>
+          {/* dust ring — PC (rAF driven, 22 motes) */}
+          {!isTouch && (
+            <div
+              ref={dustLayerRef}
+              aria-hidden
+              className="absolute left-1/2 top-1/2 pointer-events-none"
+              style={{ transform: "translate(-50%, -50%)" }}
+            >
+              {dust.map((d) => (
+                <span
+                  key={d.id}
+                  data-dust
+                  className="absolute rounded-full"
+                  style={{
+                    left: 0,
+                    top: 0,
+                    width: d.size,
+                    height: d.size,
+                    marginLeft: -d.size / 2,
+                    marginTop: -d.size / 2,
+                    background:
+                      "radial-gradient(circle, rgba(245,245,245,0.9), rgba(192,192,192,0))",
+                    willChange: "transform, opacity",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* dust ring — mobile (CSS-only, 8 motes, collapses on activate) */}
+          {isTouch && !reduced && (
+            <div
+              aria-hidden
+              className={`entry-dust-m absolute left-1/2 top-1/2 pointer-events-none ${
+                activating ? "is-pulling" : ""
+              }`}
+              style={{ transform: "translate(-50%, -50%)" }}
+            >
+              {motes.map((m) => (
+                <span
+                  key={m.id}
+                  className="entry-mote"
+                  style={
+                    {
+                      width: m.size,
+                      height: m.size,
+                      marginLeft: -m.size / 2,
+                      marginTop: -m.size / 2,
+                      ["--tx" as string]: `${m.tx}px`,
+                      ["--ty" as string]: `${m.ty}px`,
+                      ["--fx" as string]: `${m.fx}px`,
+                      ["--fy" as string]: `${m.fy}px`,
+                      ["--op" as string]: m.op,
+                      ["--dur" as string]: `${m.dur}s`,
+                      ["--delay" as string]: `${m.delay}s`,
+                    } as React.CSSProperties
+                  }
+                />
+              ))}
+            </div>
+          )}
 
           {/* sphere */}
           <motion.div
