@@ -5,19 +5,30 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { easeLuxe } from "@/lib/motion";
 import LanguageToggle from "@/components/ui/LanguageToggle";
+import { MagneticLink } from "@/components/ui/MagneticText";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 
 const NAV = [
-  { key: "nav_about", href: "#about" },
-  { key: "nav_projects", href: "#projects" },
-  { key: "nav_skills", href: "#skills" },
-  { key: "nav_contact", href: "#contact" },
+  { key: "nav_about", href: "#about", id: "about" },
+  { key: "nav_projects", href: "#projects", id: "projects" },
+  { key: "nav_skills", href: "#skills", id: "skills" },
+  { key: "nav_contact", href: "#contact", id: "contact" },
 ] as const;
+
+// The nav links jump to these sections; we also count nearby sections
+// toward the same link so the underline tracks the reading position.
+const ACTIVE_GROUPS: Record<string, string[]> = {
+  about: ["about"],
+  projects: ["projects", "fragrance", "client", "keychain", "leadership"],
+  skills: ["skills", "strengths", "education"],
+  contact: ["contact"],
+};
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState<string>("");
   const { lang } = useLang();
 
   useEffect(() => {
@@ -25,6 +36,34 @@ export default function Header() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Track which nav group the reader is currently in (for the underline)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ratios = new Map<string, number>();
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          ratios.set((e.target as HTMLElement).id, e.intersectionRatio);
+        }
+        let bestId = "";
+        let best = 0;
+        for (const [id, r] of ratios) {
+          if (r > best) {
+            best = r;
+            bestId = id;
+          }
+        }
+        const nav = Object.keys(ACTIVE_GROUPS).find((k) =>
+          ACTIVE_GROUPS[k].includes(bestId)
+        );
+        if (nav) setActiveNav(nav);
+      },
+      { threshold: [0, 0.25, 0.5] }
+    );
+    document.querySelectorAll("section[id]").forEach((s) => obs.observe(s));
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
@@ -58,14 +97,14 @@ export default function Header() {
             <div className="hidden md:flex items-center gap-10">
               <nav className="flex items-center gap-10">
                 {NAV.map((item) => (
-                  <a
+                  <MagneticLink
                     key={item.href}
                     href={item.href}
-                    className="group relative text-[12px] tracking-wider2 uppercase text-offwhite/75 hover:text-offwhite transition-colors"
+                    active={activeNav === item.id}
+                    className="text-[12px] tracking-wider2 uppercase text-offwhite/75 hover:text-offwhite transition-colors"
                   >
                     {tr(item.key, lang)}
-                    <span className="absolute -bottom-1.5 left-0 right-0 h-px bg-silver origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                  </a>
+                  </MagneticLink>
                 ))}
               </nav>
               <LanguageToggle />
