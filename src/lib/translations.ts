@@ -507,9 +507,10 @@ const additions: Dict = {
   chat_q_lang: { jp: "語学のこと", en: "About languages" },
 
   // ─── Entry sphere ───────────────────────────────────────────────────────
-  entry_copy: { jp: "触れて はじまる", en: "Touch to begin" },
-  entry_aria: { jp: "サイトに入る", en: "Enter the site" },
+  entry_copy: { jp: "触れると はじまる", en: "Touch to begin" },
+  entry_aria: { jp: "AVENDANO の世界に入る", en: "Enter the world of AVENDANO" },
   entry_skip: { jp: "スキップ", en: "Skip" },
+  entry_cursor: { jp: "ENTER", en: "ENTER" },
 };
 
 Object.assign(t, additions);
