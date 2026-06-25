@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLaunch } from "@/context/LaunchContext";
 
 const TEXT = "AVENDANO";
 
@@ -222,6 +223,7 @@ function makeDroplets(
 
 export default function LiquidLoader() {
   const reduced = useReducedMotion();
+  const { launched } = useLaunch();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(true);
   const [phase, setPhase] = useState<Phase>("dark");
@@ -265,10 +267,11 @@ export default function LiquidLoader() {
     };
   }, [active, mounted]);
 
-  // Phase timeline
+  // Phase timeline — waits for the EntrySphere to hand off (launched)
   useEffect(() => {
     if (!mounted || !active || startedRef.current || droplets.length === 0)
       return;
+    if (!launched) return; // hold on the dark frame until the user enters
     startedRef.current = true;
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(setTimeout(() => setPhase("emerge"), STAGE.emerge));
@@ -285,7 +288,7 @@ export default function LiquidLoader() {
       }, STAGE.end)
     );
     return () => timers.forEach(clearTimeout);
-  }, [mounted, active, droplets.length]);
+  }, [mounted, active, droplets.length, launched]);
 
   // Pre-compute orbit keyframes (one set per droplet) — keeps motion smooth
   // and GPU-friendly via Framer's keyframe interpolation.

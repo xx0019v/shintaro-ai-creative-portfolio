@@ -505,6 +505,11 @@ const additions: Dict = {
   chat_q_tsc: { jp: "TSC English Academy について", en: "About TSC English Academy" },
   chat_q_hire: { jp: "インターン 案件相談", en: "Internship or a project" },
   chat_q_lang: { jp: "語学のこと", en: "About languages" },
+
+  // ─── Entry sphere ───────────────────────────────────────────────────────
+  entry_copy: { jp: "触れて はじまる", en: "Touch to begin" },
+  entry_aria: { jp: "サイトに入る", en: "Enter the site" },
+  entry_skip: { jp: "スキップ", en: "Skip" },
 };
 
 Object.assign(t, additions);

@@ -10,6 +10,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { LaunchProvider } from "@/context/LaunchContext";
+import EntrySphere from "@/components/ui/EntrySphere";
 import LiquidLoader from "@/components/ui/LiquidLoader";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import CustomCursor from "@/components/ui/CustomCursor";
@@ -109,16 +111,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="bg-base text-offwhite font-sans antialiased">
         <LanguageProvider>
-          <ScrollToTop />
-          <LiquidLoader />
-          <ShaderBackdrop />
-          <CinemaScroll />
-          <AmbientBackdrop />
-          <ScrollProgress />
-          <SectionIndex />
-          <CustomCursor />
-          {children}
-          <ChatWidget />
+          <LaunchProvider>
+            <ScrollToTop />
+            <EntrySphere />
+            <LiquidLoader />
+            <ShaderBackdrop />
+            <CinemaScroll />
+            <AmbientBackdrop />
+            <ScrollProgress />
+            <SectionIndex />
+            <CustomCursor />
+            {children}
+            <ChatWidget />
+          </LaunchProvider>
         </LanguageProvider>
       </body>
     </html>
