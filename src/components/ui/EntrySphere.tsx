@@ -186,28 +186,10 @@ export default function EntrySphere() {
           }}
         />
 
-        {/* the stage — sphere + dust share a centre */}
-        <div className="relative flex items-center justify-center" style={{ width: 1, height: 1 }}>
-          {/* gravity well — a faint dark warp that tightens on hover/activate */}
-          <motion.div
-            aria-hidden
-            className="absolute left-1/2 top-1/2 pointer-events-none"
-            initial={false}
-            animate={{
-              width: activating ? 520 : phase === "hovering" ? 420 : 380,
-              height: activating ? 520 : phase === "hovering" ? 420 : 380,
-              opacity: activating ? 0 : 1,
-            }}
-            transition={{ duration: 0.9, ease: EASE }}
-            style={{
-              transform: "translate(-50%, -50%)",
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle, transparent 38%, rgba(0,0,0,0.55) 60%, transparent 75%)",
-              filter: "blur(8px)",
-            }}
-          />
-
+        {/* the stage — sphere + dust share a centre.
+            grid place-items-center stacks children on one cell without
+            shrinking the sphere (a flex 1x1 box collapsed it to a line). */}
+        <div className="relative grid place-items-center">
           {/* dust ring — PC (rAF driven, 22 motes) */}
           {!isTouch && (
             <div
@@ -326,61 +308,6 @@ export default function EntrySphere() {
                   "inset 0 -16px 36px rgba(0,0,0,0.7), inset 0 10px 22px rgba(255,255,255,0.18), 0 30px 80px -24px rgba(0,0,0,0.85), 0 0 60px -10px rgba(229,229,229,0.22)",
               }}
             />
-            {/* unfurl ring — molten metal opens outward on activate */}
-            <AnimatePresence>
-              {activating && (
-                <motion.div
-                  aria-hidden
-                  className="absolute left-1/2 top-1/2"
-                  initial={{ width: 0, height: 0, opacity: 0.9 }}
-                  animate={{ width: 620, height: 620, opacity: 0 }}
-                  transition={{ duration: 1.1, ease: EASE, delay: 0.18 }}
-                  style={{
-                    transform: "translate(-50%, -50%)",
-                    borderRadius: "50%",
-                    border: "1px solid rgba(229,229,229,0.55)",
-                    boxShadow: "0 0 40px rgba(229,229,229,0.25)",
-                  }}
-                />
-              )}
-            </AnimatePresence>
-            {/* chrome reflection band drifting over the surface */}
-            <motion.div
-              aria-hidden
-              className="absolute inset-0 overflow-hidden"
-              style={{ borderRadius: "48% 52% 50% 50% / 52% 48% 52% 48%" }}
-            >
-              <motion.div
-                initial={{ y: "-120%" }}
-                animate={
-                  reduced
-                    ? { y: "10%" }
-                    : activating
-                    ? { y: "120%" }
-                    : { y: ["-120%", "120%"] }
-                }
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : activating
-                    ? { duration: 0.5, ease: EASE }
-                    : {
-                        duration: 5.5,
-                        ease: "easeInOut",
-                        repeat: Infinity,
-                        repeatDelay: 1.2,
-                      }
-                }
-                className="absolute left-0 right-0 h-1/2"
-                style={{
-                  top: 0,
-                  background:
-                    "linear-gradient(180deg, transparent, rgba(245,245,245,0.42), transparent)",
-                  mixBlendMode: "screen",
-                  filter: "blur(2px)",
-                }}
-              />
-            </motion.div>
             {/* gathering light — intensifies just before activation */}
             <motion.div
               aria-hidden

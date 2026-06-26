@@ -211,32 +211,52 @@ function BrowserMock() {
         </a>
       </div>
 
-      {/* Live embed — actual TSC English Academy site */}
-      <div className="relative w-full aspect-[16/10] bg-[#0a0807]">
-        <iframe
-          src={LIVE_URL}
-          title="TSC English Academy — Live"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          className="absolute inset-0 w-full h-full border-0"
-        />
-        {/* subtle vignette to keep the whole portfolio cohesive */}
+      {/* Presentational panel — links out, not embedded */}
+      <a
+        href={LIVE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open TSC English Academy in a new tab"
+        className="group relative block w-full aspect-[16/10] overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(ellipse at 30% 20%, rgba(229,229,229,0.08) 0%, transparent 55%), linear-gradient(160deg, #11100f 0%, #0a0807 100%)",
+        }}
+      >
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+          <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+            海外講師 × 日本人通訳者
+          </p>
+          <h4 className="mt-4 font-serif text-3xl md:text-5xl tracking-tight text-offwhite leading-[1.05]">
+            TSC English Academy
+          </h4>
+          <p className="mt-4 text-sm text-silver-muted">
+            React · Three.js · GSAP — Live
+          </p>
+          <span className="mt-8 inline-flex items-center gap-3 px-6 py-3 hairline-silver text-[11px] tracking-wider2 uppercase text-offwhite group-hover:bg-offwhite group-hover:text-base transition-colors duration-500">
+            Open live site
+            <ArrowUpRight
+              size={14}
+              strokeWidth={1.25}
+              className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </span>
+        </div>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 70%, rgba(0,0,0,0.35) 100%)",
+              "radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,0.45) 100%)",
           }}
         />
-      </div>
+      </a>
 
       {/* footer ribbon */}
       <div className="bg-base/80 px-5 py-3 border-t border-offwhite/[0.08] flex items-center justify-between text-[10px] tracking-wider2 uppercase text-silver-muted">
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
-          Embedded live preview
+          Live · xx0019v.github.io/TSC
         </span>
         <a
           href={LIVE_URL}
