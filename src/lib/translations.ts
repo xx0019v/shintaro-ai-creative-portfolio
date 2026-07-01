@@ -512,22 +512,6 @@ const additions: Dict = {
   entry_aria: { jp: "AVENDANO の世界に入る", en: "Enter the world of AVENDANO" },
   entry_skip: { jp: "スキップ", en: "Skip" },
   entry_cursor: { jp: "TAP", en: "TAP" },
-
-  // ─── Entry sphere — chapter labels orbiting the sphere ─────────────────
-  // Uppercase Latin throughout: read as exhibition signage in both languages
-  // and keep the sphere visually dominant. JP and EN intentionally identical.
-  entry_chapter_ai:         { jp: "AI CAMERA",   en: "AI CAMERA" },
-  entry_chapter_fragrance:  { jp: "FRAGRANCE",   en: "FRAGRANCE" },
-  entry_chapter_client:     { jp: "CLIENT WORK", en: "CLIENT WORK" },
-  entry_chapter_keychain:   { jp: "KEYCHAIN",    en: "KEYCHAIN" },
-  entry_chapter_leadership: { jp: "LEADERSHIP",  en: "LEADERSHIP" },
-  entry_chapter_skills:     { jp: "SKILLS",      en: "SKILLS" },
-  entry_chapter_contact:    { jp: "CONTACT",     en: "CONTACT" },
-  // Mobile (compact set of 4)
-  entry_chapter_m_ai:       { jp: "AI",      en: "AI" },
-  entry_chapter_m_brand:    { jp: "BRAND",   en: "BRAND" },
-  entry_chapter_m_work:     { jp: "WORK",    en: "WORK" },
-  entry_chapter_m_contact:  { jp: "CONTACT", en: "CONTACT" },
 };
 
 Object.assign(t, additions);
