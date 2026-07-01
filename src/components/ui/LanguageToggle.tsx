@@ -47,6 +47,7 @@ export default function LanguageToggle({ className = "" }: { className?: string 
     <div
       role="group"
       aria-label="Language toggle"
+      data-prox
       className={`relative inline-flex items-center text-[10px] tracking-wider2 uppercase hairline-silver overflow-hidden ${className}`}
     >
       {/* sliding chrome highlight — moves horizontally on switch */}

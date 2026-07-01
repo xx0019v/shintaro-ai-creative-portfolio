@@ -337,3 +337,112 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 .chrome-edge:hover {
   border-color: rgba(229,229,229,0.55);
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Bento — asymmetric editorial grid (CSS-only, no dashboard cards).
+   A dense 12-col / auto-row grid; cells opt into spans so a few pieces
+   read large and the rest settle quietly around them. Cells reuse the
+   liquid-glass / hairline language, never a boxed template card.
+   ───────────────────────────────────────────────────────────────────── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (min-width: 768px) {
+  .bento {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: minmax(120px, auto);
+    gap: 16px;
+  }
+}
+.bento-cell {
+  position: relative;
+  border-radius: 14px;
+  padding: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(229, 229, 229, 0.08);
+  background: linear-gradient(180deg, rgba(20,20,20,0.42) 0%, rgba(9,9,9,0.22) 100%);
+  transition: border-color 600ms cubic-bezier(0.19,1,0.22,1),
+              transform 700ms cubic-bezier(0.19,1,0.22,1),
+              background-color 600ms cubic-bezier(0.19,1,0.22,1);
+}
+@media (min-width: 768px) {
+  .bento-cell { padding: 1.75rem; }
+}
+/* thin reflected top line — the "glass edge" catch-light */
+.bento-cell::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(229,229,229,0.22), transparent);
+  opacity: 0.6;
+}
+.bento-cell:hover { border-color: rgba(192,192,192,0.30); }
+/* span helpers (desktop only — mobile stacks to 1–2 col) */
+@media (min-width: 768px) {
+  .bento-col-4  { grid-column: span 4; }
+  .bento-col-5  { grid-column: span 5; }
+  .bento-col-6  { grid-column: span 6; }
+  .bento-col-7  { grid-column: span 7; }
+  .bento-col-8  { grid-column: span 8; }
+  .bento-col-12 { grid-column: span 12; }
+  .bento-row-2  { grid-row: span 2; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Proximity-reactive — elements marked [data-prox] gather a faint silver
+   glow that tracks the cursor as it nears, then settle when it leaves.
+   Values (--prox 0..1, --px/--py local %) are written by ProximityField.
+   Pure CSS paint; no per-element JS state.
+   ───────────────────────────────────────────────────────────────────── */
+[data-prox] {
+  --prox: 0;
+  --px: 50%;
+  --py: 50%;
+}
+[data-prox]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: var(--prox);
+  background: radial-gradient(
+    220px circle at var(--px) var(--py),
+    rgba(229, 229, 229, 0.14),
+    rgba(192, 192, 192, 0.05) 40%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+  transition: opacity 500ms cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1;
+}
+/* bento cells lift a hair toward the cursor — via shadow, not transform,
+   so it never fights framer-motion's inline transform on the same element */
+.bento-cell[data-prox] {
+  box-shadow:
+    0 calc(var(--prox) * 12px) calc(var(--prox) * 34px) rgba(0, 0, 0, calc(var(--prox) * 0.45)),
+    inset 0 0 calc(var(--prox) * 24px) rgba(229, 229, 229, calc(var(--prox) * 0.05));
+}
+@media (hover: none), (pointer: coarse) {
+  /* mobile: no proximity paint; keep a quiet tap feedback via :active */
+  [data-prox]::after { display: none; }
+  .bento-cell[data-prox] { box-shadow: none; }
+  .bento-cell:active { border-color: rgba(192,192,192,0.30); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-prox]::after { display: none; }
+  .bento-cell[data-prox] { box-shadow: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Kinetic characters — per-letter reveal handled by <KineticText>. This
+   just declares the paint hint; the transform/opacity come from framer.
+   ───────────────────────────────────────────────────────────────────── */
+.kinetic-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+.kinetic-char[data-space="1"] { width: 0.32em; }

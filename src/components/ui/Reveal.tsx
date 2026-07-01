@@ -34,6 +34,8 @@ interface RevealProps {
    * calls are untouched. Auto-disabled on touch to keep mobile cheap.
    */
   cinematic?: boolean;
+  /** Tag the rendered element as proximity-reactive (see ProximityField). */
+  proximity?: boolean;
 }
 
 export default function Reveal({
@@ -45,6 +47,7 @@ export default function Reveal({
   as = "div",
   once = true,
   cinematic = false,
+  proximity = false,
 }: RevealProps) {
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
@@ -60,9 +63,15 @@ export default function Reveal({
     setRich(!coarse && !narrow);
   }, []);
 
+  const proxAttr = proximity ? { "data-prox": true } : {};
+
   if (!mounted || reduced) {
     const Plain = as as React.ElementType;
-    return <Plain className={className}>{children}</Plain>;
+    return (
+      <Plain className={className} {...proxAttr}>
+        {children}
+      </Plain>
+    );
   }
 
   const Component = motion[as] as typeof motion.div;
@@ -84,6 +93,7 @@ export default function Reveal({
       transition={{ duration, ease: LUX_EASE, delay }}
       className={className}
       style={useCinema ? { willChange: "transform, opacity, filter" } : undefined}
+      {...proxAttr}
     >
       {children}
     </Component>

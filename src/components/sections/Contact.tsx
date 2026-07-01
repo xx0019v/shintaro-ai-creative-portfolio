@@ -88,7 +88,8 @@ export default function Contact() {
               <MagneticButton>
                 <a
                   href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
-                  className="group inline-flex items-center gap-6 hairline-silver px-8 py-5 hover:bg-offwhite/[0.04] transition-colors duration-500"
+                  data-prox
+                  className="group relative inline-flex items-center gap-6 hairline-silver px-8 py-5 hover:bg-offwhite/[0.04] transition-colors duration-500"
                 >
                   <Mail size={18} strokeWidth={1.1} className="text-silver-bright" />
                   <span className="font-serif text-lg md:text-xl tracking-tight">{EMAIL}</span>

@@ -88,6 +88,7 @@ export default function PremiumHover({
       ref={wrapRef}
       className={`premium-hover ${className}`}
       data-cursor={cursor}
+      data-prox
       tabIndex={focusable ? 0 : undefined}
     >
       <div ref={tiltRef} className="ph-tilt">

@@ -1,9 +1,11 @@
 "use client";
 
 import Reveal from "@/components/ui/Reveal";
+import Parallax from "@/components/ui/Parallax";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
+import PlayableCharm from "@/components/ui/PlayableCharm";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 
@@ -80,14 +82,19 @@ export default function KeychainProject() {
         <Reveal delay={0.15} className="mt-16 md:mt-20">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-7">
-              <EditorialFrame
-                src="/images/keychain/keychain-uchiike-collection.jpg"
-                alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
-                ratio="portrait"
-                caption="Teacher Editorial Charm Collection"
-                desaturate
-                sizes="(max-width: 768px) 100vw, 60vw"
-              />
+              {/* Playable Easter egg — tap the charm to turn it under the light */}
+              <Parallax distance={48} lift fade>
+                <PlayableCharm>
+                  <EditorialFrame
+                    src="/images/keychain/keychain-uchiike-collection.jpg"
+                    alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
+                    ratio="portrait"
+                    caption="Teacher Editorial Charm Collection"
+                    desaturate
+                    sizes="(max-width: 768px) 100vw, 60vw"
+                  />
+                </PlayableCharm>
+              </Parallax>
             </div>
             <div className="md:col-span-5 space-y-6">
               <div>
@@ -136,13 +143,15 @@ export default function KeychainProject() {
         <Reveal className="mt-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-5">
-              <EditorialFrame
-                src="/images/keychain/keychain-arisu.jpg"
-                alt="Keychain concept — Energetic edition"
-                ratio="square"
-                caption={tr("kc_w02_caption", lang)}
-                desaturate
-              />
+              <Parallax distance={40} lift>
+                <EditorialFrame
+                  src="/images/keychain/keychain-arisu.jpg"
+                  alt="Keychain concept — Energetic edition"
+                  ratio="square"
+                  caption={tr("kc_w02_caption", lang)}
+                  desaturate
+                />
+              </Parallax>
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
                   {tr("kc_w02_eyebrow", lang)}
@@ -153,13 +162,15 @@ export default function KeychainProject() {
               </div>
             </div>
             <div className="space-y-5">
-              <EditorialFrame
-                src="/images/keychain/keychain-fukukocho.jpg"
-                alt="Keychain concept — anime-style portrait at desk"
-                ratio="square"
-                caption="Concept · Anime Portrait"
-                desaturate
-              />
+              <Parallax distance={28} lift>
+                <EditorialFrame
+                  src="/images/keychain/keychain-fukukocho.jpg"
+                  alt="Keychain concept — anime-style portrait at desk"
+                  ratio="square"
+                  caption="Concept · Anime Portrait"
+                  desaturate
+                />
+              </Parallax>
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
                   {tr("kc_w03_eyebrow", lang)}

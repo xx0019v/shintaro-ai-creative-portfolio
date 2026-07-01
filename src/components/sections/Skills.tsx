@@ -1,15 +1,18 @@
 "use client";
 
 import Reveal from "@/components/ui/Reveal";
+import KineticText from "@/components/ui/KineticText";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useLang } from "@/context/LanguageContext";
 import { tr, t } from "@/lib/translations";
 
+// desktop bento footprint per category (the language summary is the hero cell)
 const CATEGORIES: {
   no: string;
   titleKey: keyof typeof t;
   jpKey: keyof typeof t;
   items: string[];
+  span: string;
 }[] = [
   {
     no: "01",
@@ -26,6 +29,7 @@ const CATEGORIES: {
       "Privacy-aware Design",
       "AI-assisted Workflow",
     ],
+    span: "bento-col-5",
   },
   {
     no: "02",
@@ -43,6 +47,7 @@ const CATEGORIES: {
       "Launch Preparation",
       "Domain / Deploy Awareness",
     ],
+    span: "bento-col-5",
   },
   {
     no: "03",
@@ -59,6 +64,7 @@ const CATEGORIES: {
       "Luxury Visual Direction",
       "AI-assisted Visual Production",
     ],
+    span: "bento-col-6",
   },
   {
     no: "04",
@@ -74,19 +80,7 @@ const CATEGORIES: {
       "Marketing Ideas",
       "Leadership Support",
     ],
-  },
-  {
-    no: "05",
-    titleKey: "sk_cat_lang",
-    jpKey: "sk_cat_lang_jp",
-    items: [
-      "Japanese",
-      "Tagalog",
-      "English",
-      "Trilingual Communication",
-      "Cross-cultural Communication",
-      "Brand Messaging in 3 Languages",
-    ],
+    span: "bento-col-6",
   },
 ];
 
@@ -109,33 +103,39 @@ export default function Skills() {
           jpTitleKey="sk_jp_title"
         />
 
-        {/* Language strength — highlighted card above the skill grid */}
-        <Reveal className="mt-16 hairline-silver p-8 md:p-10">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <div className="md:col-span-5">
-              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                {tr("sk_cat_lang", lang)}
-              </p>
-              <h3 className="mt-3 font-serif text-2xl md:text-3xl text-offwhite tracking-tight leading-snug">
-                Japanese · Tagalog · English
-              </h3>
-              <p className="mt-3 font-jpserif text-sm text-silver-muted leading-loose">
+        {/* Bento — the trilingual summary reads as the hero cell, the four
+            skill families settle asymmetrically around it. */}
+        <ul className="bento mt-16">
+          {/* hero cell — languages */}
+          <Reveal as="li" proximity className="bento-cell bento-col-7 bento-row-2 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="idx text-silver-bright text-[11px] tracking-wider2">00</span>
+                <span className="h-px w-8 bg-silver/40" />
+                <span className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                  {tr("sk_cat_lang", lang)}
+                </span>
+              </div>
+              <KineticText
+                as="h3"
+                text="Japanese · Tagalog · English"
+                className="font-serif text-3xl md:text-4xl lg:text-5xl text-offwhite tracking-tight leading-[1.05]"
+              />
+              <p className="mt-4 font-jpserif text-sm md:text-base text-silver-muted leading-loose max-w-md">
                 {tr("sk_lang_summary", lang)}
               </p>
             </div>
-            <ul className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-offwhite/85">
+            <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-offwhite/85">
               {(["sk_lang_native","sk_lang_trilingual","sk_lang_cultural","sk_lang_messaging"] as const).map((k)=>(
-                <li key={k} className="hairline px-4 py-3 font-jpserif leading-relaxed">
+                <li key={k} className="hairline rounded-lg px-4 py-3 font-jpserif leading-relaxed">
                   {tr(k, lang)}
                 </li>
               ))}
             </ul>
-          </div>
-        </Reveal>
+          </Reveal>
 
-        <ul className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
           {CATEGORIES.map((cat, i) => (
-            <Reveal key={cat.no} as="li" delay={i * 0.06}>
+            <Reveal key={cat.no} as="li" delay={i * 0.06} proximity className={`bento-cell ${cat.span}`}>
               <div className="flex items-center gap-3 mb-6">
                 <span className="idx text-silver-bright text-[11px] tracking-wider2">{cat.no}</span>
                 <span className="h-px w-8 bg-silver/40" />
@@ -150,7 +150,7 @@ export default function Skills() {
                 {cat.items.map((s) => (
                   <li
                     key={s}
-                    className="px-3 py-1.5 text-[11px] tracking-wider uppercase text-offwhite/80 hairline hover:hairline-silver hover:text-offwhite transition-colors duration-300"
+                    className="px-3 py-1.5 text-[11px] tracking-wider uppercase text-offwhite/80 hairline rounded-md hover:hairline-silver hover:text-offwhite transition-colors duration-300"
                   >
                     {s}
                   </li>
