@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useRef } from "react";
 interface Props {
   children: ReactNode;
   className?: string;
-  /** Max tilt in degrees (default 2.5). */
+  /** Max tilt in degrees (default 2). Kept ≤ 3° so cards stay composed. */
   tilt?: number;
   /** Extra glass shimmer for the fragrance section. */
   glare?: boolean;
@@ -29,7 +29,7 @@ interface Props {
 export default function PremiumHover({
   children,
   className = "",
-  tilt = 2.5,
+  tilt = 2,
   glare = false,
   cursor,
   focusable = false,

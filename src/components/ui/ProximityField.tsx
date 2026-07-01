@@ -41,7 +41,9 @@ export default function ProximityField() {
       { threshold: 0 }
     );
 
-    // Observe existing + any added later (sections mount after loader).
+    // The sections (and their [data-prox] elements) are in the tree from the
+    // first render — the loader only overlays them — so a couple of timed
+    // sweeps catch everything without a permanent body-wide MutationObserver.
     const seen = new WeakSet<HTMLElement>();
     const collect = () => {
       document.querySelectorAll<HTMLElement>("[data-prox]").forEach((el) => {
@@ -52,8 +54,8 @@ export default function ProximityField() {
       });
     };
     collect();
-    const mo = new MutationObserver(collect);
-    mo.observe(document.body, { childList: true, subtree: true });
+    // one delayed re-sweep for anything mounted late (e.g. the chat widget)
+    const reSweep = window.setTimeout(collect, 1500);
 
     let mx = -9999;
     let my = -9999;
@@ -92,8 +94,8 @@ export default function ProximityField() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       if (raf) cancelAnimationFrame(raf);
+      window.clearTimeout(reSweep);
       io.disconnect();
-      mo.disconnect();
     };
   }, []);
 

@@ -4,8 +4,8 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 
 const FINISHES = [
   { key: "matte", label: "MATTE", filter: "none", sheen: 0.0 },
-  { key: "chrome", label: "CHROME", filter: "grayscale(0.3) contrast(1.12) brightness(1.06)", sheen: 0.9 },
-  { key: "warm", label: "WARM", filter: "sepia(0.18) contrast(1.05) brightness(1.03)", sheen: 0.4 },
+  { key: "chrome", label: "CHROME", filter: "grayscale(0.22) contrast(1.08) brightness(1.04)", sheen: 0.5 },
+  { key: "warm", label: "WARM", filter: "sepia(0.12) contrast(1.03) brightness(1.02)", sheen: 0.28 },
 ] as const;
 
 /**
@@ -25,6 +25,7 @@ export default function PlayableCharm({ children }: { children: ReactNode }) {
   const [i, setI] = useState(0);
   const [sweep, setSweep] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [touched, setTouched] = useState(false);
   const tRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function PlayableCharm({ children }: { children: ReactNode }) {
   }, []);
 
   const cycle = () => {
+    setTouched(true);
     setI((n) => (n + 1) % FINISHES.length);
     if (reduced) return;
     setSweep(false);
@@ -95,13 +97,18 @@ export default function PlayableCharm({ children }: { children: ReactNode }) {
         />
       </span>
 
-      {/* quiet finish label — the discovered detail */}
+      {/* Finish label — hidden until the charm is first touched, so the piece
+          reads as a clean editorial frame and only reveals its secret to
+          whoever reaches out and turns it. */}
       <span
         aria-hidden
-        className="absolute bottom-3 left-3 z-[2] text-[9px] tracking-[0.32em] uppercase text-silver-bright/90"
+        className="absolute bottom-3 left-3 z-[2] text-[9px] tracking-[0.32em] uppercase text-silver-bright"
         style={{
+          opacity: touched ? 0.85 : 0,
+          transform: touched ? "translateY(0)" : "translateY(4px)",
           textShadow: "0 0 10px rgba(0,0,0,0.6)",
-          transition: "color 500ms cubic-bezier(0.19,1,0.22,1)",
+          transition:
+            "opacity 600ms cubic-bezier(0.19,1,0.22,1), transform 600ms cubic-bezier(0.19,1,0.22,1)",
         }}
       >
         {f.label}

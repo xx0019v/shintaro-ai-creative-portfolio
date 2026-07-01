@@ -33,18 +33,23 @@ import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
  * Lazy-loaded via IntersectionObserver. Pauses on tab hidden.
  */
 
+// Intensity follows the hierarchy: the shader breathes brightest where the
+// scene is meant to open cinematically (Hero, Contact), stays moderate where
+// the WORK is the subject, and recedes into quiet charcoal where INFORMATION
+// is the subject (About, Skills, Strengths, Education) so nothing competes
+// with the reading.
 const SECTION_INTENSITY: Record<string, number> = {
-  top: 0.85,
-  about: 0.42,
-  projects: 0.68,
-  fragrance: 0.78,
-  client: 0.4,
-  keychain: 0.55,
-  leadership: 0.36,
-  skills: 0.6,
-  strengths: 0.36,
-  education: 0.32,
-  contact: 0.86,
+  top: 0.82,
+  about: 0.4,
+  projects: 0.58,
+  fragrance: 0.66,
+  client: 0.38,
+  keychain: 0.48,
+  leadership: 0.34,
+  skills: 0.4,
+  strengths: 0.34,
+  education: 0.3,
+  contact: 0.84,
 };
 
 const DEFAULT_OPACITY = 0.55;
