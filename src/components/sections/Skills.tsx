@@ -118,8 +118,9 @@ export default function Skills() {
               </div>
               <KineticText
                 as="h3"
+                metallic
                 text="Japanese · Tagalog · English"
-                className="font-serif text-3xl md:text-4xl lg:text-5xl text-offwhite tracking-tight leading-[1.05]"
+                className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight leading-[1.05]"
               />
               <p className="mt-4 font-jpserif text-sm md:text-base text-silver-muted leading-loose max-w-md">
                 {tr("sk_lang_summary", lang)}

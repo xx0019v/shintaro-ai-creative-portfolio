@@ -328,6 +328,100 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   mask-composite: exclude;
 }
 
+/* ── Paper tear (⑤) — the one "page tears to the next chapter" hinge ──
+   A torn deckle seam draws across; two paper shadows part to reveal the
+   chapter label. Fires once via IntersectionObserver (.is-torn). */
+.paper-tear {
+  position: relative;
+  height: 132px;
+  margin: 1rem 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.paper-tear__above,
+.paper-tear__below {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  transition: transform 1200ms cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 1200ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.paper-tear__above {
+  top: 0;
+  background: linear-gradient(180deg, transparent, rgba(10, 10, 10, 0.5));
+  transform: translateY(0);
+}
+.paper-tear__below {
+  bottom: 0;
+  background: linear-gradient(0deg, transparent, rgba(10, 10, 10, 0.5));
+  transform: translateY(0);
+}
+.paper-tear.is-torn .paper-tear__above { transform: translateY(-14px); opacity: 0.7; }
+.paper-tear.is-torn .paper-tear__below { transform: translateY(14px); opacity: 0.7; }
+/* the torn seam — a silver deckle that draws across on reveal */
+.paper-tear__seam {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  transform: translateY(-50%);
+}
+.paper-tear__seam path {
+  fill: none;
+  stroke: rgba(229, 229, 229, 0.55);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px rgba(229, 229, 229, 0.4));
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  transition: stroke-dashoffset 1600ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.paper-tear.is-torn .paper-tear__seam path { stroke-dashoffset: 0; }
+.paper-tear__label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 30px));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--silver-bright);
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.19, 1, 0.22, 1) 500ms,
+    transform 900ms cubic-bezier(0.19, 1, 0.22, 1) 500ms;
+}
+.paper-tear.is-torn .paper-tear__label {
+  opacity: 0.85;
+  transform: translate(-50%, calc(-50% + 22px));
+}
+.paper-tear__no { color: var(--offwhite); }
+.paper-tear__sep { width: 22px; height: 1px; background: rgba(229, 229, 229, 0.4); }
+@media (prefers-reduced-motion: reduce) {
+  .paper-tear__above, .paper-tear__below,
+  .paper-tear__seam path, .paper-tear__label { transition: none; }
+}
+
+/* ── Liquid warp (①) — a work's surface flexes as the cursor arrives ──
+   Desktop-hover only; the displacement filter is heavy, so it's scoped to
+   the single image being hovered and never runs on touch / reduced-motion. */
+.warp-target {
+  transition: filter 500ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .premium-hover:hover .warp-target,
+  .intent-scan:hover .warp-target {
+    filter: url(#liquidWarp);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .warp-target { filter: none !important; }
+}
+
 /* Soft chrome border that brightens on hover */
 .chrome-edge {
   border: 1px solid rgba(192,192,192,0.18);
@@ -381,6 +475,12 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   opacity: 0.5;
 }
 .bento-cell:hover { border-color: rgba(192,192,192,0.20); }
+/* Compact variant — dense spec plates in a narrow column (Client Work). */
+.bento-spec { gap: 10px; }
+@media (min-width: 768px) {
+  .bento-spec { gap: 12px; grid-auto-rows: auto; }
+  .bento-spec .bento-cell { padding: 1.1rem 1.25rem; }
+}
 /* span helpers (desktop only — mobile stacks to 1–2 col) */
 @media (min-width: 768px) {
   .bento-col-4  { grid-column: span 4; }
@@ -456,6 +556,31 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 .kinetic-char {
   display: inline-block;
   will-change: transform, opacity, filter;
+}
+/* Liquid-metal letters — each glyph rendered in chrome, with a slow specular
+   drift so the metal reads as molten, not flat. Kept legible (dark contrast
+   holds via the mid-grey band). */
+.kinetic-metallic .kinetic-char {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e5e5e5 26%,
+    #8e8e8e 52%,
+    #c0c0c0 74%,
+    #ffffff 100%
+  );
+  background-size: 100% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: kineticSheen 7s ease-in-out infinite;
+}
+@keyframes kineticSheen {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 0% 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-metallic .kinetic-char { animation: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────

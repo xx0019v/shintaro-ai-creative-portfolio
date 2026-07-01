@@ -11,6 +11,7 @@ import Strengths from "@/components/sections/Strengths";
 import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
+import PaperTear from "@/components/ui/PaperTear";
 
 export default function HomePage() {
   return (
@@ -19,6 +20,8 @@ export default function HomePage() {
       <main>
         <Hero />
         <About />
+        {/* the one editorial "tear to the next chapter" — into the Works */}
+        <PaperTear chapter="02" labelKey="tear_works" />
         <AIKameranado />
         <FragranceBranding />
         <ClientWork />

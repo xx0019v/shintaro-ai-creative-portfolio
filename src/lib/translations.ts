@@ -521,6 +521,7 @@ const additions: Dict = {
     en: "AI Creation · Web Design · Brand Thinking",
   },
   intent_eyebrow: { jp: "意図", en: "Intent" },
+  tear_works: { jp: "作品 — 展示", en: "The Works" },
 
   ai_medium: { jp: "AIシステム", en: "AI System" },
   ai_intent: {

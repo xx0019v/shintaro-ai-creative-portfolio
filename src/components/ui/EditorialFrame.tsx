@@ -46,7 +46,7 @@ export default function EditorialFrame({
           fill
           priority={priority}
           sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
-          className={`object-cover ${desaturate ? "grayscale-[0.15] contrast-[1.02]" : ""}`}
+          className={`warp-target object-cover ${desaturate ? "grayscale-[0.15] contrast-[1.02]" : ""}`}
         />
         {/* subtle vignette */}
         <div

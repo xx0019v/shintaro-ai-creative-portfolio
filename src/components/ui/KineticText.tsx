@@ -27,12 +27,15 @@ export default function KineticText({
   as = "span",
   delay = 0,
   stagger = 0.026,
+  metallic = false,
 }: {
   text: string;
   className?: string;
   as?: "span" | "h1" | "h2" | "h3" | "p";
   delay?: number;
   stagger?: number;
+  /** Render each letter in liquid chrome (see .kinetic-metallic). */
+  metallic?: boolean;
 }) {
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
@@ -46,9 +49,11 @@ export default function KineticText({
     setRich(!coarse && !narrow);
   }, []);
 
+  const cls = `${className ?? ""}${metallic ? " kinetic-metallic" : ""}`.trim() || undefined;
+
   if (!mounted || reduced) {
     const Plain = as as React.ElementType;
-    return <Plain className={className}>{text}</Plain>;
+    return <Plain className={cls}>{text}</Plain>;
   }
 
   const Container = motion[as] as typeof motion.span;
@@ -75,7 +80,7 @@ export default function KineticText({
 
   return (
     <Container
-      className={className}
+      className={cls}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.4 }}

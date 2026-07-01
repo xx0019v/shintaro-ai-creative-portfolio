@@ -82,15 +82,17 @@ export default function ClientWork() {
             </div>
           </Reveal>
 
+          {/* Exhibit spec plate — bento: the differentiator (USP) and the
+              craft (Stack) read large; the rest settle quietly around them. */}
           <Reveal delay={0.1} className="md:col-span-5">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-8 text-sm">
-              <Meta label="Role" value="Web Direction · Build" />
-              <Meta label="Service" value="Online English" />
-              <Meta label="USP" value={tr("cw_meta_usp", lang)} />
-              <Meta label="Pages" value="One-page · 8 sections" />
-              <Meta label="Stage" value="Live · Public" />
-              <Meta label="Stack" value="React · R3F · GSAP" />
-            </dl>
+            <ul className="bento bento-spec">
+              <SpecCell label="USP" value={tr("cw_meta_usp", lang)} span="bento-col-12" big />
+              <SpecCell label="Role" value="Web Direction · Build" span="bento-col-6" />
+              <SpecCell label="Service" value="Online English" span="bento-col-6" />
+              <SpecCell label="Stack" value="React · R3F · GSAP" span="bento-col-12" />
+              <SpecCell label="Pages" value="One-page · 8 sections" span="bento-col-6" />
+              <SpecCell label="Stage" value="Live · Public" span="bento-col-6" />
+            </ul>
           </Reveal>
         </div>
 
@@ -186,12 +188,30 @@ function StatusRow({
   );
 }
 
-function Meta({ label, value }: { label: string; value: string }) {
+function SpecCell({
+  label,
+  value,
+  span,
+  big = false,
+}: {
+  label: string;
+  value: string;
+  span: string;
+  big?: boolean;
+}) {
   return (
-    <div>
-      <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-2">{label}</dt>
-      <dd className="text-offwhite/85 font-jpserif">{value}</dd>
-    </div>
+    <li className={`bento-cell ${span}`} data-prox>
+      <p className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-2">
+        {label}
+      </p>
+      <p
+        className={`font-jpserif text-offwhite/90 ${
+          big ? "text-base md:text-lg leading-snug" : "text-sm"
+        }`}
+      >
+        {value}
+      </p>
+    </li>
   );
 }
 

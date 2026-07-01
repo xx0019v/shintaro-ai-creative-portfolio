@@ -68,8 +68,9 @@ export default function Strengths() {
                 {s.big ? (
                   <KineticText
                     as="h3"
+                    metallic
                     text={tr(s.tKey, lang)}
-                    className="font-serif text-3xl md:text-4xl lg:text-5xl text-offwhite tracking-tight"
+                    className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight"
                   />
                 ) : (
                   <h3 className="font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
