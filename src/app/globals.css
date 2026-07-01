@@ -333,8 +333,8 @@ header *, nav *, button, a button, .idx, [role="button"] *,
    chapter label. Fires once via IntersectionObserver (.is-torn). */
 .paper-tear {
   position: relative;
-  height: 132px;
-  margin: 1rem 0;
+  height: 200px;
+  margin: 2.5rem 0;
   overflow: hidden;
   pointer-events: none;
 }
@@ -357,8 +357,8 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   background: linear-gradient(0deg, transparent, rgba(10, 10, 10, 0.5));
   transform: translateY(0);
 }
-.paper-tear.is-torn .paper-tear__above { transform: translateY(-14px); opacity: 0.7; }
-.paper-tear.is-torn .paper-tear__below { transform: translateY(14px); opacity: 0.7; }
+.paper-tear.is-torn .paper-tear__above { transform: translateY(-30px); opacity: 0.55; }
+.paper-tear.is-torn .paper-tear__below { transform: translateY(30px); opacity: 0.55; }
 /* the torn seam — a silver deckle that draws across on reveal */
 .paper-tear__seam {
   position: absolute;
@@ -370,10 +370,10 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 }
 .paper-tear__seam path {
   fill: none;
-  stroke: rgba(229, 229, 229, 0.55);
-  stroke-width: 1;
+  stroke: rgba(245, 245, 245, 0.9);
+  stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 6px rgba(229, 229, 229, 0.4));
+  filter: drop-shadow(0 0 10px rgba(229, 229, 229, 0.75));
   stroke-dasharray: 1400;
   stroke-dashoffset: 1400;
   transition: stroke-dashoffset 1600ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -410,12 +410,16 @@ header *, nav *, button, a button, .idx, [role="button"] *,
    Desktop-hover only; the displacement filter is heavy, so it's scoped to
    the single image being hovered and never runs on touch / reduced-motion. */
 .warp-target {
-  transition: filter 500ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: filter 600ms cubic-bezier(0.19, 1, 0.22, 1);
 }
+/* While a work is on screen it carries the liquid warp (WarpInView adds
+   .in-view) — the surface visibly undulates as you scroll, no hover needed.
+   Hover deepens it further. */
+.warp-target.in-view { filter: url(#liquidWarp); }
 @media (hover: hover) and (pointer: fine) {
   .premium-hover:hover .warp-target,
   .intent-scan:hover .warp-target {
-    filter: url(#liquidWarp);
+    filter: url(#liquidWarpStrong);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -562,22 +566,25 @@ header *, nav *, button, a button, .idx, [role="button"] *,
    holds via the mid-grey band). */
 .kinetic-metallic .kinetic-char {
   background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #e5e5e5 26%,
-    #8e8e8e 52%,
-    #c0c0c0 74%,
-    #ffffff 100%
+    108deg,
+    #9a9a9a 0%,
+    #f5f5f5 18%,
+    #ffffff 30%,
+    #8e8e8e 46%,
+    #c0c0c0 60%,
+    #ffffff 78%,
+    #6f6f6f 100%
   );
-  background-size: 100% 220%;
+  background-size: 280% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: kineticSheen 7s ease-in-out infinite;
+  animation: kineticSheen 3.6s linear infinite;
 }
+/* a bright specular band travels across the chrome letters */
 @keyframes kineticSheen {
-  0%, 100% { background-position: 0% 0%; }
-  50% { background-position: 0% 100%; }
+  0% { background-position: 180% 0%; }
+  100% { background-position: -80% 0%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .kinetic-metallic .kinetic-char { animation: none; }

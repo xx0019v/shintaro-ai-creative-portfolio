@@ -18,25 +18,50 @@ export default function WarpFilter() {
       style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
     >
       <defs>
-        <filter id="liquidWarp" x="-8%" y="-8%" width="116%" height="116%">
+        {/* in-view: a clearly-visible living ripple */}
+        <filter id="liquidWarp" x="-10%" y="-10%" width="120%" height="120%">
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.010 0.014"
+            baseFrequency="0.009 0.013"
             numOctaves="2"
             seed="7"
             result="noise"
           >
             <animate
               attributeName="baseFrequency"
-              dur="16s"
-              values="0.010 0.014; 0.014 0.009; 0.010 0.014"
+              dur="9s"
+              values="0.009 0.013; 0.016 0.008; 0.009 0.013"
               repeatCount="indefinite"
             />
           </feTurbulence>
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="9"
+            scale="16"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+        {/* hover: deepen it — the surface flexes harder as the cursor arrives */}
+        <filter id="liquidWarpStrong" x="-14%" y="-14%" width="128%" height="128%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.010 0.015"
+            numOctaves="2"
+            seed="7"
+            result="noise2"
+          >
+            <animate
+              attributeName="baseFrequency"
+              dur="6s"
+              values="0.010 0.015; 0.020 0.010; 0.010 0.015"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise2"
+            scale="30"
             xChannelSelector="R"
             yChannelSelector="G"
           />
