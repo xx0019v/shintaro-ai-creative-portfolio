@@ -51,6 +51,50 @@ export default function EntrySphere() {
     });
   }, []);
 
+  // Chapter labels — small uppercase signage that floats around the sphere
+  // and is drawn into the core on activation. Desktop = 7, mobile = 4.
+  // Text comes from translations.ts; positions are angular around the sphere
+  // centre, with per-label drift offsets fed to a CSS keyframe (no rAF).
+  const labels = useMemo(() => {
+    const desktop = [
+      "entry_chapter_ai",
+      "entry_chapter_fragrance",
+      "entry_chapter_client",
+      "entry_chapter_keychain",
+      "entry_chapter_leadership",
+      "entry_chapter_skills",
+      "entry_chapter_contact",
+    ] as const;
+    const mobile = [
+      "entry_chapter_m_ai",
+      "entry_chapter_m_brand",
+      "entry_chapter_m_work",
+      "entry_chapter_m_contact",
+    ] as const;
+    const keys = isTouch ? mobile : desktop;
+    const radius = isTouch ? 132 : 254;
+    let s = 113;
+    const rand = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+    return keys.map((key, i) => {
+      const ang = -Math.PI / 2 + (i / keys.length) * Math.PI * 2;
+      // proximity to sphere shapes brightness slightly — outer labels dimmer.
+      // Here all share one radius, so use angular position to vary instead.
+      const tx = Math.cos(ang) * radius;
+      const ty = Math.sin(ang) * radius * 0.92;
+      return {
+        key,
+        tx,
+        ty,
+        // independent drift parameters per label so they don't sync
+        fx: (rand() - 0.5) * 8,
+        fy: -2 - rand() * 5,
+        dur: 8 + rand() * 4,
+        delay: rand() * 4,
+        op: 0.34 + rand() * 0.12,
+      };
+    });
+  }, [isTouch]);
+
   // lightweight CSS motes around the sphere (mobile — no rAF, 8 dots)
   const motes = useMemo(() => {
     let s = 71;
@@ -252,6 +296,86 @@ export default function EntrySphere() {
             </div>
           )}
 
+          {/* chapter labels — exhibition signage orbiting the sphere.
+              Centered on the sphere's centre; each label is translated to its
+              angular position. On activate, every label is pulled to (0,0)
+              with the dust, so labels + particles + sphere merge into one. */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 pointer-events-none select-none"
+            style={{ width: 0, height: 0 }}
+          >
+            {labels.map((l, i) => (
+              <motion.div
+                key={l.key}
+                initial={{ x: l.tx, y: l.ty, opacity: 0, scale: 0.96 }}
+                animate={
+                  activating
+                    ? {
+                        x: 0,
+                        y: 0,
+                        opacity: 0,
+                        scale: 0.7,
+                      }
+                    : reduced
+                    ? { x: l.tx, y: l.ty, opacity: 1, scale: 1 }
+                    : {
+                        x: l.tx,
+                        y: l.ty,
+                        opacity: phase === "hovering" ? 1 : 1,
+                        scale: phase === "hovering" ? 1.02 : 1,
+                      }
+                }
+                transition={
+                  activating
+                    ? {
+                        duration: 0.85,
+                        ease: EASE,
+                        delay: i * 0.04,
+                      }
+                    : {
+                        duration: 1.4,
+                        ease: EASE,
+                        delay: 0.9 + i * 0.06,
+                      }
+                }
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  transform: "translate(-50%, -50%)",
+                  willChange: "transform, opacity",
+                }}
+              >
+                <span
+                  className="entry-label-float font-sans uppercase"
+                  style={
+                    {
+                      whiteSpace: "nowrap",
+                      fontSize: isTouch ? "9px" : "10px",
+                      letterSpacing: isTouch ? "0.32em" : "0.42em",
+                      color: "var(--silver-bright)",
+                      textShadow:
+                        "0 0 18px rgba(229,229,229,0.18), 0 0 1px rgba(245,245,245,0.4)",
+                      // CSS vars consumed by the float keyframe
+                      ["--lfx" as string]: `${l.fx}px`,
+                      ["--lfy" as string]: `${l.fy}px`,
+                      ["--ldur" as string]: `${l.dur}s`,
+                      ["--ldelay" as string]: `${l.delay}s`,
+                      ["--lop" as string]:
+                        phase === "hovering"
+                          ? Math.min(l.op + 0.18, 0.78)
+                          : l.op,
+                      transition: "--lop 600ms cubic-bezier(0.19,1,0.22,1)",
+                    } as React.CSSProperties
+                  }
+                >
+                  {tr(l.key, lang)}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+
           {/* sphere */}
           <motion.div
             initial={{ scale: 0.94, opacity: 0 }}
@@ -331,15 +455,32 @@ export default function EntrySphere() {
           </motion.div>
         </div>
 
-        {/* copy — small, quiet, secondary to the sphere */}
-        <motion.p
+        {/* TAP + sub-copy — small, quiet, secondary to the sphere */}
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: activating ? 0 : 0.78, y: 0 }}
+          animate={{ opacity: activating ? 0 : 1, y: 0 }}
           transition={{ duration: 1, ease: EASE, delay: 0.6 }}
-          className="mt-14 text-[11px] tracking-[0.42em] uppercase text-silver-bright"
+          className="mt-14 flex flex-col items-center gap-2"
         >
-          {tr("entry_copy", lang)}
-        </motion.p>
+          <motion.span
+            animate={
+              reduced
+                ? undefined
+                : { opacity: [0.55, 1, 0.55] }
+            }
+            transition={
+              reduced
+                ? undefined
+                : { duration: 3.2, ease: "easeInOut", repeat: Infinity }
+            }
+            className="font-serif text-base tracking-[0.5em] uppercase text-offwhite"
+          >
+            {tr("entry_tap", lang)}
+          </motion.span>
+          <span className="text-[10px] tracking-[0.36em] uppercase text-silver-muted">
+            {tr("entry_copy", lang)}
+          </span>
+        </motion.div>
 
         {/* skip — quiet, bottom-right */}
         <button

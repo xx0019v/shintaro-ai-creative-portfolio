@@ -41,6 +41,33 @@
   }
 }
 
+/* ── Entry Sphere — chapter labels (CSS-only drift, no rAF) ────────────
+   Small uppercase signage floating around the sphere. The Framer-motion
+   parent handles activation collapse; this layer only handles the quiet
+   ambient drift, so it stays GPU-cheap on mobile. */
+.entry-label-float {
+  display: inline-block;
+  animation: entryLabelFloat var(--ldur, 9s) ease-in-out infinite;
+  animation-delay: var(--ldelay, 0s);
+  will-change: transform, opacity;
+}
+@keyframes entryLabelFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: var(--lop, 0.42);
+  }
+  50% {
+    transform: translate3d(var(--lfx, 0px), var(--lfy, -3px), 0);
+    opacity: calc(var(--lop, 0.42) + 0.14);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry-label-float {
+    animation: none;
+    opacity: var(--lop, 0.42);
+  }
+}
+
 :root {
   --bg: #050505;
   --bg-soft: #111111;
