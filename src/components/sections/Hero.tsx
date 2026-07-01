@@ -62,14 +62,42 @@ export default function Hero() {
         <div className="mt-16 md:mt-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
           {/* Title block */}
           <div className="lg:col-span-8">
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: easeLuxe, delay: 0.1 }}
-              className="text-[11px] md:text-xs tracking-wider2 uppercase text-silver-bright"
-            >
-              {tr("hero_name", lang)}
-            </motion.p>
+            {/* Signature name — the reading line scans it once on load, the
+                ñ is the chrome "signal", the identity develops beneath. */}
+            <div className="relative inline-block">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: easeLuxe, delay: 0.1 }}
+                className="text-[11px] md:text-xs tracking-wider2 uppercase text-silver-bright"
+              >
+                <SignatureName name={tr("hero_name", lang)} />
+              </motion.p>
+
+              {!reduced && (
+                <motion.span
+                  aria-hidden
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: [0, 1, 0] }}
+                  transition={{ duration: 1.3, ease: easeLuxe, delay: 0.5, times: [0, 0.5, 1] }}
+                  className="pointer-events-none absolute left-0 right-0 -bottom-1 h-px origin-left"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, rgba(229,229,229,0.9), transparent)",
+                    boxShadow: "0 0 10px rgba(229,229,229,0.5)",
+                  }}
+                />
+              )}
+
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: easeLuxe, delay: 1.0 }}
+                className="mt-3 text-[9px] md:text-[10px] tracking-[0.34em] uppercase text-silver-muted"
+              >
+                {tr("hero_identity", lang)}
+              </motion.p>
+            </div>
 
             <h1 className="mt-6 font-serif tracking-tight leading-[0.92] text-offwhite text-[clamp(2.75rem,9vw,9rem)]">
               <RevealLine delay={0.2}>
@@ -197,6 +225,19 @@ export default function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Renders the name with the ñ as a chrome "signal" accent. */
+function SignatureName({ name }: { name: string }) {
+  const idx = name.search(/ñ/i);
+  if (idx === -1) return <>{name}</>;
+  return (
+    <>
+      {name.slice(0, idx)}
+      <span className="metallic">{name[idx]}</span>
+      {name.slice(idx + 1)}
+    </>
   );
 }
 

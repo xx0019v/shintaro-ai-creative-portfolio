@@ -2,6 +2,7 @@
 
 import Reveal from "@/components/ui/Reveal";
 import Parallax from "@/components/ui/Parallax";
+import IntentScan from "@/components/ui/IntentScan";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
@@ -61,16 +62,23 @@ export default function FragranceBranding() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-7">
               <Parallax distance={52} lift fade>
-                <EditorialFrame
-                  src="/images/fragrance/key-visual-dark.jpg"
-                  alt="Fragrance Spot — main key visual panel"
-                  ratio="portrait"
-                  caption="Fragrance Spot · Key Visual"
-                  desaturate
-                  glare
-                  priority
-                  sizes="(max-width: 768px) 100vw, 60vw"
-                />
+                <IntentScan
+                  exhibit="02"
+                  medium={tr("fr_medium", lang)}
+                  year="2025"
+                  intent={tr("fr_intent", lang)}
+                  eyebrow={tr("intent_eyebrow", lang)}
+                >
+                  <EditorialFrame
+                    src="/images/fragrance/key-visual-dark.jpg"
+                    alt="Fragrance Spot — main key visual panel"
+                    ratio="portrait"
+                    desaturate
+                    glare
+                    priority
+                    sizes="(max-width: 768px) 100vw, 60vw"
+                  />
+                </IntentScan>
               </Parallax>
             </div>
             <div className="md:col-span-5 space-y-6">

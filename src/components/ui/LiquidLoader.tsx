@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLaunch } from "@/context/LaunchContext";
 
-const TEXT = "AVENDANO";
+const TEXT = "AVENDAÑO";
 
 // Two carefully chosen curves used everywhere.
 const EASE = [0.19, 1, 0.22, 1] as const;

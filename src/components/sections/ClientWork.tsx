@@ -2,6 +2,7 @@
 
 import Reveal from "@/components/ui/Reveal";
 import Parallax from "@/components/ui/Parallax";
+import IntentScan from "@/components/ui/IntentScan";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { CheckCircle2, ExternalLink, ArrowUpRight } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
@@ -95,7 +96,15 @@ export default function ClientWork() {
 
         <Reveal delay={0.15} className="mt-16 md:mt-20">
           <Parallax distance={44} lift fade>
-            <BrowserMock />
+            <IntentScan
+              exhibit="03"
+              medium={tr("cw_medium", lang)}
+              year="2026"
+              intent={tr("cw_intent", lang)}
+              eyebrow={tr("intent_eyebrow", lang)}
+            >
+              <BrowserMock />
+            </IntentScan>
           </Parallax>
         </Reveal>
 

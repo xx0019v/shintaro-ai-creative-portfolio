@@ -2,6 +2,7 @@
 
 import Reveal from "@/components/ui/Reveal";
 import Parallax from "@/components/ui/Parallax";
+import IntentScan from "@/components/ui/IntentScan";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
@@ -82,18 +83,28 @@ export default function KeychainProject() {
         <Reveal delay={0.15} className="mt-16 md:mt-20">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-7">
-              {/* Playable Easter egg — tap the charm to turn it under the light */}
+              {/* Signature exhibit + Playable Easter egg — the reading line
+                  surfaces the intent (hover / static on touch), while the charm
+                  itself is tap-to-turn under the light. */}
               <Parallax distance={48} lift fade>
-                <PlayableCharm>
-                  <EditorialFrame
-                    src="/images/keychain/keychain-uchiike-collection.jpg"
-                    alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
-                    ratio="portrait"
-                    caption="Teacher Editorial Charm Collection"
-                    desaturate
-                    sizes="(max-width: 768px) 100vw, 60vw"
-                  />
-                </PlayableCharm>
+                <IntentScan
+                  exhibit="04"
+                  medium={tr("kc_medium", lang)}
+                  year="2026"
+                  intent={tr("kc_intent", lang)}
+                  eyebrow={tr("intent_eyebrow", lang)}
+                  staticOnTouch
+                >
+                  <PlayableCharm>
+                    <EditorialFrame
+                      src="/images/keychain/keychain-uchiike-collection.jpg"
+                      alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
+                      ratio="portrait"
+                      desaturate
+                      sizes="(max-width: 768px) 100vw, 60vw"
+                    />
+                  </PlayableCharm>
+                </IntentScan>
               </Parallax>
             </div>
             <div className="md:col-span-5 space-y-6">

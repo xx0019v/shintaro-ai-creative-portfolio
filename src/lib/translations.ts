@@ -11,7 +11,7 @@ export const t: Dict = {
 
   // Hero
   hero_kicker: { jp: "Portfolio — Volume 02", en: "Portfolio — Volume 02" },
-  hero_name: { jp: "Avendano Shintaro", en: "Avendano Shintaro" },
+  hero_name: { jp: "Avendaño Shintaro", en: "Avendaño Shintaro" },
   hero_role: { jp: "AI Creative Developer", en: "AI Creative Developer" },
   hero_h1_a: { jp: "Turning Ideas", en: "Turning Ideas" },
   hero_h1_b: { jp: "into Systems,", en: "into Systems," },
@@ -509,9 +509,39 @@ const additions: Dict = {
   // ─── Entry sphere ───────────────────────────────────────────────────────
   entry_tap: { jp: "TAP", en: "TAP" },
   entry_copy: { jp: "体験をはじめる", en: "Enter the experience" },
-  entry_aria: { jp: "AVENDANO の世界に入る", en: "Enter the world of AVENDANO" },
+  entry_aria: { jp: "AVENDAÑO の世界に入る", en: "Enter the world of AVENDAÑO" },
   entry_skip: { jp: "スキップ", en: "Skip" },
   entry_cursor: { jp: "TAP", en: "TAP" },
+
+  // ─── Signature "The Read" — hero identity + per-work intent lines ────────
+  // The site's signature gesture: a reading line scans a piece and surfaces
+  // the single thought behind it. One line each, kept quiet.
+  hero_identity: {
+    jp: "AI創作 · Web設計 · ブランド思考",
+    en: "AI Creation · Web Design · Brand Thinking",
+  },
+  intent_eyebrow: { jp: "意図", en: "Intent" },
+
+  ai_medium: { jp: "AIシステム", en: "AI System" },
+  ai_intent: {
+    jp: "見るのは注目 — 個人ではない",
+    en: "Read attention, not identity.",
+  },
+  fr_medium: { jp: "ブランド", en: "Brand" },
+  fr_intent: {
+    jp: "自販機を、選ぶ時間に変える",
+    en: "A machine, reframed as a moment.",
+  },
+  cw_medium: { jp: "Web", en: "Web" },
+  cw_intent: {
+    jp: "二つの声で、ひとつの授業",
+    en: "Two voices, one lesson.",
+  },
+  kc_medium: { jp: "キャラクター", en: "Character" },
+  kc_intent: {
+    jp: "その人らしさを、持ち歩けるかたちに",
+    en: "A person, made carryable.",
+  },
 };
 
 Object.assign(t, additions);

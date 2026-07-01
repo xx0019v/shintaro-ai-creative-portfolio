@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ShieldCheck, EyeOff, Radio, Activity } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import Parallax from "@/components/ui/Parallax";
+import IntentScan from "@/components/ui/IntentScan";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
@@ -95,9 +96,17 @@ export default function AIKameranado() {
           </p>
         </Reveal>
 
-        {/* Hero mock — silver dashboard */}
+        {/* Hero mock — silver dashboard, framed as the signature exhibit */}
         <Reveal delay={0.25} className="mt-16 md:mt-20">
-          <DashboardMock />
+          <IntentScan
+            exhibit="01"
+            medium={tr("ai_medium", lang)}
+            year="2026"
+            intent={tr("ai_intent", lang)}
+            eyebrow={tr("intent_eyebrow", lang)}
+          >
+            <DashboardMock />
+          </IntentScan>
         </Reveal>
 
         {/* Real panel photos from Shitara Fair — proof material.

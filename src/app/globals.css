@@ -457,3 +457,139 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   display: inline-block;
   will-change: transform, opacity, filter;
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Signature — "The Read" / IntentScan.
+   A chrome reading-line sweeps a work once on engage; a viewfinder frames
+   it and the single line of intent develops. Monochrome, one pass, no loop.
+   ───────────────────────────────────────────────────────────────────── */
+.intent-scan {
+  position: relative;
+  isolation: isolate;
+}
+
+/* the reading line — a thin chrome hairline with a soft trailing wash */
+.intent-scan .scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(229, 229, 229, 0.85) 45%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(229, 229, 229, 0.85) 55%,
+    transparent
+  );
+  box-shadow: 0 0 14px rgba(229, 229, 229, 0.5),
+    0 18px 34px -12px rgba(229, 229, 229, 0.22);
+}
+.intent-scan.is-reading .scan-line {
+  animation: intentSweep 1150ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+@keyframes intentSweep {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* viewfinder ticks — quiet corner brackets that frame the exhibit */
+.intent-scan .is-tick {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+  border-color: rgba(229, 229, 229, 0.7);
+  border-style: solid;
+  border-width: 0;
+  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.intent-scan .tick-tl { top: 14px; left: 14px; border-top-width: 1px; border-left-width: 1px; }
+.intent-scan .tick-tr { top: 14px; right: 14px; border-top-width: 1px; border-right-width: 1px; }
+.intent-scan .tick-bl { bottom: 14px; left: 14px; border-bottom-width: 1px; border-left-width: 1px; }
+.intent-scan .tick-br { bottom: 14px; right: 14px; border-bottom-width: 1px; border-right-width: 1px; }
+.intent-scan.is-reading .is-tick { opacity: 0.85; }
+
+/* exhibit plate — always shown; the curatorial wall label */
+.intent-scan .exhibit-plate {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.82);
+  background: rgba(8, 8, 8, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(229, 229, 229, 0.1);
+  border-radius: 2px;
+}
+/* the plate sits under the top-left tick while reading — nudge the tick in */
+.intent-scan.is-reading .tick-tl { opacity: 0; } /* avoid overlap with plate */
+.intent-scan .exhibit-no { color: var(--silver-bright); }
+.intent-scan .exhibit-sep {
+  width: 12px;
+  height: 1px;
+  background: rgba(229, 229, 229, 0.3);
+}
+
+/* intent line — the single thought, developed by the reading line */
+.intent-scan .intent-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 48px 20px 20px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 220ms,
+    transform 700ms cubic-bezier(0.19, 1, 0.22, 1) 220ms;
+  background: linear-gradient(180deg, transparent, rgba(5, 5, 5, 0.78) 62%);
+}
+.intent-scan.is-reading .intent-line {
+  opacity: 1;
+  transform: translateY(0);
+}
+.intent-scan .intent-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--silver-bright);
+}
+.intent-scan .intent-text {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(1rem, 2.1vw, 1.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--offwhite);
+}
+
+/* Static mode (touch + already-interactive child): intent is simply present,
+   no sweep, no toggle — the reading is shown, not performed. */
+.intent-scan.is-static .scan-line { display: none; }
+.intent-scan.is-static .intent-line { transition: opacity 500ms cubic-bezier(0.19,1,0.22,1); }
+
+/* Reduced-motion: no sweep, the intent simply is there on engage. */
+@media (prefers-reduced-motion: reduce) {
+  .intent-scan .scan-line { display: none; }
+  .intent-scan.is-reading .intent-line { transition: opacity 200ms linear; }
+}
