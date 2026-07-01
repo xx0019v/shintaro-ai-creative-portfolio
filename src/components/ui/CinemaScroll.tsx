@@ -39,10 +39,19 @@ export default function CinemaScroll() {
     const intensityAt = (p: number) => {
       // p in 0..1
       const hero = Math.max(0, 1 - p / 0.16) * 0.9; // strong 0..16%
-      const contact = Math.max(0, (p - 0.78) / 0.16) * 0.95; // rises 78..94%
+      const contact = Math.max(0, (p - 0.78) / 0.16) * 1.05; // rises 78..94%, re-gathers harder
       const footerFade = p > 0.96 ? (1 - (p - 0.96) / 0.04) : 1; // fade last 4%
-      const base = 0.28; // quiet ambient floor for reading sections
-      return Math.min(1, Math.max(base, base + hero + contact) * footerFade);
+      // Gentle mid-page breathing so the reading scenes aren't dead flat — a
+      // slow swell that peaks around the project sections (~45%) and eases at
+      // the edges, so light quietly rises and falls as one scene hands to the
+      // next instead of holding a constant floor.
+      const breath =
+        Math.sin(Math.min(1, Math.max(0, (p - 0.14) / 0.64)) * Math.PI) * 0.14;
+      const base = 0.26; // quiet ambient floor for reading sections
+      return Math.min(
+        1,
+        Math.max(base, base + hero + breath + contact) * footerFade
+      );
     };
 
     const apply = (p: number) => {

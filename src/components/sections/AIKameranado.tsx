@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ShieldCheck, EyeOff, Radio, Activity } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
+import Parallax from "@/components/ui/Parallax";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
@@ -99,25 +100,31 @@ export default function AIKameranado() {
           <DashboardMock />
         </Reveal>
 
-        {/* Real panel photos from Shitara Fair — proof material */}
+        {/* Real panel photos from Shitara Fair — proof material.
+            Offset parallax depths so the two panels drift at slightly
+            different speeds, like exhibits lit on a wall. */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
           <Reveal delay={0.1}>
-            <EditorialFrame
-              src="/images/ai-camera/sensor-panel.png"
-              alt="AI Camera Sensor explanation panel from Shitara Fair exhibition"
-              ratio="portrait"
-              caption="AI Camera Sensor · Exhibition Panel"
-              desaturate
-            />
+            <Parallax distance={54} lift>
+              <EditorialFrame
+                src="/images/ai-camera/sensor-panel.png"
+                alt="AI Camera Sensor explanation panel from Shitara Fair exhibition"
+                ratio="portrait"
+                caption="AI Camera Sensor · Exhibition Panel"
+                desaturate
+              />
+            </Parallax>
           </Reveal>
           <Reveal delay={0.18}>
-            <EditorialFrame
-              src="/images/ai-camera/privacy-panel.png"
-              alt="Privacy-first statement panel — AI imagery not stored"
-              ratio="portrait"
-              caption="Privacy Statement · Exhibition Panel"
-              desaturate
-            />
+            <Parallax distance={32} lift>
+              <EditorialFrame
+                src="/images/ai-camera/privacy-panel.png"
+                alt="Privacy-first statement panel — AI imagery not stored"
+                ratio="portrait"
+                caption="Privacy Statement · Exhibition Panel"
+                desaturate
+              />
+            </Parallax>
           </Reveal>
         </div>
 

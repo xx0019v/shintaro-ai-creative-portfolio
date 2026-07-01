@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Mail, ArrowUpRight } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
+import Parallax from "@/components/ui/Parallax";
 import PortraitFrame from "@/components/ui/PortraitFrame";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ShatterText from "@/components/ui/ShatterText";
@@ -19,8 +20,15 @@ export default function Contact() {
   return (
     <section id="contact" className="relative py-32 md:py-56 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[700px] w-[700px] rounded-full opacity-[0.12] blur-3xl"
+        {/* Final crescendo — the silver light re-gathers as the closing scene
+            arrives, blooming from a tight core to a full glow. */}
+        <motion.div
+          aria-hidden
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[700px] w-[700px] rounded-full blur-3xl"
+          initial={reduced ? { opacity: 0.12 } : { opacity: 0.04, scale: 0.7 }}
+          whileInView={reduced ? { opacity: 0.12 } : { opacity: 0.16, scale: 1 }}
+          viewport={{ once: false, amount: 0.4 }}
+          transition={{ duration: 2.2, ease: easeLuxe }}
           style={{
             background:
               "radial-gradient(circle, #E5E5E5 0%, rgba(229,229,229,0.16) 38%, transparent 70%)",
@@ -39,13 +47,15 @@ export default function Contact() {
 
       <div className="relative max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* portrait signature */}
+          {/* portrait signature — rises into the closing light */}
           <Reveal className="lg:col-span-4 max-w-xs mx-auto lg:mx-0">
-            <PortraitFrame
-              src="/images/portrait/portrait-full-02.png"
-              alt="Avendano Shintaro — contact portrait"
-              variant="full"
-            />
+            <Parallax distance={46} lift fade>
+              <PortraitFrame
+                src="/images/portrait/portrait-full-02.png"
+                alt="Avendano Shintaro — contact portrait"
+                variant="full"
+              />
+            </Parallax>
             <p className="mt-4 text-center text-[10px] tracking-wider2 uppercase text-silver-muted">
               Signature · 2026
             </p>

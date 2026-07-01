@@ -28,6 +28,12 @@ interface RevealProps {
     | "footer"
     | "nav";
   once?: boolean;
+  /**
+   * Cinematic "develop" — the element resolves from a soft blur (and a hair of
+   * scale) as it settles, like a shot coming into focus. Opt-in so existing
+   * calls are untouched. Auto-disabled on touch to keep mobile cheap.
+   */
+  cinematic?: boolean;
 }
 
 export default function Reveal({
@@ -38,12 +44,20 @@ export default function Reveal({
   className,
   as = "div",
   once = true,
+  cinematic = false,
 }: RevealProps) {
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [rich, setRich] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window === "undefined") return;
+    // Blur filters are the expensive part — only run them on precise pointers
+    // with a roomy viewport (desktop). Touch / narrow stays on plain y-fade.
+    const coarse = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const narrow = window.matchMedia("(max-width: 768px)").matches;
+    setRich(!coarse && !narrow);
   }, []);
 
   if (!mounted || reduced) {
@@ -52,14 +66,24 @@ export default function Reveal({
   }
 
   const Component = motion[as] as typeof motion.div;
+  const useCinema = cinematic && rich;
 
   return (
     <Component
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={
+        useCinema
+          ? { opacity: 0, y, filter: "blur(10px)", scale: 0.992 }
+          : { opacity: 0, y }
+      }
+      whileInView={
+        useCinema
+          ? { opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }
+          : { opacity: 1, y: 0 }
+      }
       viewport={{ once, amount: 0.18 }}
       transition={{ duration, ease: LUX_EASE, delay }}
       className={className}
+      style={useCinema ? { willChange: "transform, opacity, filter" } : undefined}
     >
       {children}
     </Component>

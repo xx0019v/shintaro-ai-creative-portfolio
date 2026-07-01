@@ -7,6 +7,7 @@ const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 import PortraitFrame from "@/components/ui/PortraitFrame";
+import Parallax from "@/components/ui/Parallax";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ShatterText from "@/components/ui/ShatterText";
 
@@ -91,12 +92,14 @@ export default function Hero() {
             transition={{ duration: 1.4, ease: easeLuxe, delay: 0.6 }}
             className="hidden lg:block lg:col-span-4"
           >
-            <PortraitFrame
-              src="/images/portrait/portrait-headshot.png"
-              alt="Avendano Shintaro"
-              variant="headshot"
-              priority
-            />
+            <Parallax distance={38}>
+              <PortraitFrame
+                src="/images/portrait/portrait-headshot.png"
+                alt="Avendano Shintaro"
+                variant="headshot"
+                priority
+              />
+            </Parallax>
           </motion.div>
         </div>
 

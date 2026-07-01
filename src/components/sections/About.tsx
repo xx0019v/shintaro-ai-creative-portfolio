@@ -1,6 +1,7 @@
 "use client";
 
 import Reveal from "@/components/ui/Reveal";
+import Parallax from "@/components/ui/Parallax";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import PortraitFrame from "@/components/ui/PortraitFrame";
@@ -35,13 +36,15 @@ export default function About() {
         />
 
         <div className="mt-16 md:mt-24 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
-          {/* portrait (editorial) */}
+          {/* portrait (editorial) — floats up from depth as the scene enters */}
           <Reveal delay={0.08} className="lg:col-span-4">
-            <PortraitFrame
-              src="/images/portrait/portrait-full-01.png"
-              alt="Avendano Shintaro — editorial portrait"
-              variant="full"
-            />
+            <Parallax distance={46} lift fade>
+              <PortraitFrame
+                src="/images/portrait/portrait-full-01.png"
+                alt="Avendano Shintaro — editorial portrait"
+                variant="full"
+              />
+            </Parallax>
             <p className="mt-4 text-[10px] tracking-wider2 uppercase text-silver-muted">
               Portrait · 2026 Edition
             </p>

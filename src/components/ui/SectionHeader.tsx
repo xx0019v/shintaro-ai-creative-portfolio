@@ -36,15 +36,17 @@ export default function SectionHeader({
         </div>
       </Reveal>
 
-      {/* English headline stays for editorial impact in BOTH modes */}
-      <Reveal delay={0.08}>
+      {/* English headline stays for editorial impact in BOTH modes.
+          Cinematic develop + a slightly longer beat so the title arrives a
+          touch after the label — each section reads as its own scene opening. */}
+      <Reveal delay={0.14} duration={1.5} cinematic>
         <h2 className="mt-6 font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-offwhite">
           {titleEn}
         </h2>
       </Reveal>
 
       {jpTitleKey && (
-        <Reveal delay={0.16}>
+        <Reveal delay={0.26}>
           <p className="mt-4 font-jpserif text-sm md:text-base text-silver-muted tracking-wide">
             {tr(jpTitleKey, lang)}
           </p>

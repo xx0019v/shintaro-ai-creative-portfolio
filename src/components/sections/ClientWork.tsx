@@ -1,6 +1,7 @@
 "use client";
 
 import Reveal from "@/components/ui/Reveal";
+import Parallax from "@/components/ui/Parallax";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { CheckCircle2, ExternalLink, ArrowUpRight } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
@@ -93,7 +94,9 @@ export default function ClientWork() {
         </div>
 
         <Reveal delay={0.15} className="mt-16 md:mt-20">
-          <BrowserMock />
+          <Parallax distance={44} lift fade>
+            <BrowserMock />
+          </Parallax>
         </Reveal>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-12 gap-10">
