@@ -338,6 +338,9 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   overflow: hidden;
   pointer-events: none;
 }
+@media (max-width: 640px) {
+  .paper-tear { height: 132px; margin: 1.25rem 0; }
+}
 .paper-tear__above,
 .paper-tear__below {
   position: absolute;
@@ -370,10 +373,10 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 }
 .paper-tear__seam path {
   fill: none;
-  stroke: rgba(245, 245, 245, 0.9);
-  stroke-width: 1.5;
+  stroke: rgba(240, 240, 240, 0.8);
+  stroke-width: 1.25;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 10px rgba(229, 229, 229, 0.75));
+  filter: drop-shadow(0 0 8px rgba(229, 229, 229, 0.55));
   stroke-dasharray: 1400;
   stroke-dashoffset: 1400;
   transition: stroke-dashoffset 1600ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -561,19 +564,67 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   display: inline-block;
   will-change: transform, opacity, filter;
 }
+
+/* ── Liquid ripple — "touch it and it sways" (Playable) ───────────────
+   A small chrome-on-water wobble + one specular line, settling back with a
+   little follow-through. Fired on tap/click via .is-rippling. */
+.liquid-ripple {
+  position: relative;
+  will-change: transform;
+}
+.liquid-ripple.is-rippling {
+  animation: liquidRipple 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+}
+@keyframes liquidRipple {
+  0%   { transform: scale(1) skewX(0deg) skewY(0deg); }
+  22%  { transform: scale(1.014) skewX(0.5deg) skewY(-0.3deg); }
+  50%  { transform: scale(0.994) skewX(-0.35deg) skewY(0.25deg); }
+  74%  { transform: scale(1.004) skewX(0.15deg) skewY(-0.1deg); }
+  100% { transform: scale(1) skewX(0deg) skewY(0deg); }
+}
+/* a single specular line that slides across, contained to the element */
+.liquid-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.42) 50%,
+    transparent 58%
+  );
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+}
+.liquid-ripple.is-rippling::after {
+  animation: liquidGlint 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+}
+@keyframes liquidGlint {
+  0%   { opacity: 0; background-position: 120% 0; }
+  30%  { opacity: 0.9; }
+  100% { opacity: 0; background-position: -20% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-ripple.is-rippling { animation: none; }
+  .liquid-ripple.is-rippling::after { animation: none; opacity: 0; }
+}
 /* Liquid-metal letters — each glyph rendered in chrome, with a slow specular
    drift so the metal reads as molten, not flat. Kept legible (dark contrast
    holds via the mid-grey band). */
 .kinetic-metallic .kinetic-char {
   background: linear-gradient(
     108deg,
-    #9a9a9a 0%,
+    #a8a8a8 0%,
     #f5f5f5 18%,
     #ffffff 30%,
-    #8e8e8e 46%,
-    #c0c0c0 60%,
+    #9a9a9a 46%,
+    #c8c8c8 60%,
     #ffffff 78%,
-    #6f6f6f 100%
+    #8a8a8a 100%
   );
   background-size: 280% 100%;
   -webkit-background-clip: text;

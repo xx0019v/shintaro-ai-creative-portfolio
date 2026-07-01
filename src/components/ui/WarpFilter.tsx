@@ -37,7 +37,7 @@ export default function WarpFilter() {
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="16"
+            scale="12"
             xChannelSelector="R"
             yChannelSelector="G"
           />
@@ -61,7 +61,7 @@ export default function WarpFilter() {
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise2"
-            scale="30"
+            scale="22"
             xChannelSelector="R"
             yChannelSelector="G"
           />
