@@ -524,7 +524,7 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   pointer-events: none;
   border-radius: inherit;
   /* cap the glow well under full so it never shouts — a hint, not a spotlight */
-  opacity: calc(var(--prox) * 0.6);
+  opacity: calc(var(--prox) * 0.85);
   background: radial-gradient(
     200px circle at var(--px) var(--py),
     rgba(229, 229, 229, 0.09),
@@ -577,9 +577,9 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 }
 @keyframes liquidRipple {
   0%   { transform: scale(1) skewX(0deg) skewY(0deg); }
-  22%  { transform: scale(1.014) skewX(0.5deg) skewY(-0.3deg); }
-  50%  { transform: scale(0.994) skewX(-0.35deg) skewY(0.25deg); }
-  74%  { transform: scale(1.004) skewX(0.15deg) skewY(-0.1deg); }
+  22%  { transform: scale(1.026) skewX(0.9deg) skewY(-0.5deg); }
+  50%  { transform: scale(0.985) skewX(-0.6deg) skewY(0.4deg); }
+  74%  { transform: scale(1.008) skewX(0.28deg) skewY(-0.16deg); }
   100% { transform: scale(1) skewX(0deg) skewY(0deg); }
 }
 /* a single specular line that slides across, contained to the element */
@@ -630,7 +630,7 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: kineticSheen 3.6s linear infinite;
+  animation: kineticSheen 3s linear infinite;
 }
 /* a bright specular band travels across the chrome letters */
 @keyframes kineticSheen {

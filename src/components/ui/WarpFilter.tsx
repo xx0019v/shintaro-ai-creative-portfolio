@@ -29,15 +29,15 @@ export default function WarpFilter() {
           >
             <animate
               attributeName="baseFrequency"
-              dur="9s"
-              values="0.009 0.013; 0.016 0.008; 0.009 0.013"
+              dur="7s"
+              values="0.009 0.013; 0.017 0.008; 0.009 0.013"
               repeatCount="indefinite"
             />
           </feTurbulence>
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="12"
+            scale="18"
             xChannelSelector="R"
             yChannelSelector="G"
           />
@@ -61,7 +61,7 @@ export default function WarpFilter() {
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise2"
-            scale="22"
+            scale="30"
             xChannelSelector="R"
             yChannelSelector="G"
           />
