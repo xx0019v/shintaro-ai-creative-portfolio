@@ -6,7 +6,7 @@ import { ArrowUpRight, ArrowDown } from "lucide-react";
 const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
-import PortraitFrame from "@/components/ui/PortraitFrame";
+import ModelViewer from "@/components/ui/ModelViewer";
 import Parallax from "@/components/ui/Parallax";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ShatterText from "@/components/ui/ShatterText";
@@ -121,11 +121,12 @@ export default function Hero() {
             className="hidden lg:block lg:col-span-4"
           >
             <Parallax distance={38}>
-              <PortraitFrame
-                src="/images/portrait/portrait-headshot.png"
+              {/* Drop /public/models/avatar.glb to upgrade this to the
+                  black-silver 3D avatar; falls back to the portrait otherwise. */}
+              <ModelViewer
+                poster="/images/portrait/portrait-headshot.png"
                 alt="Avendano Shintaro"
                 variant="headshot"
-                priority
               />
             </Parallax>
           </motion.div>
