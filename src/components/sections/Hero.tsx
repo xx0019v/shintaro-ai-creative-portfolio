@@ -261,21 +261,25 @@ function RevealLine({ children, delay = 0 }: { children: React.ReactNode; delay?
 function Ambient({ reduced }: { reduced: boolean }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* layered depth — each ambient plane drifts at its own rate via
+          --scroll (CinemaScroll), so the black space reads as deep space */}
+      <div className="absolute inset-0 depth-mid">
+        <div
+          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[900px] w-[900px] rounded-full opacity-[0.10] blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, #E5E5E5 0%, rgba(229,229,229,0.18) 38%, transparent 70%)",
+          }}
+        />
+      </div>
       <div
-        className="absolute -top-40 left-1/2 -translate-x-1/2 h-[900px] w-[900px] rounded-full opacity-[0.10] blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, #E5E5E5 0%, rgba(229,229,229,0.18) 38%, transparent 70%)",
-        }}
-      />
-      <div
-        className="absolute bottom-0 right-0 h-[600px] w-[600px] rounded-full opacity-[0.06] blur-3xl"
+        className="absolute bottom-0 right-0 h-[600px] w-[600px] rounded-full opacity-[0.06] blur-3xl depth-fast"
         style={{
           background:
             "radial-gradient(circle, #C0C0C0 0%, rgba(192,192,192,0.06) 50%, transparent 80%)",
         }}
       />
-      <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+      <svg className="absolute inset-0 w-full h-full opacity-[0.04] depth-slow" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
             <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#E5E5E5" strokeWidth="0.5" />

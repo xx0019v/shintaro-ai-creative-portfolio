@@ -12,6 +12,7 @@ import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 import PaperTear from "@/components/ui/PaperTear";
+import LightWipe from "@/components/ui/LightWipe";
 
 export default function HomePage() {
   return (
@@ -19,6 +20,8 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero />
+        {/* film-cut into the first reading scene */}
+        <LightWipe />
         <About />
         {/* the one editorial "tear to the next chapter" — into the Works */}
         <PaperTear chapter="02" labelKey="tear_works" />
@@ -30,6 +33,8 @@ export default function HomePage() {
         <Skills />
         <Strengths />
         <Education />
+        {/* film-cut into the closing scene */}
+        <LightWipe />
         <Contact />
       </main>
       <Footer />

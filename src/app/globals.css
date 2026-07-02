@@ -565,6 +565,54 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   will-change: transform, opacity, filter;
 }
 
+/* ── Light wipe — a film-cut between scenes ────────────────────────────
+   A thin silver filament sweeps the full viewport width once when the
+   marker enters view. Sparingly placed (into About, into Contact). */
+.light-wipe {
+  position: relative;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+.light-wipe__beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34vw;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(229, 229, 229, 0.9) 45%,
+    #ffffff 50%,
+    rgba(229, 229, 229, 0.9) 55%,
+    transparent
+  );
+  box-shadow: 0 0 12px rgba(229, 229, 229, 0.6),
+    0 0 32px rgba(192, 192, 192, 0.3);
+  transform: translateX(-40vw);
+  animation: lightWipeSweep 900ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+@keyframes lightWipeSweep {
+  0%   { transform: translateX(-40vw); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateX(105vw); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .light-wipe__beam { display: none; }
+}
+
+/* ── Layered depth — Hero ambient layers drift at different rates ──────
+   Driven by the --scroll custom property CinemaScroll already writes to
+   :root (0..1 page progress). Pure CSS, no extra listeners. */
+.depth-slow  { transform: translateY(calc(var(--scroll, 0) * -60px)); }
+.depth-mid   { transform: translateY(calc(var(--scroll, 0) * -140px)); }
+.depth-fast  { transform: translateY(calc(var(--scroll, 0) * -240px)); }
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .depth-slow, .depth-mid, .depth-fast { transform: none; }
+}
+
 /* ── Lightning — a rare silver arc across the dark (Hero backdrop) ─────
    Thin chrome-white filament, draws + flashes + gone. Monochrome, low peak
    opacity, soft glow. Never neon. */

@@ -68,7 +68,13 @@ function Model({
     const g = group.current;
     if (!g) return;
     if (spin) g.rotation.y += dt * 0.22;
-    const targetX = state.pointer.y * 0.1;
+    // scroll presence — the exhibit leans a touch and catches different light
+    // as the visitor moves (0..1 over the first viewport of scroll)
+    const sp =
+      typeof window !== "undefined"
+        ? Math.min(1, window.scrollY / Math.max(1, window.innerHeight))
+        : 0;
+    const targetX = state.pointer.y * 0.1 + sp * 0.14;
     const targetY = state.pointer.x * 0.15;
     g.rotation.x += (targetX - g.rotation.x) * 0.04;
     if (!spin) g.rotation.y += (targetY - g.rotation.y) * 0.04;
@@ -78,6 +84,25 @@ function Model({
     <group ref={group}>
       <primitive object={gltf.scene} />
     </group>
+  );
+}
+
+/** Chrome rim light that brightens slightly as the visitor scrolls. */
+function ScrollRim() {
+  const ref = useRef<THREE.DirectionalLight>(null);
+  useFrame(() => {
+    const l = ref.current;
+    if (!l || typeof window === "undefined") return;
+    const sp = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
+    l.intensity += (0.55 + sp * 0.5 - l.intensity) * 0.06;
+  });
+  return (
+    <directionalLight
+      ref={ref}
+      position={[-4, 2, -3]}
+      intensity={0.55}
+      color="#c0c0c0"
+    />
   );
 }
 
@@ -101,7 +126,7 @@ export default function Model3DScene({
       {/* quiet silver studio rig */}
       <ambientLight intensity={0.55} />
       <directionalLight position={[3, 4, 5]} intensity={1.15} color="#ffffff" />
-      <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#c0c0c0" />
+      <ScrollRim />
       <directionalLight position={[0, -3, 2]} intensity={0.25} color="#8e8e8e" />
       <Suspense fallback={null}>
         <Model src={src} spin={spin} liquidMetal={liquidMetal} />
