@@ -577,18 +577,38 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   z-index: 0;
   overflow: visible;
 }
-.lightning-bolt {
+.lightning-bolt,
+.lightning-glow,
+.lightning-branch {
   fill: none;
   stroke: #f5f5f5;
-  stroke-width: 1.4;
   stroke-linejoin: round;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 6px rgba(229, 229, 229, 0.85))
-    drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
   stroke-dasharray: 1600;
   stroke-dashoffset: 1600;
-  animation: lightningStrike 320ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+/* sharp core */
+.lightning-bolt {
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 6px rgba(229, 229, 229, 0.85))
+    drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
+  animation: lightningStrike 340ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+/* forked branches — thinner, dimmer */
+.lightning-branch {
+  stroke-width: 1;
+  stroke: #e5e5e5;
+  filter: drop-shadow(0 0 4px rgba(229, 229, 229, 0.6));
+  animation: lightningStrike 340ms cubic-bezier(0.19, 1, 0.22, 1) 40ms forwards;
+  opacity: 0;
+}
+/* ionization afterglow — blurred, lingers a beat longer */
+.lightning-glow {
+  stroke-width: 4;
+  stroke: rgba(229, 229, 229, 0.6);
+  filter: blur(5px) drop-shadow(0 0 12px rgba(192, 192, 192, 0.5));
+  animation: lightningAfterglow 560ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 @keyframes lightningStrike {
   0%   { stroke-dashoffset: 1600; opacity: 0; }
@@ -598,8 +618,39 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   62%  { opacity: 0.4; }
   100% { stroke-dashoffset: 0; opacity: 0; }
 }
+@keyframes lightningAfterglow {
+  0%   { stroke-dashoffset: 1600; opacity: 0; }
+  30%  { stroke-dashoffset: 0; opacity: 0.5; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+/* ambient bloom — a whisper of light lifts the whole dark frame on strike */
+.lightning-bloom {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    120% 80% at 50% 8%,
+    rgba(229, 229, 229, 0.12),
+    rgba(192, 192, 192, 0.04) 42%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+.lightning-bloom.is-lit {
+  animation: lightningBloom 420ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+@keyframes lightningBloom {
+  0%   { opacity: 0; }
+  16%  { opacity: 1; }
+  38%  { opacity: 0.35; }
+  52%  { opacity: 0.8; }   /* matches the core flicker */
+  100% { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .lightning-fx { display: none; }
+  .lightning-fx,
+  .lightning-bloom { display: none; }
 }
 
 /* ── Liquid ripple — "touch it and it sways" (Playable) ───────────────
