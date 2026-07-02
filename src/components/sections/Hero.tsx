@@ -7,6 +7,7 @@ const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 import ModelViewer from "@/components/ui/ModelViewer";
+import LightningFX from "@/components/ui/LightningFX";
 import Parallax from "@/components/ui/Parallax";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ShatterText from "@/components/ui/ShatterText";
@@ -291,6 +292,7 @@ function Ambient({ reduced }: { reduced: boolean }) {
           className="absolute top-1/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-silver/30 to-transparent"
         />
       )}
+      {!reduced && <LightningFX />}
     </div>
   );
 }
