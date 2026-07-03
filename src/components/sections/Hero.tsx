@@ -5,6 +5,7 @@ import { ArrowUpRight, ArrowDown } from "lucide-react";
 
 const easeLuxe = [0.19, 1, 0.22, 1] as const;
 import { useLang } from "@/context/LanguageContext";
+import { useLaunch } from "@/context/LaunchContext";
 import { tr } from "@/lib/translations";
 import ModelViewer from "@/components/ui/ModelViewer";
 import LightningFX from "@/components/ui/LightningFX";
@@ -24,6 +25,7 @@ const TAGS = [
 export default function Hero() {
   const reduced = useReducedMotion();
   const { lang } = useLang();
+  const { launched } = useLaunch();
 
   return (
     <section
@@ -31,6 +33,35 @@ export default function Hero() {
       className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden pt-32 md:pt-40 pb-12"
     >
       <Ambient reduced={!!reduced} />
+
+      {/* Opening wash — as the loader hands over, one wave of silver light
+          sweeps down the whole Hero, binding name, portrait and backdrop
+          into a single lit reveal. Plays once. */}
+      {launched && !reduced && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[5]"
+          initial={{ opacity: 0.9, backgroundPosition: "50% -80%" }}
+          animate={{ opacity: 0, backgroundPosition: "50% 160%" }}
+          transition={{ duration: 2.4, ease: easeLuxe }}
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 20%, rgba(229,229,229,0.16) 42%, rgba(255,255,255,0.30) 50%, rgba(229,229,229,0.16) 58%, transparent 80%)",
+            backgroundSize: "100% 220%",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+
+      {/* Cinematic vignette — quiet dark edges hold the scene together */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,0.42) 100%)",
+        }}
+      />
 
       {/* Editorial side hairlines — quiet luxury framing */}
       <div
@@ -64,8 +95,9 @@ export default function Hero() {
           {/* Title block */}
           <div className="lg:col-span-8">
             {/* Signature name — the reading line scans it once on load, the
-                ñ is the chrome "signal", the identity develops beneath. */}
-            <div className="relative inline-block">
+                ñ is the chrome "signal", the identity develops beneath.
+                Hidden moment: hovering the name replays the signature light. */}
+            <div className="sig-name relative inline-block">
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}

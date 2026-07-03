@@ -454,7 +454,7 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   .bento {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-auto-rows: minmax(128px, auto);
-    gap: 22px;
+    gap: 28px;
   }
 }
 /* Quiet editorial cell — almost no fill, one hairline, generous air.
@@ -471,6 +471,17 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 }
 @media (min-width: 768px) {
   .bento-cell { padding: 2.25rem; }
+  /* hero cells (the big asymmetric anchors) breathe wider and carry a faint
+     corner light so the hierarchy is unmistakable at a glance */
+  .bento-cell.bento-row-2 { padding: 3rem; }
+  .bento-cell.bento-row-2::after {
+    background:
+      radial-gradient(60% 45% at 8% 0%, rgba(229, 229, 229, 0.07), transparent 65%),
+      radial-gradient(220px circle at var(--px, 50%) var(--py, 50%),
+        rgba(229, 229, 229, 0.14),
+        rgba(192, 192, 192, 0.05) 40%,
+        transparent 66%);
+  }
 }
 /* thin reflected top line — the "glass edge" catch-light, kept faint */
 .bento-cell::before {
@@ -565,6 +576,34 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   will-change: transform, opacity, filter;
 }
 
+/* ── Hidden signature moment — hover the name, the light signs it again ─ */
+.sig-name::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -4px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 245, 245, 0.95), transparent);
+  box-shadow: 0 0 10px rgba(229, 229, 229, 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sig-name:hover::after {
+    animation: sigSign 1100ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+}
+@keyframes sigSign {
+  0%   { right: 100%; opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { right: 0%; opacity: 1; }
+  100% { right: 0%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sig-name:hover::after { animation: none; }
+}
+
 /* ── Light wipe — a film-cut between scenes ────────────────────────────
    A thin silver filament sweeps the full viewport width once when the
    marker enters view. Sparingly placed (into About, into Contact). */
@@ -574,30 +613,36 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   overflow: visible;
   pointer-events: none;
 }
+/* the light front — a soft luminous air-change with a hairline core,
+   like the light pass in a watch commercial */
 .light-wipe__beam {
   position: absolute;
-  top: 0;
+  top: -70px;
   left: 0;
-  width: 34vw;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(229, 229, 229, 0.9) 45%,
-    #ffffff 50%,
-    rgba(229, 229, 229, 0.9) 55%,
-    transparent
-  );
-  box-shadow: 0 0 12px rgba(229, 229, 229, 0.6),
-    0 0 32px rgba(192, 192, 192, 0.3);
-  transform: translateX(-40vw);
-  animation: lightWipeSweep 900ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  width: 46vw;
+  height: 140px;
+  transform: translateX(-50vw) skewX(-12deg);
+  animation: lightWipeSweep 1400ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  background:
+    /* soft veil of light */
+    radial-gradient(60% 100% at 50% 50%, rgba(229, 229, 229, 0.14), transparent 70%),
+    /* hairline core */
+    linear-gradient(
+      90deg,
+      transparent 46%,
+      rgba(229, 229, 229, 0.85) 49.6%,
+      #ffffff 50%,
+      rgba(229, 229, 229, 0.85) 50.4%,
+      transparent 54%
+    );
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 18px rgba(192, 192, 192, 0.35));
 }
 @keyframes lightWipeSweep {
-  0%   { transform: translateX(-40vw); opacity: 0; }
-  12%  { opacity: 1; }
-  88%  { opacity: 1; }
-  100% { transform: translateX(105vw); opacity: 0; }
+  0%   { transform: translateX(-50vw) skewX(-12deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(110vw) skewX(-12deg); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .light-wipe__beam { display: none; }
@@ -701,52 +746,71 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   .lightning-bloom { display: none; }
 }
 
-/* ── Liquid ripple — "touch it and it sways" (Playable) ───────────────
-   A small chrome-on-water wobble + one specular line, settling back with a
-   little follow-through. Fired on tap/click via .is-rippling. */
-.liquid-ripple {
-  position: relative;
-  will-change: transform;
+/* ── Chrome Lens Reveal — trace a work and its silver nature surfaces ──
+   Inside a soft circular lens that follows the cursor, the work turns
+   chrome-monochrome and slightly brighter — as if a loupe of the Avendano
+   world were held over it. Uses the --px/--py the ProximityField already
+   writes to the premium-hover wrapper (custom props inherit). Desktop
+   hover only; zero cost at rest. */
+@media (hover: hover) and (pointer: fine) {
+  .editorial-frame .chrome-lens {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    backdrop-filter: grayscale(1) brightness(1.18) contrast(1.08);
+    -webkit-backdrop-filter: grayscale(1) brightness(1.18) contrast(1.08);
+    -webkit-mask-image: radial-gradient(
+      circle 130px at var(--px, 50%) var(--py, 50%),
+      #000 0 38%,
+      transparent 72%
+    );
+    mask-image: radial-gradient(
+      circle 130px at var(--px, 50%) var(--py, 50%),
+      #000 0 38%,
+      transparent 72%
+    );
+    transition: opacity 500ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .premium-hover:hover .chrome-lens { opacity: 1; }
 }
-.liquid-ripple.is-rippling {
-  animation: liquidRipple 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+@media (prefers-reduced-motion: reduce) {
+  .editorial-frame .chrome-lens { display: none; }
 }
-@keyframes liquidRipple {
-  0%   { transform: scale(1) skewX(0deg) skewY(0deg); }
-  22%  { transform: scale(1.026) skewX(0.9deg) skewY(-0.5deg); }
-  50%  { transform: scale(0.985) skewX(-0.6deg) skewY(0.4deg); }
-  74%  { transform: scale(1.008) skewX(0.28deg) skewY(-0.16deg); }
-  100% { transform: scale(1) skewX(0deg) skewY(0deg); }
-}
-/* a single specular line that slides across, contained to the element */
-.liquid-ripple::after {
-  content: "";
+
+/* ── Exhibit case — works sit under a cone of gallery light ────────────
+   A faint top light-cone, a cursor-linked specular that shifts angle with
+   the pointer, and a pedestal shadow below. The piece reads as an object
+   in a case, not an image on a card. */
+.editorial-frame .case-light {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 5;
-  opacity: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.42) 50%,
-    transparent 58%
-  );
-  background-size: 250% 100%;
-  background-position: 120% 0;
+  z-index: 1;
+  background:
+    radial-gradient(90% 55% at 50% -8%, rgba(229, 229, 229, 0.10), transparent 60%),
+    radial-gradient(220px circle at var(--px, 50%) var(--py, 30%), rgba(245, 245, 245, 0.08), transparent 70%);
   mix-blend-mode: screen;
+  opacity: 0.8;
+  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1);
 }
-.liquid-ripple.is-rippling::after {
-  animation: liquidGlint 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+.premium-hover:hover .case-light { opacity: 1; }
+.editorial-frame .case-shadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -18px;
+  height: 18px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+  filter: blur(6px);
+  opacity: 0.7;
 }
-@keyframes liquidGlint {
-  0%   { opacity: 0; background-position: 120% 0; }
-  30%  { opacity: 0.9; }
-  100% { opacity: 0; background-position: -20% 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .liquid-ripple.is-rippling { animation: none; }
-  .liquid-ripple.is-rippling::after { animation: none; opacity: 0; }
+@media (hover: none), (pointer: coarse) {
+  .editorial-frame .case-light {
+    background: radial-gradient(90% 55% at 50% -8%, rgba(229, 229, 229, 0.10), transparent 60%);
+  }
 }
 /* Liquid-metal letters — each glyph rendered in chrome, with a slow specular
    drift so the metal reads as molten, not flat. Kept legible (dark contrast
@@ -811,6 +875,29 @@ header *, nav *, button, a button, .idx, [role="button"] *,
 .intent-scan.is-reading .scan-line {
   animation: intentSweep 1150ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
+
+/* interactive light scan — after the sweep, a quieter line follows the
+   cursor's gaze (position via --sy written on pointermove) */
+.intent-scan .scan-follow {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: var(--sy, 50%);
+  height: 1px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(229, 229, 229, 0.55) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(229, 229, 229, 0.35);
+  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 900ms,
+    top 350ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.intent-scan.is-reading .scan-follow { opacity: 0.8; }
 @keyframes intentSweep {
   0% { top: 0%; opacity: 0; }
   10% { opacity: 1; }

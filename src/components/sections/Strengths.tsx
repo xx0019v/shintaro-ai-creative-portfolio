@@ -70,7 +70,7 @@ export default function Strengths() {
                     as="h3"
                     metallic
                     text={tr(s.tKey, lang)}
-                    className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight"
+                    className="font-serif text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.02]"
                   />
                 ) : (
                   <h3 className="font-serif text-2xl md:text-3xl text-offwhite tracking-tight">

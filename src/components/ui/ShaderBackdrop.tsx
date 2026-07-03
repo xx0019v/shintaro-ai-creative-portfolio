@@ -39,17 +39,17 @@ import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 // is the subject (About, Skills, Strengths, Education) so nothing competes
 // with the reading.
 const SECTION_INTENSITY: Record<string, number> = {
-  top: 0.82,
-  about: 0.4,
-  projects: 0.58,
-  fragrance: 0.66,
-  client: 0.38,
-  keychain: 0.48,
-  leadership: 0.34,
-  skills: 0.4,
-  strengths: 0.34,
-  education: 0.3,
-  contact: 0.84,
+  top: 0.92,
+  about: 0.34,
+  projects: 0.62,
+  fragrance: 0.72,
+  client: 0.36,
+  keychain: 0.52,
+  leadership: 0.3,
+  skills: 0.36,
+  strengths: 0.3,
+  education: 0.26,
+  contact: 0.94,
 };
 
 const DEFAULT_OPACITY = 0.55;

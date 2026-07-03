@@ -46,8 +46,8 @@ export default function CinemaScroll() {
       // the edges, so light quietly rises and falls as one scene hands to the
       // next instead of holding a constant floor.
       const breath =
-        Math.sin(Math.min(1, Math.max(0, (p - 0.14) / 0.64)) * Math.PI) * 0.14;
-      const base = 0.26; // quiet ambient floor for reading sections
+        Math.sin(Math.min(1, Math.max(0, (p - 0.14) / 0.64)) * Math.PI) * 0.2;
+      const base = 0.24; // quiet ambient floor for reading sections
       return Math.min(
         1,
         Math.max(base, base + hero + breath + contact) * footerFade

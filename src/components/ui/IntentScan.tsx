@@ -56,6 +56,15 @@ export default function IntentScan({
   };
   const release = () => setReading(false);
 
+  // Interactive light scan — while reading, the line follows the cursor Y
+  // (writes a local CSS var; the .scan-follow element tracks it).
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    el.style.setProperty("--sy", `${Math.max(2, Math.min(98, y)).toFixed(1)}%`);
+  };
+
   // On touch with an already-interactive child, keep the intent shown
   // statically so we never fight the child's tap.
   const staticShown = touch && staticOnTouch;
@@ -68,6 +77,7 @@ export default function IntentScan({
       : {
           onPointerEnter: engage,
           onPointerLeave: release,
+          onPointerMove: onMove,
           onFocus: engage,
           onBlur: release,
         };
@@ -93,6 +103,9 @@ export default function IntentScan({
       {!reduced && (
         <span key={scanKey} className="scan-line" aria-hidden />
       )}
+
+      {/* interactive scan — after the sweep, the line rests where you look */}
+      {!reduced && !touch && <span className="scan-follow" aria-hidden />}
 
       {/* exhibit plate — always shown, curatorial */}
       <span className="exhibit-plate" aria-hidden>

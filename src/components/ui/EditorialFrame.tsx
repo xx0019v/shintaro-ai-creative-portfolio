@@ -57,7 +57,13 @@ export default function EditorialFrame({
               "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45) 100%)",
           }}
         />
+        {/* gallery case light — cone from above + cursor-linked specular */}
+        <span className="case-light" aria-hidden />
+        {/* chrome lens reveal — trace the piece, its silver nature surfaces */}
+        <span className="chrome-lens" aria-hidden />
       </div>
+      {/* pedestal shadow — the piece floats above the wall */}
+      <span className="case-shadow" aria-hidden />
       {caption && (
         <figcaption className="mt-3 px-2 flex items-center justify-between text-[10px] tracking-wider2 uppercase text-silver-muted">
           <span>{caption}</span>

@@ -7,7 +7,6 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
 import PlayableCharm from "@/components/ui/PlayableCharm";
-import LiquidRipple from "@/components/ui/LiquidRipple";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
 
@@ -96,17 +95,15 @@ export default function KeychainProject() {
                   eyebrow={tr("intent_eyebrow", lang)}
                   staticOnTouch
                 >
-                  <LiquidRipple>
-                    <PlayableCharm>
-                      <EditorialFrame
-                        src="/images/keychain/keychain-uchiike-collection.jpg"
-                        alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
-                        ratio="portrait"
-                        desaturate
-                        sizes="(max-width: 768px) 100vw, 60vw"
-                      />
-                    </PlayableCharm>
-                  </LiquidRipple>
+                  <PlayableCharm>
+                    <EditorialFrame
+                      src="/images/keychain/keychain-uchiike-collection.jpg"
+                      alt="Teacher Editorial Charm Collection — 7 round acrylic keychains"
+                      ratio="portrait"
+                      desaturate
+                      sizes="(max-width: 768px) 100vw, 60vw"
+                    />
+                  </PlayableCharm>
                 </IntentScan>
               </Parallax>
             </div>
@@ -158,15 +155,13 @@ export default function KeychainProject() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-5">
               <Parallax distance={40} lift>
-                <LiquidRipple>
-                  <EditorialFrame
-                    src="/images/keychain/keychain-arisu.jpg"
-                    alt="Keychain concept — Energetic edition"
-                    ratio="square"
-                    caption={tr("kc_w02_caption", lang)}
-                    desaturate
-                  />
-                </LiquidRipple>
+                <EditorialFrame
+                  src="/images/keychain/keychain-arisu.jpg"
+                  alt="Keychain concept — Energetic edition"
+                  ratio="square"
+                  caption={tr("kc_w02_caption", lang)}
+                  desaturate
+                />
               </Parallax>
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
@@ -179,15 +174,13 @@ export default function KeychainProject() {
             </div>
             <div className="space-y-5">
               <Parallax distance={28} lift>
-                <LiquidRipple>
-                  <EditorialFrame
-                    src="/images/keychain/keychain-fukukocho.jpg"
-                    alt="Keychain concept — anime-style portrait at desk"
-                    ratio="square"
-                    caption="Concept · Anime Portrait"
-                    desaturate
-                  />
-                </LiquidRipple>
+                <EditorialFrame
+                  src="/images/keychain/keychain-fukukocho.jpg"
+                  alt="Keychain concept — anime-style portrait at desk"
+                  ratio="square"
+                  caption="Concept · Anime Portrait"
+                  desaturate
+                />
               </Parallax>
               <div>
                 <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
