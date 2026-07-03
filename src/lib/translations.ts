@@ -523,6 +523,30 @@ const additions: Dict = {
   intent_eyebrow: { jp: "意図", en: "Intent" },
   tear_works: { jp: "作品 — 展示", en: "The Works" },
 
+  // ─── Gesture Mode — motion control (camera opt-in) ─────────────────────
+  gesture_offer: { jp: "Motion Control", en: "Motion Control" },
+  gesture_offer_sub: { jp: "手をかざして操作", en: "Raise your hand" },
+  gesture_loading: { jp: "準備中", en: "Preparing" },
+  gesture_ready: { jp: "Gesture Ready", en: "Gesture Ready" },
+  gesture_ready_sub: {
+    jp: "手をかざすと操作できます",
+    en: "Raise your hand to control",
+  },
+  gesture_active: { jp: "Gesture Active", en: "Gesture Active" },
+  gesture_active_sub: {
+    jp: "つまんで上下 — スクロール",
+    en: "Pinch and move to scroll",
+  },
+  gesture_off: { jp: "オフ", en: "Off" },
+  gesture_privacy: {
+    jp: "映像は保存・送信されません。ブラウザ内でのみ手の動きを解析します。オフでカメラは完全に停止します。",
+    en: "No video is stored or sent anywhere. Hand motion is analysed in your browser only. Turning this off fully stops the camera.",
+  },
+  gesture_aria: {
+    jp: "ジェスチャー操作を有効にする（カメラを使用）",
+    en: "Enable gesture control (uses camera)",
+  },
+
   ai_medium: { jp: "AIシステム", en: "AI System" },
   ai_intent: {
     jp: "見るのは注目 — 個人ではない",

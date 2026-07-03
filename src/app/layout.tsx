@@ -22,6 +22,7 @@ import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import CinemaScroll from "@/components/ui/CinemaScroll";
 import ProximityField from "@/components/ui/ProximityField";
 import AtelierFrame from "@/components/ui/AtelierFrame";
+import GestureControl from "@/components/ui/GestureControl";
 import SoundToggle from "@/components/ui/SoundToggle";
 import ChatWidget from "@/components/chat/ChatWidget";
 
@@ -127,6 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CustomCursor />
             {children}
             <AtelierFrame />
+            <GestureControl />
             <SoundToggle />
             <ChatWidget />
           </LaunchProvider>
