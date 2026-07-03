@@ -22,8 +22,6 @@ import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import CinemaScroll from "@/components/ui/CinemaScroll";
 import ProximityField from "@/components/ui/ProximityField";
 import SoundToggle from "@/components/ui/SoundToggle";
-import WarpFilter from "@/components/ui/WarpFilter";
-import WarpInView from "@/components/ui/WarpInView";
 import ChatWidget from "@/components/chat/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -128,8 +126,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CustomCursor />
             {children}
             <SoundToggle />
-            <WarpFilter />
-            <WarpInView />
             <ChatWidget />
           </LaunchProvider>
         </LanguageProvider>

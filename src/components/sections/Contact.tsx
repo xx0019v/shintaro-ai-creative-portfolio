@@ -43,6 +43,39 @@ export default function Contact() {
             className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-silver/30 to-transparent"
           />
         )}
+
+        {/* Final ritual — the Entry Sphere's memory returns: a small chrome
+            orb breathes above the closing scene, the world ending where it
+            began. */}
+        <motion.div
+          aria-hidden
+          className="absolute right-[12%] top-[14%] hidden md:block"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 2, ease: easeLuxe }}
+        >
+          <motion.div
+            animate={
+              reduced
+                ? undefined
+                : { scale: [1, 1.05, 1], borderRadius: [
+                    "48% 52% 50% 50% / 52% 48% 52% 48%",
+                    "52% 48% 51% 49% / 48% 52% 49% 51%",
+                    "48% 52% 50% 50% / 52% 48% 52% 48%",
+                  ] }
+            }
+            transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
+            style={{
+              width: 58,
+              height: 58,
+              background:
+                "radial-gradient(circle at 36% 30%, #ffffff 0%, #e5e5e5 14%, #9a9a9a 44%, #3a3a3a 72%, #0c0c0c 100%)",
+              boxShadow:
+                "inset 0 -8px 18px rgba(0,0,0,0.7), inset 0 5px 11px rgba(255,255,255,0.18), 0 16px 40px -12px rgba(0,0,0,0.85), 0 0 34px -6px rgba(229,229,229,0.28)",
+            }}
+          />
+        </motion.div>
       </div>
 
       <div className="relative max-w-editorial mx-auto px-6 md:px-10 lg:px-16">

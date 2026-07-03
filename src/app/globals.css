@@ -409,26 +409,6 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   .paper-tear__seam path, .paper-tear__label { transition: none; }
 }
 
-/* ── Liquid warp (①) — a work's surface flexes as the cursor arrives ──
-   Desktop-hover only; the displacement filter is heavy, so it's scoped to
-   the single image being hovered and never runs on touch / reduced-motion. */
-.warp-target {
-  transition: filter 600ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-/* While a work is on screen it carries the liquid warp (WarpInView adds
-   .in-view) — the surface visibly undulates as you scroll, no hover needed.
-   Hover deepens it further. */
-.warp-target.in-view { filter: url(#liquidWarp); }
-@media (hover: hover) and (pointer: fine) {
-  .premium-hover:hover .warp-target,
-  .intent-scan:hover .warp-target {
-    filter: url(#liquidWarpStrong);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .warp-target { filter: none !important; }
-}
-
 /* Soft chrome border that brightens on hover */
 .chrome-edge {
   border: 1px solid rgba(192,192,192,0.18);
@@ -898,6 +878,48 @@ header *, nav *, button, a button, .idx, [role="button"] *,
     top 350ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 .intent-scan.is-reading .scan-follow { opacity: 0.8; }
+
+/* vertical measure line — completes the inspection crosshair */
+.intent-scan .scan-follow-x {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: var(--sx, 50%);
+  width: 1px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(229, 229, 229, 0.35) 50%,
+    transparent
+  );
+  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 900ms,
+    left 350ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.intent-scan.is-reading .scan-follow-x { opacity: 0.6; }
+
+/* measure ruler — fine gallery-caliper ticks along the top edge */
+.intent-scan .measure-ruler {
+  position: absolute;
+  top: 10px;
+  left: 12%;
+  right: 12%;
+  height: 6px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(229, 229, 229, 0.5) 0 1px,
+    transparent 1px 24px
+  );
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1) 400ms;
+}
+.intent-scan.is-reading .measure-ruler { opacity: 0.55; }
 @keyframes intentSweep {
   0% { top: 0%; opacity: 0; }
   10% { opacity: 1; }

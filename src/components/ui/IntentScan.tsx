@@ -56,13 +56,15 @@ export default function IntentScan({
   };
   const release = () => setReading(false);
 
-  // Interactive light scan — while reading, the line follows the cursor Y
-  // (writes a local CSS var; the .scan-follow element tracks it).
+  // Inspection crosshair — while reading, thin measure lines follow the
+  // cursor (local CSS vars; .scan-follow / .scan-follow-x track them).
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
     const y = ((e.clientY - r.top) / r.height) * 100;
+    const x = ((e.clientX - r.left) / r.width) * 100;
     el.style.setProperty("--sy", `${Math.max(2, Math.min(98, y)).toFixed(1)}%`);
+    el.style.setProperty("--sx", `${Math.max(2, Math.min(98, x)).toFixed(1)}%`);
   };
 
   // On touch with an already-interactive child, keep the intent shown
@@ -104,8 +106,16 @@ export default function IntentScan({
         <span key={scanKey} className="scan-line" aria-hidden />
       )}
 
-      {/* interactive scan — after the sweep, the line rests where you look */}
-      {!reduced && !touch && <span className="scan-follow" aria-hidden />}
+      {/* inspection mode — after the sweep, a measuring crosshair follows
+          the eye: a horizontal reading line, a vertical measure line, and a
+          ruler of fine ticks along the top edge */}
+      {!reduced && !touch && (
+        <>
+          <span className="scan-follow" aria-hidden />
+          <span className="scan-follow-x" aria-hidden />
+          <span className="measure-ruler" aria-hidden />
+        </>
+      )}
 
       {/* exhibit plate — always shown, curatorial */}
       <span className="exhibit-plate" aria-hidden>

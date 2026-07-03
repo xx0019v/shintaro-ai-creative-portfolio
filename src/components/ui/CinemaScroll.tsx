@@ -20,11 +20,13 @@ import { useEffect, useRef } from "react";
  */
 export default function CinemaScroll() {
   const glowRef = useRef<HTMLDivElement>(null);
+  const memRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const glow = glowRef.current;
-    if (!glow) return;
+    const mem = memRef.current;
+    if (!glow || !mem) return;
 
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -69,6 +71,12 @@ export default function CinemaScroll() {
         3
       )}) ${inner.toFixed(0)}%, transparent ${outer.toFixed(0)}%)`;
       glow.style.opacity = String(0.55 + 0.45 * intensity);
+
+      // Scene memory — a dimmer echo of the key light that catches up
+      // slowly (long CSS transform transition), so the previous scene's
+      // glow visibly lingers into the next before settling.
+      mem.style.transform = `translateY(${((cy - 50) * 0.9).toFixed(1)}vh)`;
+      mem.style.opacity = String(0.25 + 0.3 * intensity);
     };
 
     if (reduced || coarse) {
@@ -101,15 +109,32 @@ export default function CinemaScroll() {
   }, []);
 
   return (
-    <div
-      ref={glowRef}
-      className="fixed inset-0 z-0 pointer-events-none"
-      aria-hidden
-      style={{
-        mixBlendMode: "screen",
-        transition: "opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1)",
-        willChange: "opacity, background",
-      }}
-    />
+    <>
+      <div
+        ref={glowRef}
+        className="fixed inset-0 z-0 pointer-events-none"
+        aria-hidden
+        style={{
+          mixBlendMode: "screen",
+          transition: "opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1)",
+          willChange: "opacity, background",
+        }}
+      />
+      {/* scene memory — the previous light, arriving late */}
+      <div
+        ref={memRef}
+        className="fixed inset-0 z-0 pointer-events-none"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(50% 40% at 50% 50%, rgba(229,229,229,0.10) 0%, rgba(192,192,192,0.04) 40%, transparent 70%)",
+          mixBlendMode: "screen",
+          opacity: 0,
+          transition:
+            "transform 3.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 2.4s cubic-bezier(0.19, 1, 0.22, 1)",
+          willChange: "transform, opacity",
+        }}
+      />
+    </>
   );
 }
