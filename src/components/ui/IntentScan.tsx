@@ -114,6 +114,9 @@ export default function IntentScan({
           <span className="scan-follow" aria-hidden />
           <span className="scan-follow-x" aria-hidden />
           <span className="measure-ruler" aria-hidden />
+          <span className="measure-meta" aria-hidden>
+            INSPECT — {medium} · {year}
+          </span>
         </>
       )}
 

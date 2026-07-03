@@ -154,13 +154,25 @@ export default function Hero() {
             className="hidden lg:block lg:col-span-4"
           >
             <Parallax distance={38}>
-              {/* Drop /public/models/avatar.glb to upgrade this to the
-                  black-silver 3D avatar; falls back to the portrait otherwise. */}
-              <ModelViewer
-                poster="/images/portrait/portrait-headshot.png"
-                alt="Avendano Shintaro"
-                variant="headshot"
-              />
+              {/* The digital portrait as an atelier specimen: two slow
+                  counter-rotating orbit rings + a measurement readout make
+                  it read as an object under study, not a photo. Drop
+                  /public/models/avatar.glb to upgrade to full 3D. */}
+              <div className="relative">
+                <span className="orbit-ring orbit-ring-a" aria-hidden />
+                <span className="orbit-ring orbit-ring-b" aria-hidden />
+                <ModelViewer
+                  poster="/images/portrait/portrait-headshot.png"
+                  alt="Avendano Shintaro"
+                  variant="headshot"
+                />
+                <span
+                  aria-hidden
+                  className="absolute -right-3 top-6 rotate-90 origin-top-right text-[8px] tracking-[0.4em] uppercase text-silver-muted/80 whitespace-nowrap"
+                >
+                  Portrait · 2.5D — Specimen 01
+                </span>
+              </div>
             </Parallax>
           </motion.div>
         </div>

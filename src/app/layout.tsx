@@ -21,6 +21,7 @@ import AmbientBackdrop from "@/components/ui/AmbientBackdrop";
 import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import CinemaScroll from "@/components/ui/CinemaScroll";
 import ProximityField from "@/components/ui/ProximityField";
+import AtelierFrame from "@/components/ui/AtelierFrame";
 import SoundToggle from "@/components/ui/SoundToggle";
 import ChatWidget from "@/components/chat/ChatWidget";
 
@@ -125,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <SectionIndex />
             <CustomCursor />
             {children}
+            <AtelierFrame />
             <SoundToggle />
             <ChatWidget />
           </LaunchProvider>

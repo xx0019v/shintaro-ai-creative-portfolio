@@ -44,6 +44,48 @@ export default function Contact() {
           />
         )}
 
+        {/* Final ritual — light converges on the ask: two hairline beams
+            angle in toward the CTA and a pool of silver gathers behind it,
+            so the whole scene funnels to one action. */}
+        <motion.div
+          aria-hidden
+          className="absolute left-0 top-[30%] h-px w-[46%] origin-left hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(229,229,229,0.5))",
+            transform: "rotate(9deg)",
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileInView={{ scaleX: 1, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 1.8, ease: easeLuxe, delay: 0.3 }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute right-0 top-[22%] h-px w-[38%] origin-right hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(270deg, transparent, rgba(229,229,229,0.4))",
+            transform: "rotate(-11deg)",
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileInView={{ scaleX: 1, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 1.8, ease: easeLuxe, delay: 0.55 }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute left-[52%] top-[52%] h-[380px] w-[380px] -translate-x-1/2 rounded-full blur-3xl hidden lg:block"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(229,229,229,0.14), transparent 68%)",
+          }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 2.4, ease: easeLuxe, delay: 0.5 }}
+        />
+
         {/* Final ritual — the Entry Sphere's memory returns: a small chrome
             orb breathes above the closing scene, the world ending where it
             began. */}
