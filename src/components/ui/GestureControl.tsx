@@ -39,13 +39,13 @@ const CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
 const MODEL =
   "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
 
-const TICK_ACTIVE_MS = 66; // ~15fps while a hand is present
-const TICK_READY_MS = 220; // light cadence while watching for a hand
+const TICK_ACTIVE_MS = 40; // ~25fps while a hand is present — snappy tracking
+const TICK_READY_MS = 180; // light cadence while watching for a hand
 const IDLE_MS = 3000; // hand gone → back to ready cadence
 const STOP_MS = 90_000; // no hand for 90s → stop camera fully
-const PINCH_ON = 0.055; // normalized thumb↔index distance
-const PINCH_OFF = 0.085;
-const SCROLL_GAIN = 2.4;
+const PINCH_ON = 0.06; // normalized thumb↔index distance (slightly easier)
+const PINCH_OFF = 0.095;
+const SCROLL_GAIN = 8; // strong response — small hand moves travel the page
 
 export default function GestureControl() {
   const { lang } = useLang();
@@ -164,7 +164,7 @@ export default function GestureControl() {
         const y = hand[8].y; // normalized 0 (top) .. 1 (bottom)
         if (lastYRef.current !== null) {
           const delta = lastYRef.current - y; // hand up → positive
-          if (Math.abs(delta) > 0.004) {
+          if (Math.abs(delta) > 0.0015) {
             window.scrollBy({
               top: delta * window.innerHeight * SCROLL_GAIN,
               behavior: "auto",
