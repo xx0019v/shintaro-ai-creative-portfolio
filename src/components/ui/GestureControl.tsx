@@ -45,7 +45,13 @@ const IDLE_MS = 3000; // hand gone → back to ready cadence
 const STOP_MS = 90_000; // no hand for 90s → stop camera fully
 const PINCH_ON = 0.06; // normalized thumb↔index distance (slightly easier)
 const PINCH_OFF = 0.095;
-const SCROLL_GAIN = 8; // strong response — small hand moves travel the page
+// Joystick model: the pinch point becomes the neutral centre. Holding the
+// hand above/below it scrolls continuously at a speed proportional to the
+// offset. Open palm releases instantly.
+const DEAD_ZONE = 0.02; // normalized offset ignored around the centre
+const JOY_SPEED = 110; // px/frame at full offset (~0.5 above/below centre)
+const MAX_VEL = 42; // px/frame velocity clamp
+const VEL_EASE = 0.16; // per-frame lerp toward target velocity (smoothness)
 
 export default function GestureControl() {
   const { lang } = useLang();
@@ -58,9 +64,42 @@ export default function GestureControl() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastSeenRef = useRef(0);
   const pinchRef = useRef(false);
-  const lastYRef = useRef<number | null>(null);
+  const anchorYRef = useRef<number | null>(null); // pinch point = neutral centre
+  const targetVelRef = useRef(0); // px/frame the joystick asks for
+  const velRef = useRef(0); // smoothed velocity actually applied
+  const scrollRafRef = useRef(0);
   const stateRef = useRef<GState>("unavailable");
   stateRef.current = state;
+
+  // Smooth scroll engine — one rAF loop while a hand is active. Detection
+  // (~25fps) only steers targetVel; this loop eases the real velocity toward
+  // it every frame (60fps), so motion is fluid instead of stepping.
+  const stopScrollLoop = useCallback(() => {
+    if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+    scrollRafRef.current = 0;
+    targetVelRef.current = 0;
+    velRef.current = 0;
+  }, []);
+
+  const startScrollLoop = useCallback(() => {
+    if (scrollRafRef.current) return;
+    const step = () => {
+      velRef.current += (targetVelRef.current - velRef.current) * VEL_EASE;
+      if (Math.abs(velRef.current) > 0.15) {
+        window.scrollBy(0, velRef.current);
+      }
+      if (
+        stateRef.current === "active" ||
+        Math.abs(velRef.current) > 0.15 ||
+        targetVelRef.current !== 0
+      ) {
+        scrollRafRef.current = requestAnimationFrame(step);
+      } else {
+        scrollRafRef.current = 0;
+      }
+    };
+    scrollRafRef.current = requestAnimationFrame(step);
+  }, []);
 
   // capability + auto-resume for returning visitors.
   // Not gated on `launched`: during the intro the chip simply sits beneath
@@ -105,10 +144,11 @@ export default function GestureControl() {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    stopScrollLoop();
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
-  }, []);
+  }, [stopScrollLoop]);
 
   // full teardown on unmount
   useEffect(() => stopCamera, [stopCamera]);
@@ -151,6 +191,7 @@ export default function GestureControl() {
       if (stateRef.current !== "active") {
         setState("active");
         loop(TICK_ACTIVE_MS);
+        startScrollLoop();
       }
       // pinch = thumb tip (4) ↔ index tip (8), with hysteresis
       const dx = hand[4].x - hand[8].x;
@@ -162,22 +203,31 @@ export default function GestureControl() {
 
       if (isPinch) {
         const y = hand[8].y; // normalized 0 (top) .. 1 (bottom)
-        if (lastYRef.current !== null) {
-          const delta = lastYRef.current - y; // hand up → positive
-          if (Math.abs(delta) > 0.0015) {
-            window.scrollBy({
-              top: delta * window.innerHeight * SCROLL_GAIN,
-              behavior: "auto",
-            });
+        if (anchorYRef.current === null) {
+          // the moment you pinch becomes the neutral centre
+          anchorYRef.current = y;
+          targetVelRef.current = 0;
+        } else {
+          // joystick: hold above the centre → page flows down, and the
+          // further you hold, the faster it flows. Dead zone kills jitter.
+          const off = anchorYRef.current - y; // hand above anchor → positive
+          const mag = Math.abs(off);
+          if (mag < DEAD_ZONE) {
+            targetVelRef.current = 0;
+          } else {
+            const v = (mag - DEAD_ZONE) * Math.sign(off) * JOY_SPEED;
+            targetVelRef.current = Math.max(-MAX_VEL, Math.min(MAX_VEL, v));
           }
         }
-        lastYRef.current = y;
       } else {
-        lastYRef.current = null; // open palm → pause
+        // open palm → instant release
+        anchorYRef.current = null;
+        targetVelRef.current = 0;
       }
     } else {
       pinchRef.current = false;
-      lastYRef.current = null;
+      anchorYRef.current = null;
+      targetVelRef.current = 0;
       const since = performance.now() - lastSeenRef.current;
       if (stateRef.current === "active" && since > IDLE_MS) {
         setState("ready");
@@ -192,7 +242,7 @@ export default function GestureControl() {
         setState("offer");
       }
     }
-  }, [stopCamera]);
+  }, [stopCamera, startScrollLoop]);
 
   const loop = useCallback(
     (ms: number) => {

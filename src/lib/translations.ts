@@ -534,8 +534,8 @@ const additions: Dict = {
   },
   gesture_active: { jp: "Gesture Active", en: "Gesture Active" },
   gesture_active_sub: {
-    jp: "つまんで上下 — スクロール",
-    en: "Pinch and move to scroll",
+    jp: "つまんだまま上下にかざす — パーで停止",
+    en: "Hold pinch above / below — open to stop",
   },
   gesture_off: { jp: "オフ", en: "Off" },
   gesture_privacy: {
