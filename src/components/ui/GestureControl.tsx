@@ -68,13 +68,16 @@ export default function GestureControl() {
   const targetVelRef = useRef(0); // px/frame the joystick asks for
   const velRef = useRef(0); // smoothed velocity actually applied
   const scrollRafRef = useRef(0);
+  const scrollActiveRef = useRef(false); // loop keep-alive flag
   const stateRef = useRef<GState>("unavailable");
   stateRef.current = state;
 
-  // Smooth scroll engine — one rAF loop while a hand is active. Detection
-  // (~25fps) only steers targetVel; this loop eases the real velocity toward
-  // it every frame (60fps), so motion is fluid instead of stepping.
+  // Smooth scroll engine — one rAF loop runs for the whole active session.
+  // Detection (~25fps) only steers targetVel; this loop eases the real
+  // velocity toward it every frame (60fps) and applies it with behavior
+  // "auto" so the CSS `scroll-behavior: smooth` never swallows it.
   const stopScrollLoop = useCallback(() => {
+    scrollActiveRef.current = false;
     if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
     scrollRafRef.current = 0;
     targetVelRef.current = 0;
@@ -82,21 +85,18 @@ export default function GestureControl() {
   }, []);
 
   const startScrollLoop = useCallback(() => {
-    if (scrollRafRef.current) return;
+    if (scrollActiveRef.current) return;
+    scrollActiveRef.current = true;
     const step = () => {
+      if (!scrollActiveRef.current) {
+        scrollRafRef.current = 0;
+        return;
+      }
       velRef.current += (targetVelRef.current - velRef.current) * VEL_EASE;
       if (Math.abs(velRef.current) > 0.15) {
-        window.scrollBy(0, velRef.current);
+        window.scrollBy({ top: velRef.current, left: 0, behavior: "auto" });
       }
-      if (
-        stateRef.current === "active" ||
-        Math.abs(velRef.current) > 0.15 ||
-        targetVelRef.current !== 0
-      ) {
-        scrollRafRef.current = requestAnimationFrame(step);
-      } else {
-        scrollRafRef.current = 0;
-      }
+      scrollRafRef.current = requestAnimationFrame(step);
     };
     scrollRafRef.current = requestAnimationFrame(step);
   }, []);
@@ -232,6 +232,7 @@ export default function GestureControl() {
       if (stateRef.current === "active" && since > IDLE_MS) {
         setState("ready");
         loop(TICK_READY_MS);
+        stopScrollLoop();
       } else if (
         stateRef.current === "ready" &&
         lastSeenRef.current > 0 &&
@@ -242,7 +243,7 @@ export default function GestureControl() {
         setState("offer");
       }
     }
-  }, [stopCamera, startScrollLoop]);
+  }, [stopCamera, startScrollLoop, stopScrollLoop]);
 
   const loop = useCallback(
     (ms: number) => {
