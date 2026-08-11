@@ -164,7 +164,7 @@ export default function Contact() {
                 <a
                   href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
                   data-prox
-                  className="group relative inline-flex items-center gap-6 hairline-silver px-8 py-5 hover:bg-offwhite/[0.04] transition-colors duration-500"
+                  className="lg-btn lg-btn--lg group gap-6"
                 >
                   <Mail size={18} strokeWidth={1.1} className="text-silver-bright" />
                   <span className="font-serif text-lg md:text-xl tracking-tight">{EMAIL}</span>
@@ -181,7 +181,8 @@ export default function Contact() {
               <MagneticButton>
                 <a
                   href={`mailto:${EMAIL}?subject=Portfolio%20Inquiry`}
-                  className="inline-flex items-center gap-3 px-6 py-3 bg-offwhite text-base text-[11px] tracking-wider2 uppercase hover:bg-silver transition-colors duration-500"
+                  data-prox
+                  className="lg-btn lg-btn--primary text-[11px] tracking-wider2 uppercase"
                 >
                   {tr("ct_send", lang)}
                   <ArrowUpRight size={14} strokeWidth={1.25} />
@@ -190,7 +191,8 @@ export default function Contact() {
               <MagneticButton>
                 <a
                   href="#projects"
-                  className="inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
+                  data-prox
+                  className="lg-btn lg-btn--quiet text-[11px] tracking-wider2 uppercase"
                 >
                   {tr("ct_view", lang)}
                   <ArrowUpRight size={14} strokeWidth={1.25} />

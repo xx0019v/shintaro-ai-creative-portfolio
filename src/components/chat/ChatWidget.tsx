@@ -89,9 +89,11 @@ export default function ChatWidget() {
         initial={{ opacity: 0, scale: 0.6 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: EASE, delay: 0.8 }}
+        whileTap={{ scale: 0.96 }}
         onClick={() => setOpen(true)}
         aria-label={tr("chat_open", lang)}
-        className="liquid-glass fixed bottom-6 left-6 z-[60] hidden md:flex items-center gap-2 px-4 py-3 text-[10px] tracking-[0.32em] uppercase text-offwhite hover:border-silver-bright transition-colors duration-500"
+        data-prox
+        className="lg-btn fixed bottom-6 left-6 z-[60] hidden md:inline-flex text-[10px] tracking-[0.32em] uppercase"
       >
         <MessageCircle size={14} strokeWidth={1.4} className="text-silver-bright" />
         {tr("chat_open", lang)}

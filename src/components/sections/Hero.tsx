@@ -201,7 +201,7 @@ export default function Hero() {
               <a
                 href="#projects"
                 data-prox
-                className="group relative inline-flex items-center gap-3 px-6 py-3 hairline-silver text-[11px] tracking-wider2 uppercase text-offwhite hover:bg-offwhite hover:text-base transition-colors duration-500"
+                className="lg-btn lg-btn--primary group text-[11px] tracking-wider2 uppercase"
               >
                 {tr("hero_cta_projects", lang)}
                 <ArrowUpRight
@@ -214,7 +214,8 @@ export default function Hero() {
             <MagneticButton>
               <a
                 href="#contact"
-                className="group inline-flex items-center gap-3 px-6 py-3 hairline text-[11px] tracking-wider2 uppercase text-offwhite/85 hover:text-offwhite hover:border-silver/60 transition-colors duration-500"
+                data-prox
+                className="lg-btn group text-[11px] tracking-wider2 uppercase"
               >
                 {tr("hero_cta_contact", lang)}
                 <ArrowUpRight size={14} strokeWidth={1.25} />

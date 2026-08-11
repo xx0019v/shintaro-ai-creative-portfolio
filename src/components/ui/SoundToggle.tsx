@@ -110,7 +110,8 @@ export default function SoundToggle() {
       aria-pressed={on}
       aria-label={on ? "Sound on — click to mute" : "Sound off — click to enable"}
       data-cursor={on ? "MUTE" : "SOUND"}
-      className="fixed bottom-6 right-6 z-[70] hidden md:flex items-center gap-2.5 px-3.5 py-2 hairline-silver bg-base/50 backdrop-blur-sm text-[9px] tracking-[0.3em] uppercase text-silver-bright hover:text-offwhite transition-colors duration-500"
+      data-prox
+      className="lg-btn lg-btn--quiet fixed bottom-6 right-6 z-[70] hidden md:inline-flex gap-2.5 px-4 text-[9px] tracking-[0.3em] uppercase text-silver-bright"
     >
       {/* three chrome bars that "wake" when sound is on */}
       <span className="flex items-end gap-[3px] h-3" aria-hidden>

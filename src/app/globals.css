@@ -50,6 +50,25 @@
   --silver-bright: #E5E5E5;
   --silver-muted: #8E8E8E;
   --offwhite: #F5F5F5;
+
+  /* ── Mercury ramp (2.0) ───────────────────────────────────────────────
+     Flat silver reads as brushed aluminium because its values sit in a
+     narrow mid band. Mercury reads as LIQUID because it is a mirror: a
+     razor-thin blown-out specular sitting directly against a near-black
+     reflection of the room, with a faint cool cast. The wide range —
+     not more grey — is what sells it. Every chrome surface samples this
+     ramp so the whole site reflects the same imaginary environment. */
+  --hg-spec: #ffffff;   /* blown specular hit */
+  --hg-1:    #f4f7fa;   /* highlight roll-off (cool) */
+  --hg-2:    #cfd5dc;   /* lit body */
+  --hg-3:    #949ba5;   /* terminator */
+  --hg-4:    #4a5058;   /* reflected shadow */
+  --hg-5:    #23272c;   /* dark room reflection — the "liquid" band */
+  --hg-6:    #0d0f12;   /* deepest reflection */
+
+  /* One motion language for glass + metal. */
+  --e-luxe: cubic-bezier(0.19, 1, 0.22, 1);
+  --e-glass: cubic-bezier(0.32, 1.28, 0.42, 1); /* slight overshoot, iOS-like */
 }
 
 html { scroll-behavior: smooth; }
@@ -72,13 +91,20 @@ html, body {
 .hairline { border: 1px solid rgba(229, 229, 229, 0.08); }
 .hairline-silver { border: 1px solid rgba(192, 192, 192, 0.32); }
 
+/* Mercury rule — a bead of liquid metal rather than a flat grey line:
+   the highlight is off-centre and the falloff is uneven, so it catches
+   light the way a rolling meniscus does. */
 .rule-silver {
   height: 1px;
   background: linear-gradient(
     90deg,
-    rgba(192, 192, 192, 0) 0%,
-    rgba(229, 229, 229, 0.65) 50%,
-    rgba(192, 192, 192, 0) 100%
+    rgba(147, 155, 165, 0) 0%,
+    rgba(147, 155, 165, 0.28) 18%,
+    var(--hg-1) 44%,
+    var(--hg-spec) 52%,
+    rgba(207, 213, 220, 0.5) 62%,
+    rgba(147, 155, 165, 0.22) 84%,
+    rgba(147, 155, 165, 0) 100%
   );
 }
 
@@ -92,19 +118,57 @@ html, body {
   );
 }
 
-/* Metallic text — soft chrome */
+/* Metallic text — liquid mercury.
+   Two things make this read as mercury rather than grey text:
+   (1) the ramp slams a blown specular straight into the near-black
+       reflection band (--hg-5) with almost no transition, the way a
+       mirrored meniscus does;
+   (2) the ramp is taller than the text and drifts, so the highlight
+       crawls across the letterforms like a surface that hasn't settled. */
 .metallic {
   background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #e5e5e5 30%,
-    #8e8e8e 55%,
-    #c0c0c0 75%,
-    #ffffff 100%
+    177deg,
+    var(--hg-spec) 0%,
+    var(--hg-1) 12%,
+    var(--hg-2) 26%,
+    var(--hg-4) 42%,
+    var(--hg-5) 50%,
+    var(--hg-3) 58%,
+    var(--hg-1) 74%,
+    var(--hg-spec) 86%,
+    var(--hg-2) 100%
   );
+  background-size: 100% 280%;
+  background-position: 50% 22%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: mercuryDrift 11s var(--e-luxe) infinite alternate;
+}
+@keyframes mercuryDrift {
+  from { background-position: 50% 14%; }
+  to   { background-position: 50% 78%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .metallic { animation: none; background-position: 50% 30%; }
+}
+
+/* Mercury surface — for small chrome plates, dots, ticks, mark shapes. */
+.mercury-surface {
+  background:
+    radial-gradient(120% 90% at 32% 12%, var(--hg-spec) 0%, transparent 42%),
+    linear-gradient(
+      168deg,
+      var(--hg-1) 0%,
+      var(--hg-2) 22%,
+      var(--hg-5) 52%,
+      var(--hg-3) 66%,
+      var(--hg-1) 88%,
+      var(--hg-spec) 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.45);
 }
 
 /* Editorial frame for color-heavy assets */
@@ -327,6 +391,241 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
+
+/* ══ Liquid Glass controls (2.0) ══════════════════════════════════════════
+   iOS-style glass buttons. What makes real Liquid Glass read as a physical
+   lens rather than a frosted rectangle is four layers stacked in order:
+
+     1. LENS      backdrop blur + saturate — the scene behind is bent, and
+                  colour is pushed, so the button samples the room.
+     2. BODY      a top-lit vertical wash: light pools at the top edge and
+                  the base sits in its own shadow, giving the pill volume.
+     3. SPECULAR  a bright point that TRACKS THE CURSOR. This is the tell —
+                  static glass is a sticker, glass whose highlight follows
+                  you is a curved surface. Driven by --px/--py/--prox,
+                  which ProximityField already writes to [data-prox]; no
+                  new listener, no React re-render.
+     4. RIM       a mercury-bright hairline that is strongest where the
+                  light hits and fades round the back of the form.
+
+   Fully rounded (999px), ≥44px tall, press-scales with a slight overshoot,
+   and degrades to an opaque plate where backdrop-filter is unsupported.
+
+   Declared in @layer components so Tailwind utilities still win — a
+   `hidden md:flex` or `w-full` on a .lg-btn behaves the way you'd expect. */
+@layer components {
+.lg-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--offwhite);
+
+  /* 2. BODY — light pools top, base falls into shadow */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.038) 46%,
+    rgba(255, 255, 255, 0.015) 72%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  /* 1. LENS */
+  backdrop-filter: blur(26px) saturate(185%) brightness(1.08);
+  -webkit-backdrop-filter: blur(26px) saturate(185%) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),    /* top catch-light */
+    inset 0 -1px 0 rgba(255, 255, 255, 0.07),   /* bottom bounce */
+    inset 0 0 24px rgba(255, 255, 255, 0.045),  /* inner refraction wash */
+    0 1px 2px rgba(0, 0, 0, 0.55),              /* contact shadow */
+    0 14px 34px -14px rgba(0, 0, 0, 0.9);       /* lift */
+  transition:
+    transform 320ms var(--e-glass),
+    box-shadow 520ms var(--e-luxe),
+    background 520ms var(--e-luxe),
+    color 420ms var(--e-luxe);
+  will-change: transform;
+}
+
+/* 3. SPECULAR — a soft highlight that rides the cursor across the lens */
+.lg-btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    68% 140% at var(--px, 50%) var(--py, 0%),
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(229, 233, 238, 0.10) 34%,
+    transparent 68%
+  );
+  opacity: calc(0.34 + 0.66 * var(--prox, 0));
+  mix-blend-mode: screen;
+  transition: opacity 420ms var(--e-luxe);
+}
+
+/* 4. RIM — mercury hairline, brightest at the lit edge */
+.lg-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    170deg,
+    rgba(255, 255, 255, calc(0.42 + 0.34 * var(--prox, 0))) 0%,
+    rgba(207, 213, 220, 0.22) 28%,
+    rgba(74, 80, 88, 0.16) 54%,
+    rgba(207, 213, 220, 0.26) 82%,
+    rgba(255, 255, 255, calc(0.20 + 0.24 * var(--prox, 0))) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: background 420ms var(--e-luxe);
+}
+
+.lg-btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.155) 0%,
+    rgba(255, 255, 255, 0.06) 46%,
+    rgba(255, 255, 255, 0.02) 72%,
+    rgba(0, 0, 0, 0.16) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.46),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 0 30px rgba(255, 255, 255, 0.07),
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 20px 44px -16px rgba(0, 0, 0, 0.95);
+}
+
+/* Press — iOS compresses the glass toward the finger, then releases with a
+   hair of overshoot. Transform only; the layout never moves. */
+.lg-btn:active { transform: scale(0.962); transition-duration: 130ms; }
+
+.lg-btn:focus-visible {
+  outline: 1px solid rgba(244, 247, 250, 0.75);
+  outline-offset: 3px;
+}
+
+/* Primary — a pill of settled mercury. Dark type on bright metal. */
+.lg-btn--primary {
+  color: #08090a;
+  background: linear-gradient(
+    174deg,
+    var(--hg-spec) 0%,
+    var(--hg-1) 26%,
+    var(--hg-2) 54%,
+    #b3bac2 74%,
+    var(--hg-1) 100%
+  );
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 7px rgba(0, 0, 0, 0.20),
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 16px 38px -16px rgba(0, 0, 0, 0.95);
+}
+.lg-btn--primary::before {
+  background: radial-gradient(
+    62% 130% at var(--px, 50%) var(--py, 0%),
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.28) 32%,
+    transparent 64%
+  );
+  mix-blend-mode: soft-light;
+  opacity: calc(0.5 + 0.5 * var(--prox, 0));
+}
+.lg-btn--primary:hover {
+  background: linear-gradient(
+    174deg,
+    var(--hg-spec) 0%,
+    #ffffff 30%,
+    var(--hg-1) 58%,
+    var(--hg-2) 78%,
+    var(--hg-spec) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 7px rgba(0, 0, 0, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 22px 48px -18px rgba(0, 0, 0, 1);
+}
+.lg-btn--primary::after {
+  background: linear-gradient(
+    170deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.3) 40%,
+    rgba(35, 39, 44, 0.28) 70%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+
+/* Quiet — the third-tier action. Same physics, less presence. */
+.lg-btn--quiet {
+  color: rgba(245, 245, 245, 0.86);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.018) 55%,
+    rgba(0, 0, 0, 0.14) 100%
+  );
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 10px 26px -14px rgba(0, 0, 0, 0.8);
+}
+.lg-btn--quiet:hover { color: var(--offwhite); }
+
+/* Large — the hero-scale contact plate */
+.lg-btn--lg { min-height: 68px; padding: 0 2rem; border-radius: 999px; }
+
+/* Squared variant for panel-shaped glass (chat sheet, cards) */
+.lg-btn--panel { border-radius: 22px; }
+
+@media (max-width: 640px) {
+  .lg-btn { min-height: 48px; padding: 0 1.25rem; }
+  .lg-btn--lg { min-height: 60px; padding: 0 1.25rem; }
+}
+
+/* No backdrop-filter (older Firefox): fall back to an opaque plate so the
+   label never sits on unreadable transparency. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lg-btn { background: linear-gradient(180deg, #1c1f23 0%, #101215 100%); }
+  .lg-btn--quiet { background: linear-gradient(180deg, #141619 0%, #0b0d0f 100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-btn { transition: none; }
+  .lg-btn:active { transform: none; }
+}
+
+/* Touch devices never get a cursor-tracked specular — pin it to the top
+   edge so the pill still reads as top-lit glass rather than flat. */
+@media (hover: none), (pointer: coarse) {
+  .lg-btn::before { opacity: 0.55; }
+}
+} /* @layer components */
 
 /* ── Paper tear (⑤) — the one "page tears to the next chapter" hinge ──
    A torn deckle seam draws across; two paper shadows part to reveal the
