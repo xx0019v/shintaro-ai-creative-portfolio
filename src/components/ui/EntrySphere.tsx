@@ -11,6 +11,30 @@ const EASE = [0.19, 1, 0.22, 1] as const;
 type Phase = "idle" | "hovering" | "activating" | "gone";
 
 /**
+ * The chapters the site contains, held in the black around the sphere.
+ *
+ * English in both languages, like the section headings elsewhere — these are
+ * signage, not prose, and the JP mode deliberately keeps Latin headings for
+ * global tone (same reasoning as TAGS in Hero).
+ *
+ * `a` is the angle in degrees, clockwise from 3 o'clock. The bottom of the
+ * ring (roughly 60°–120°) is left empty on purpose: TAP sits there. `r` nudges
+ * each label off a perfect circle so the constellation reads as placed rather
+ * than generated, and doubles as the brightness cue — tighter is brighter.
+ */
+const CHAPTER_LABELS = [
+  // Held wide at the lower left so it clears TAP, which sits bottom-centre.
+  { t: "THE WALK", a: 143, r: 1.14, m: true },
+  { t: "CONTACT", a: 178, r: 0.86, m: false },
+  { t: "AI CAMERA", a: 212, r: 1.0, m: true },
+  { t: "FRAGRANCE", a: 254, r: 0.88, m: true },
+  { t: "CLIENT WORK", a: 298, r: 0.97, m: true },
+  { t: "KEYCHAIN", a: 340, r: 0.85, m: false },
+  { t: "LEADERSHIP", a: 16, r: 0.99, m: false },
+  { t: "SKILLS", a: 44, r: 0.87, m: false },
+] as const;
+
+/**
  * EntrySphere — the ritual threshold before the LiquidLoader.
  *
  * A liquid-metal sphere floats in black space, breathing. Faint orbiting
@@ -186,10 +210,53 @@ export default function EntrySphere() {
           }}
         />
 
-        {/* the stage — sphere + dust share a centre.
+        {/* the stage — sphere, dust and chapter labels share a centre.
             grid place-items-center stacks children on one cell without
             shrinking the sphere (a flex 1x1 box collapsed it to a line). */}
         <div className="relative grid place-items-center">
+          {/* chapter labels — the room naming what it holds. Inside the stage
+              so the ring is centred on the SPHERE, not on the viewport: the
+              flex column puts TAP underneath, which pushes the sphere above
+              centre, and a ring hung off the viewport would sit low.
+              Mobile keeps only the four marked `m` so the ring stays legible
+              at 375px and the sphere is still unmistakably the subject. */}
+          <div
+            aria-hidden
+            className={`entry-ring ${activating ? "is-pulling" : ""}`}
+          >
+            {CHAPTER_LABELS.filter((l) => !isTouch || l.m).map((l, i) => {
+              const rad = (l.a * Math.PI) / 180;
+              return (
+                <span
+                  key={l.t}
+                  data-prox
+                  className="entry-label"
+                  style={
+                    {
+                      ["--cx" as string]: (Math.cos(rad) * l.r).toFixed(4),
+                      // squashed vertically: a true circle would collide with
+                      // TAP below and run off the top on short viewports
+                      ["--cy" as string]: (Math.sin(rad) * l.r * 0.82).toFixed(4),
+                      // 1 at the tightest ring radius, 0 at the widest.
+                      // Clamped: a label held out past the nominal ring would
+                      // otherwise compute negative and vanish entirely.
+                      ["--near" as string]: Math.max(
+                        0,
+                        Math.min(1, 1 - (l.r - 0.85) / 0.3)
+                      ).toFixed(2),
+                      ["--fx" as string]: `${(i % 2 ? 1 : -1) * (3 + (i % 3))}px`,
+                      ["--fy" as string]: `${(i % 3 ? -1 : 1) * (4 + (i % 2) * 3)}px`,
+                      ["--dur" as string]: `${10 + (i % 4) * 2.5}s`,
+                      ["--delay" as string]: `${i * 0.7}s`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <span className="entry-label-i">{l.t}</span>
+                </span>
+              );
+            })}
+          </div>
+
           {/* dust ring — PC (rAF driven, 22 motes) */}
           {!isTouch && (
             <div

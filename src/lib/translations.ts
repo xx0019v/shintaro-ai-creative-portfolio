@@ -511,6 +511,15 @@ const additions: Dict = {
   entry_copy: { jp: "体験をはじめる", en: "Enter the experience" },
   entry_aria: { jp: "AVENDAÑO の世界に入る", en: "Enter the world of AVENDAÑO" },
   entry_skip: { jp: "スキップ", en: "Skip" },
+  // ─── Film scrub dividers (chapters cut from AVÉRIEL "THE WALK") ────────
+  // Set in the serif display face over the footage. English in both modes,
+  // like the other section headings — these are signage for the act that
+  // follows, and the site keeps Latin headings in JP for global tone.
+  film_a1: { jp: "PROJECTS", en: "PROJECTS" },
+  film_a2: { jp: "BRANDING", en: "BRANDING" },
+  film_a3: { jp: "PRACTICE", en: "PRACTICE" },
+  film_a4: { jp: "CONTACT", en: "CONTACT" },
+
   entry_cursor: { jp: "TAP", en: "TAP" },
 
   // ─── Signature "The Read" — hero identity + per-work intent lines ────────

@@ -41,6 +41,71 @@
   }
 }
 
+/* ── Entry Sphere — chapter labels ────────────────────────────────────
+   Museum signage, not a menu: thin uppercase silver held far off the
+   sphere, so the room tells you what it contains without competing with
+   the object in the middle.
+
+   Placement is polar. The ring container carries --ring (a clamped
+   radius) and each label carries a unitless cos/sin multiplier, so the
+   whole constellation scales with the viewport in pure CSS — no resize
+   listener, no rAF, no measurement.
+
+   Two nested spans on purpose: the outer one owns the ring position (and
+   the collapse into the sphere on activate), the inner one owns the
+   float. Sharing one transform would make the float fight the layout. */
+.entry-ring {
+  --ring: clamp(148px, 33vmin, 400px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.entry-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  transform: translate(-50%, -50%)
+    translate(calc(var(--ring) * var(--cx)), calc(var(--ring) * var(--cy)));
+  transition: transform 900ms cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+/* Scoped with the ring on purpose: two classes (0,2,0) outrank the
+   `[role="button"] *` white-space reset further down (0,1,1). The entry
+   overlay carries role="button", so unscoped rules here lose to it and
+   "CLIENT WORK" breaks across two lines. */
+.entry-ring .entry-label-i {
+  display: block;
+  white-space: nowrap;
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--silver-bright);
+  /* Nearer the sphere reads brighter — --near is 1 at the tightest ring
+     radius and falls off outward, set per label. Cursor proximity adds on
+     top via --prox, which ProximityField already writes to [data-prox]. */
+  opacity: calc((0.2 + 0.26 * var(--near, 0.5)) + 0.42 * var(--prox, 0));
+  animation: entryLabelFloat var(--dur, 11s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: transform, opacity;
+}
+@keyframes entryLabelFloat {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(var(--fx, 0px), var(--fy, 0px), 0); }
+}
+/* On activate the labels are drawn into the sphere with the dust. */
+.entry-ring.is-pulling .entry-label {
+  transform: translate(-50%, -50%) scale(0.55);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry-ring .entry-label-i { animation: none; }
+}
+
 
 :root {
   --bg: #050505;
@@ -151,6 +216,99 @@ html, body {
 }
 @media (prefers-reduced-motion: reduce) {
   .metallic { animation: none; background-position: 50% 30%; }
+}
+
+/* ── Mercury sphere ───────────────────────────────────────────────────
+   A single radial gradient reads as matte clay, because a smooth falloff
+   from light to dark is what a DIFFUSE surface does. Mercury is a mirror:
+   it doesn't shade, it REFLECTS — so the surface has to show a room.
+
+   Four stacked backgrounds, topmost first:
+     1. specular    the light source itself: small, hard-edged, blown out
+     2. kick        a dimmer bounce from the lower right
+     3. fresnel     edge darkening with a bright rim, so the silhouette
+                    reads as a sphere turning away from the viewer
+     4. environment the room. A compressed HORIZON — bright sky slammed
+                    against near-black ground across ~4% of the height — is
+                    the single detail that makes metal read as liquid. Real
+                    chrome balls have that hard band; clay never does.
+
+   All on one element so the liquid border-radius morph carries them. */
+.mercury-sphere {
+  background:
+    /* specular — a hard glint, ~7% of the ball. Any softer and the eye reads
+       a diffuse surface no matter what the rest of the stack does. */
+    radial-gradient(
+      ellipse 8% 6% at 31% 23%,
+      #ffffff 0%,
+      #ffffff 52%,
+      rgba(255, 255, 255, 0.35) 74%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    /* second, smaller glint — real metal never has exactly one */
+    radial-gradient(
+      ellipse 3.5% 2.6% at 44% 17%,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    /* bounce from the lower right */
+    radial-gradient(
+      ellipse 26% 19% at 70% 80%,
+      rgba(226, 233, 240, 0.45) 0%,
+      rgba(226, 233, 240, 0) 66%
+    ),
+    /* fresnel — the surface turns away into shadow, then the very edge
+       catches the room again. Widened to ~7% so it is actually visible at
+       a 210px sphere instead of being a sub-pixel line. */
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 0, 0, 0) 55%,
+      rgba(0, 0, 0, 0.55) 80%,
+      rgba(0, 0, 0, 0.62) 89%,
+      rgba(216, 226, 234, 0.55) 95%,
+      rgba(248, 251, 253, 0.95) 99%,
+      rgba(255, 255, 255, 1) 100%
+    ),
+    /* the room. Two rules matter: the horizon is slammed to pure black over
+       ~2% of the height, and the mid-tones sit LOW — a bright average makes
+       the glints stop reading as glints. */
+    linear-gradient(
+      176deg,
+      /* the bright sky band sits at 7%, not 0%: the drift window clips the
+         first few percent, and a highlight parked outside the ball is the
+         same as no highlight at all */
+      #cdd6df 0%,
+      #ffffff 7%,
+      #a4aeb9 15%,
+      #59626d 25%,
+      #262d36 34%,
+      #0b0e14 42%,
+      #000000 47.5%,
+      #000000 49.5%,
+      #03050a 51.5%,
+      #1b222b 56%,
+      #3d4550 62%,
+      #1c222a 70%,
+      #4b535e 80%,
+      #97a1ac 88%,
+      #dfe6ec 95%,
+      #ffffff 100%
+    );
+  /* 108% with a small drift keeps BOTH ends of the ramp — the sky and the
+     bottom bounce — inside the ball. At 150% they fell outside it entirely,
+     which is what flattened the first attempt into a pearl. */
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 108%;
+  background-position: 0 0, 0 0, 0 0, 0 0, 50% 40%;
+  animation: mercurySphereDrift 14s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+/* The horizon slides, so the reflection looks like a surface that has not
+   settled rather than a texture painted on a ball. */
+@keyframes mercurySphereDrift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 50% 22%; }
+  to   { background-position: 0 0, 0 0, 0 0, 0 0, 50% 62%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mercury-sphere { animation: none; }
 }
 
 /* Mercury surface — for small chrome plates, dots, ticks, mark shapes. */
@@ -1441,3 +1599,10 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   .intent-scan .scan-line { display: none; }
   .intent-scan.is-reading .intent-line { transition: opacity 200ms linear; }
 }
+
+/* ── Film scrub dividers ──────────────────────────────────────────────
+   Scroll distance for the chapter leaders cut from THE WALK. Shorter on
+   small screens so a divider is not a dozen thumb-swipes of scrolling. */
+.film-scrub { height: 260vh; }
+@media (max-width: 1024px) { .film-scrub { height: 210vh; } }
+@media (max-width: 768px)  { .film-scrub { height: 170vh; } }

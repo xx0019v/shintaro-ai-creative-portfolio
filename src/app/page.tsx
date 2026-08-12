@@ -11,9 +11,20 @@ import Strengths from "@/components/sections/Strengths";
 import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
-import PaperTear from "@/components/ui/PaperTear";
 import LightWipe from "@/components/ui/LightWipe";
+import FilmScrub from "@/components/ui/FilmScrub";
 
+/**
+ * The page reads as one film in four acts.
+ *
+ * Between the acts sit scroll-scrubbed leaders cut from AVÉRIEL "THE WALK" —
+ * this portfolio's own AI film. They are not stock transitions: the reader
+ * scrubs the actual work at whatever speed they scroll, so the dividers are
+ * themselves the strongest argument the page makes.
+ *
+ * PaperTear is retired here — a second "chapter break" device competing with
+ * the film leaders read as two ideas doing one job.
+ */
 export default function HomePage() {
   return (
     <>
@@ -23,18 +34,22 @@ export default function HomePage() {
         {/* film-cut into the first reading scene */}
         <LightWipe />
         <About />
-        {/* the one editorial "tear to the next chapter" — into the Works */}
-        <PaperTear chapter="02" labelKey="tear_works" />
+
+        <FilmScrub band="entrance" index="ACT 01" labelKey="film_a1" />
         <AIKameranado />
+
+        <FilmScrub band="ten" index="ACT 02" labelKey="film_a2" />
         <FragranceBranding />
         <ClientWork />
         <KeychainProject />
+
+        <FilmScrub band="ekitai" index="ACT 03" labelKey="film_a3" />
         <Leadership />
         <Skills />
         <Strengths />
         <Education />
-        {/* film-cut into the closing scene */}
-        <LightWipe />
+
+        <FilmScrub band="finale" index="ACT 04" labelKey="film_a4" />
         <Contact />
       </main>
       <Footer />
