@@ -311,6 +311,31 @@ html, body {
   .mercury-sphere { animation: none; }
 }
 
+/* Mercury, held still.
+   The drifting variant repaints its background on every frame, which is
+   fine for the one Hero headline and wasteful across a dozen section
+   titles. Same ramp, parked at the position where the specular sits just
+   above the baseline of a large display cut. */
+.metallic-still {
+  background: linear-gradient(
+    177deg,
+    var(--hg-spec) 0%,
+    var(--hg-1) 12%,
+    var(--hg-2) 26%,
+    var(--hg-4) 42%,
+    var(--hg-5) 50%,
+    var(--hg-3) 58%,
+    var(--hg-1) 74%,
+    var(--hg-spec) 86%,
+    var(--hg-2) 100%
+  );
+  background-size: 100% 180%;
+  background-position: 50% 26%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Mercury surface — for small chrome plates, dots, ticks, mark shapes. */
 .mercury-surface {
   background:

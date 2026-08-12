@@ -36,7 +36,9 @@ export default function SectionHeader({
   const alignment = align === "center" ? "text-center mx-auto" : "text-left";
 
   return (
-    <div className={`max-w-3xl ${alignment}`}>
+    // Wider than the body measure: display type at this scale needs room to
+    // break where the phrase wants to, not where a 3xl column forces it.
+    <div className={`max-w-5xl ${alignment}`}>
       <Reveal>
         <div
           className={`flex items-center gap-4 text-[10px] tracking-wider2 text-silver uppercase ${
@@ -66,29 +68,28 @@ export default function SectionHeader({
         />
       )}
 
-      {/* headline — tracking settles + un-blurs like a title card locking in */}
+      {/* Headline — editorial scale, cut in mercury.
+          clamp() rather than breakpoint steps so the title grows with the
+          column instead of jumping at 768 and 1024; negative tracking and
+          0.9 leading because display sizes need both or they just read as
+          enlarged body copy.
+
+          No blur on entry any more: `filter` on a background-clip:text
+          element spawns its own rendering context and browsers routinely
+          drop the clipped fill for the duration. The tracking settle alone
+          carries the "title card locking in" read. */}
       {reduced ? (
-        <h2 className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-offwhite">
+        <h2 className="metallic-still mt-6 font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.03em]">
           {titleEn}
         </h2>
       ) : (
         <motion.h2
-          initial={{
-            opacity: 0,
-            y: 22,
-            letterSpacing: "0.06em",
-            filter: "blur(10px)",
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            letterSpacing: "-0.01em",
-            filter: "blur(0px)",
-          }}
+          initial={{ opacity: 0, y: 26, letterSpacing: "0.05em" }}
+          whileInView={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.5, ease: EASE, delay: 0.16 }}
-          className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-offwhite"
-          style={{ willChange: "transform, opacity, filter, letter-spacing" }}
+          className="metallic-still mt-6 font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9]"
+          style={{ willChange: "transform, opacity, letter-spacing" }}
         >
           {titleEn}
         </motion.h2>
@@ -96,7 +97,10 @@ export default function SectionHeader({
 
       {jpTitleKey && (
         <Reveal delay={0.3}>
-          <p className="mt-4 font-jpserif text-sm md:text-base text-silver-muted tracking-wide">
+          // Spacing and value both scaled to the headline: against a 100px
+          // mercury cut, the old mt-4 / silver-muted subtitle was crowded
+          // under the descenders and read as noise rather than a second voice.
+          <p className="mt-7 max-w-xl font-jpserif text-base md:text-lg leading-relaxed text-silver tracking-wide">
             {tr(jpTitleKey, lang)}
           </p>
         </Reveal>
