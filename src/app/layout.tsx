@@ -17,7 +17,6 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionIndex from "@/components/ui/SectionIndex";
-import AmbientBackdrop from "@/components/ui/AmbientBackdrop";
 import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import CinemaScroll from "@/components/ui/CinemaScroll";
 import ProximityField from "@/components/ui/ProximityField";
@@ -122,7 +121,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ShaderBackdrop />
             <CinemaScroll />
             <ProximityField />
-            <AmbientBackdrop />
+            {/* AmbientBackdrop removed: site-wide drifting dust read as dirt
+                on the lens rather than atmosphere, and it sat on top of the
+                film bands where the footage carries its own grain. The three
+                remaining light layers (shader, CinemaScroll key light, scene
+                memory) give the depth it was there for. */}
             <ScrollProgress />
             <SectionIndex />
             <CustomCursor />

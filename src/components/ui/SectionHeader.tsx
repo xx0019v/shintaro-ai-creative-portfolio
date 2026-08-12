@@ -97,9 +97,9 @@ export default function SectionHeader({
 
       {jpTitleKey && (
         <Reveal delay={0.3}>
-          // Spacing and value both scaled to the headline: against a 100px
-          // mercury cut, the old mt-4 / silver-muted subtitle was crowded
-          // under the descenders and read as noise rather than a second voice.
+          {/* Spacing and value both scaled to the headline: against a 100px
+              mercury cut, the old mt-4 / silver-muted subtitle sat under the
+              descenders and read as noise rather than a second voice. */}
           <p className="mt-7 max-w-xl font-jpserif text-base md:text-lg leading-relaxed text-silver tracking-wide">
             {tr(jpTitleKey, lang)}
           </p>
