@@ -16,11 +16,9 @@ import LiquidLoader from "@/components/ui/LiquidLoader";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-import SectionIndex from "@/components/ui/SectionIndex";
 import CinemaScroll from "@/components/ui/CinemaScroll";
 import FilmBackdrop from "@/components/ui/FilmBackdrop";
 import ProximityField from "@/components/ui/ProximityField";
-import AtelierFrame from "@/components/ui/AtelierFrame";
 import GestureControl from "@/components/ui/GestureControl";
 import SoundToggle from "@/components/ui/SoundToggle";
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -125,10 +123,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 the lens rather than atmosphere. ShaderBackdrop removed too —
                 it was WebGL running behind an opaque film canvas. */}
             <ScrollProgress />
-            <SectionIndex />
             <CustomCursor />
             {children}
-            <AtelierFrame />
+            {/* AtelierFrame and SectionIndex are gone.
+                Between them they drew a border, four corner ticks, a ruler, a
+                marker, a chapter label and a signature ticker over every
+                screen, plus a column of nav dots — all decoration, all
+                permanent. A 100px mercury headline surrounded by instruments
+                reads as a dashboard, not as work. The reference this site is
+                aimed at puts NOTHING in the corners. ScrollProgress already
+                reports position, so the dots were saying it twice. */}
             <GestureControl />
             <SoundToggle />
             <ChatWidget />

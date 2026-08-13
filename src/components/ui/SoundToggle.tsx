@@ -111,7 +111,7 @@ export default function SoundToggle() {
       aria-label={on ? "Sound on — click to mute" : "Sound off — click to enable"}
       data-cursor={on ? "MUTE" : "SOUND"}
       data-prox
-      className="lg-btn lg-btn--quiet fixed bottom-6 right-6 z-[70] hidden md:inline-flex gap-2.5 px-4 text-[9px] tracking-[0.3em] uppercase text-silver-bright"
+      className="lg-btn lg-btn--quiet group fixed bottom-6 right-6 z-[70] hidden gap-2.5 px-4 text-[9px] uppercase tracking-[0.3em] text-silver-bright md:inline-flex"
     >
       {/* three chrome bars that "wake" when sound is on */}
       <span className="flex items-end gap-[3px] h-3" aria-hidden>
@@ -127,7 +127,13 @@ export default function SoundToggle() {
           />
         ))}
       </span>
-      <span>{on ? "Sound" : "Silent"}</span>
+      {/* The three bars already say whether sound is on. The word only
+          appears when the pointer arrives — a permanent label here is one
+          more instrument bolted to the corner of every screen. The
+          aria-label above carries the state for assistive tech. */}
+      <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-500 group-hover:max-w-[6rem] group-hover:opacity-100 group-focus-visible:max-w-[6rem] group-focus-visible:opacity-100">
+        {on ? "Sound" : "Silent"}
+      </span>
     </button>
   );
 }

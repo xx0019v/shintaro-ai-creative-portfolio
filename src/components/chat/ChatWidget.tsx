@@ -93,10 +93,14 @@ export default function ChatWidget() {
         onClick={() => setOpen(true)}
         aria-label={tr("chat_open", lang)}
         data-prox
-        className="lg-btn fixed bottom-6 left-6 z-[60] hidden md:inline-flex text-[10px] tracking-[0.32em] uppercase"
+        className="lg-btn group fixed bottom-6 left-6 z-[60] hidden text-[10px] uppercase tracking-[0.32em] md:inline-flex"
       >
         <MessageCircle size={14} strokeWidth={1.4} className="text-silver-bright" />
-        {tr("chat_open", lang)}
+        {/* Icon until approached. The speech-bubble glyph is unambiguous, and
+            the aria-label above is the accessible name either way. */}
+        <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-500 group-hover:max-w-[10rem] group-hover:opacity-100 group-focus-visible:max-w-[10rem] group-focus-visible:opacity-100">
+          {tr("chat_open", lang)}
+        </span>
       </motion.button>
 
       <AnimatePresence>

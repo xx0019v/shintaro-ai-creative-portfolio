@@ -396,11 +396,21 @@ export default function GestureControl() {
               <span className="absolute inset-0 rounded-full animate-ping bg-offwhite/30" />
             )}
           </span>
-          <span>{label}</span>
+          {/* Collapsed to the state dot until you reach for it.
+              A permanently labelled panel in the corner of every screen is
+              what makes a portfolio read as a dashboard. The dot still says
+              whether this is on; the words arrive when the pointer approaches,
+              and the aria-label above carries the meaning regardless. */}
+          <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-500 group-hover:max-w-[12rem] group-hover:opacity-100 group-focus-visible:max-w-[12rem] group-focus-visible:opacity-100">
+            {label}
+          </span>
         </button>
-        <span className="pr-1 text-[8px] tracking-[0.26em] uppercase text-silver-muted/70">
-          {sub}
-        </span>
+        {/* The hint only earns its place once the camera is actually running. */}
+        {running && (
+          <span className="pr-1 text-[8px] tracking-[0.26em] uppercase text-silver-muted/70">
+            {sub}
+          </span>
+        )}
       </div>
     </>
   );
