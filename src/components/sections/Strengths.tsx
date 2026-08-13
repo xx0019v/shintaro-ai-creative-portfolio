@@ -6,21 +6,18 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import { useLang } from "@/context/LanguageContext";
 import { tr, t } from "@/lib/translations";
 
-// span = desktop bento footprint; the first piece reads large, the rest
-// settle asymmetrically around it (never a uniform card wall).
 const STRENGTHS: {
   no: string;
   tKey: keyof typeof t;
   bKey: keyof typeof t;
-  span: string;
   big?: boolean;
 }[] = [
-  { no: "01", tKey: "strength_obs_t", bKey: "strength_obs_b", span: "bento-col-6 bento-row-2", big: true },
-  { no: "02", tKey: "strength_comm_t", bKey: "strength_comm_b", span: "bento-col-6" },
-  { no: "03", tKey: "strength_solve_t", bKey: "strength_solve_b", span: "bento-col-6" },
-  { no: "04", tKey: "strength_direction_t", bKey: "strength_direction_b", span: "bento-col-4" },
-  { no: "05", tKey: "strength_exec_t", bKey: "strength_exec_b", span: "bento-col-4" },
-  { no: "06", tKey: "strength_adapt_t", bKey: "strength_adapt_b", span: "bento-col-4" },
+  { no: "01", tKey: "strength_obs_t", bKey: "strength_obs_b", big: true },
+  { no: "02", tKey: "strength_comm_t", bKey: "strength_comm_b" },
+  { no: "03", tKey: "strength_solve_t", bKey: "strength_solve_b" },
+  { no: "04", tKey: "strength_direction_t", bKey: "strength_direction_b" },
+  { no: "05", tKey: "strength_exec_t", bKey: "strength_exec_b" },
+  { no: "06", tKey: "strength_adapt_t", bKey: "strength_adapt_b" },
 ];
 
 export default function Strengths() {
@@ -30,6 +27,7 @@ export default function Strengths() {
     <section id="strengths" className="relative py-32 md:py-48">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
+          variant="wide"
           index="08"
           labelKey="st_label"
           titleEn={
@@ -48,38 +46,53 @@ export default function Strengths() {
           </p>
         </Reveal>
 
-        {/* Bento — asymmetric, glass-edged, proximity-reactive */}
-        <ul className="bento mt-16">
+        {/* No bento here any more.
+            Three sections ran a bento grid — this one, Skills and ClientWork —
+            so the device stopped being a choice and became the page's default
+            texture. Skills keeps it, because a matrix of disciplines is what a
+            bento is actually for. Six qualities are not a matrix; they are a
+            list that wants air.
+
+            So: full measure, no boxes, one hairline between entries, the index
+            hung out in the left margin. The first entry is set large and the
+            rest settle under it, which gives the run a shape without needing
+            six frames drawn around it. */}
+        <ul className="mt-20">
           {STRENGTHS.map((s, i) => (
             <Reveal
               as="li"
               key={s.no}
               delay={i * 0.05}
-              proximity
-              className={`bento-cell group flex flex-col ${s.span} ${
-                s.big ? "justify-between" : ""
+              className={`grid grid-cols-1 gap-x-10 gap-y-4 py-12 md:grid-cols-12 ${
+                i === 0 ? "" : "border-t border-offwhite/[0.07]"
               }`}
             >
-              <div className="flex items-start justify-between mb-6">
-                <span className="idx text-silver-bright text-[11px] tracking-wider2">{s.no}</span>
-                <span className="h-px w-10 bg-silver/30 mt-2 origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+              <div className="flex items-baseline gap-4 md:col-span-2 md:block">
+                <span className="idx text-[11px] tracking-wider2 text-silver-bright">
+                  {s.no}
+                </span>
+                <span
+                  aria-hidden
+                  className="h-px w-10 bg-silver/25 md:mt-4 md:block md:w-12"
+                />
               </div>
-              <div>
+
+              <div className="md:col-span-10">
                 {s.big ? (
                   <KineticText
                     as="h3"
                     metallic
                     text={tr(s.tKey, lang)}
-                    className="font-serif text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.02]"
+                    className="font-serif text-3xl leading-[1.02] tracking-tight md:text-5xl lg:text-6xl"
                   />
                 ) : (
-                  <h3 className="font-serif text-2xl md:text-3xl text-offwhite tracking-tight">
+                  <h3 className="font-serif text-2xl tracking-tight text-offwhite md:text-4xl">
                     {tr(s.tKey, lang)}
                   </h3>
                 )}
                 <p
-                  className={`mt-4 font-jpserif text-offwhite/80 leading-loose ${
-                    s.big ? "text-base md:text-lg max-w-md" : "text-sm"
+                  className={`mt-5 font-jpserif leading-loose text-offwhite/80 ${
+                    s.big ? "max-w-2xl text-base md:text-lg" : "max-w-xl text-sm md:text-base"
                   }`}
                 >
                   {tr(s.bKey, lang)}

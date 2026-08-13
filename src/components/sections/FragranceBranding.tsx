@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 import Parallax from "@/components/ui/Parallax";
-import IntentScan from "@/components/ui/IntentScan";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
@@ -19,11 +19,14 @@ const CATEGORIES = [
   "fr_cat_copy",
 ] as const;
 
+const POP_TAGS = ["fr_w02_t1", "fr_w02_t2", "fr_w02_t3", "fr_w02_t4"] as const;
+
 export default function FragranceBranding() {
   const { lang } = useLang();
 
   return (
     <section id="fragrance" className="relative py-32 md:py-48">
+      {/* ---- intro: header, overview, category labels (contained) ---- */}
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
           index="03"
@@ -37,124 +40,131 @@ export default function FragranceBranding() {
           jpTitleKey="fr_jp_title"
         />
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-12 gap-10">
-          <Reveal className="md:col-span-7">
+        <div className="mt-14 max-w-2xl">
+          <Reveal>
             <p className="font-jpserif text-base md:text-lg text-offwhite/85 leading-loose">
               {tr("fr_overview", lang)}
             </p>
           </Reveal>
-          <Reveal delay={0.1} className="md:col-span-5">
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm text-offwhite/85">
-              {CATEGORIES.map((c, i) => (
-                <li key={c} className="flex items-baseline gap-3">
-                  <span className="idx text-silver-bright text-[10px] tracking-wider2">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span>{tr(c as keyof typeof t, lang)}</span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
         </div>
 
-        {/* Single hero visual — the dark-luxe key visual */}
-        <Reveal delay={0.15} className="mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-7">
-              <Parallax distance={52} lift fade>
-                <IntentScan
-                  exhibit="02"
-                  medium={tr("fr_medium", lang)}
-                  year="2025"
-                  intent={tr("fr_intent", lang)}
-                  eyebrow={tr("intent_eyebrow", lang)}
-                >
-                  <EditorialFrame
-                    src="/images/fragrance/key-visual-dark.jpg"
-                    alt="Fragrance Spot — main key visual panel"
-                    ratio="portrait"
-                    desaturate
-                    glare
-                    priority
-                    sizes="(max-width: 768px) 100vw, 60vw"
-                  />
-                </IntentScan>
-              </Parallax>
-            </div>
-            <div className="md:col-span-5 space-y-6">
-              <div>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 01
-                </p>
-                <h3 className="mt-3 font-serif text-3xl md:text-4xl text-offwhite tracking-tight">
-                  Fragrance Spot Key Visual
-                </h3>
-                <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
-                  {tr("fr_w01_jp", lang)}
-                </p>
+        {/* categories — margin labels, not a card grid */}
+        <Reveal delay={0.1} className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+          {CATEGORIES.map((c, i) => (
+            <span
+              key={c}
+              className="flex items-baseline gap-2 text-[10px] tracking-wider2 uppercase text-silver-muted"
+            >
+              <span className="idx text-silver-bright">{String(i + 1).padStart(2, "0")}</span>
+              <span>{tr(c as keyof typeof t, lang)}</span>
+            </span>
+          ))}
+        </Reveal>
+      </div>
+
+      {/* ---- Work 01 — full-bleed plate, the section's strongest imagery ---- */}
+      <div className="relative left-1/2 w-screen -translate-x-1/2 mt-20 md:mt-28">
+        <Reveal>
+          <Parallax distance={30} fade>
+            <div className="relative h-[62vh] min-h-[440px] md:h-[90vh] md:min-h-[640px] overflow-hidden bg-charcoal">
+              <Image
+                src="/images/fragrance/key-visual-dark.jpg"
+                alt="Fragrance Spot — main key visual panel"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover grayscale-[0.15] contrast-[1.02]"
+              />
+              {/* scrim — legibility for the title resting on the plate */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(180deg, transparent 38%, rgba(0,0,0,0.55) 72%, rgba(0,0,0,0.92) 100%)",
+                }}
+              />
+              {/* title — bottom-left, aligned to the page gutter */}
+              <div className="absolute inset-x-0 bottom-0 pb-8 md:pb-14">
+                <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
+                  <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+                    Work 01 · {tr("intent_eyebrow", lang)}
+                  </p>
+                  <h3 className="metallic-still mt-3 font-serif text-3xl md:text-5xl tracking-tight">
+                    Fragrance Spot Key Visual
+                  </h3>
+                  <p className="mt-3 max-w-xl font-jpserif text-sm md:text-base text-offwhite/85 leading-relaxed">
+                    {tr("fr_intent", lang)}
+                  </p>
+                </div>
               </div>
-              <SilverRule />
-              <dl className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
-                    Role
-                  </dt>
-                  <dd className="text-offwhite/85 font-jpserif">{tr("fr_w01_role", lang)}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
-                    Output
-                  </dt>
-                  <dd className="text-offwhite/85 font-jpserif">{tr("fr_w01_output", lang)}</dd>
-                </div>
-              </dl>
+            </div>
+          </Parallax>
+        </Reveal>
+      </div>
+
+      <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
+        {/* supporting detail for Work 01 — margin captions, not a card */}
+        <Reveal className="mt-10">
+          <p className="max-w-2xl font-jpserif text-sm md:text-base text-offwhite/80 leading-loose">
+            {tr("fr_w01_jp", lang)}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-x-12 gap-y-4">
+            <div>
+              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                Role
+              </p>
+              <p className="text-sm text-offwhite/85 font-jpserif">{tr("fr_w01_role", lang)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] tracking-wider2 uppercase text-silver-bright mb-1">
+                Output
+              </p>
+              <p className="text-sm text-offwhite/85 font-jpserif">{tr("fr_w01_output", lang)}</p>
             </div>
           </div>
         </Reveal>
 
         <SilverRule className="mt-24" />
 
-        {/* Two supporting visuals — POP + installation */}
+        {/* ---- Work 02 — POP, text at full width, plate inset ~62% offset right ---- */}
         <Reveal className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-5 md:order-2">
-              <Parallax distance={40} lift>
-                <EditorialFrame
-                  src="/images/fragrance/pop-final.png"
-                  alt="Fragrance Menu POP — final layout"
-                  ratio="portrait"
-                  caption="Fragrance Menu · POP"
-                  desaturate
-                />
-              </Parallax>
-            </div>
-            <div className="md:col-span-7 md:order-1 space-y-6">
-              <div>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  Work 02
-                </p>
-                <h3 className="mt-3 font-serif text-3xl md:text-4xl text-offwhite tracking-tight">
-                  Fragrance Menu POP
-                </h3>
-                <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
-                  {tr("fr_w02_body", lang)}
-                </p>
-              </div>
-              <ul className="grid grid-cols-2 gap-3 text-sm">
-                {(["fr_w02_t1","fr_w02_t2","fr_w02_t3","fr_w02_t4"] as const).map((k)=>(
-                  <li key={k} className="hairline px-4 py-3 font-jpserif text-offwhite/80">
-                    {tr(k, lang)}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="max-w-2xl">
+            <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">Work 02</p>
+            <h3 className="mt-3 font-serif text-3xl md:text-4xl text-offwhite tracking-tight">
+              Fragrance Menu POP
+            </h3>
+            <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
+              {tr("fr_w02_body", lang)}
+            </p>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
+            {POP_TAGS.map((k) => (
+              <span
+                key={k}
+                className="text-[10px] tracking-wider2 uppercase text-silver-muted"
+              >
+                {tr(k, lang)}
+              </span>
+            ))}
+          </div>
+          <div className="mt-12 md:w-[62%] md:ml-auto">
+            <Parallax distance={40} lift>
+              <EditorialFrame
+                src="/images/fragrance/pop-final.png"
+                alt="Fragrance Menu POP — final layout"
+                ratio="portrait"
+                caption="Fragrance Menu · POP"
+                desaturate
+              />
+            </Parallax>
           </div>
         </Reveal>
 
-        {/* Installation + How-to (back to 2-col, signage gets its own block) */}
-        <Reveal className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-5">
+        {/* ---- Work 03 / 04 — installation + how-to, stacked at differing widths ---- */}
+        <Reveal className="mt-24">
+          <div className="w-full">
+            <Parallax distance={30} lift>
               <EditorialFrame
                 src="/images/fragrance/installation-panel.png"
                 alt="Fragrance Spot — installation announcement panel"
@@ -162,16 +172,19 @@ export default function FragranceBranding() {
                 caption="Installation Panel"
                 desaturate
               />
-              <div>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  {tr("fr_w03_label", lang)}
-                </p>
-                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  {tr("fr_w03_body", lang)}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-5">
+            </Parallax>
+          </div>
+          <div className="mt-5 max-w-xl">
+            <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+              {tr("fr_w03_label", lang)}
+            </p>
+            <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
+              {tr("fr_w03_body", lang)}
+            </p>
+          </div>
+
+          <div className="mt-16 md:w-[62%] md:ml-auto">
+            <Parallax distance={30} lift>
               <EditorialFrame
                 src="/images/fragrance/how-to-select.png"
                 alt="SNS How-to carousel — how to use the machine"
@@ -179,19 +192,19 @@ export default function FragranceBranding() {
                 caption="SNS How-to Carousel"
                 desaturate
               />
-              <div>
-                <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
-                  {tr("fr_w04_label", lang)}
-                </p>
-                <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
-                  {tr("fr_w04_body", lang)}
-                </p>
-              </div>
-            </div>
+            </Parallax>
+          </div>
+          <div className="mt-5 md:w-[62%] md:ml-auto max-w-xl">
+            <p className="text-[10px] tracking-wider2 uppercase text-silver-bright">
+              {tr("fr_w04_label", lang)}
+            </p>
+            <p className="mt-2 font-jpserif text-sm text-offwhite/80 leading-relaxed">
+              {tr("fr_w04_body", lang)}
+            </p>
           </div>
         </Reveal>
 
-        {/* Digital Signage — dedicated 3-up gallery */}
+        {/* ---- Digital Signage — 3-up gallery, a curated set rather than a template split ---- */}
         <Reveal className="mt-24">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <div>

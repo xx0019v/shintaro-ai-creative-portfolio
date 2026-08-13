@@ -75,6 +75,7 @@ export default function AIKameranado() {
       />
       <div className="relative max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
+        variant="wide"
           index="02"
           labelKey="ai_label"
           titleEn={

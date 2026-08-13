@@ -13,16 +13,29 @@ interface Props {
   titleEn: React.ReactNode;
   jpTitleKey?: keyof typeof t;
   align?: "left" | "center";
+  /**
+   * How the scene opens. Ten sections that all began with the same
+   * index-rule-title stack was the single biggest reason the page read as one
+   * long run of similar cards — it was not the cards, it was that every
+   * ENTRANCE was identical. Sections alternate variants so no two in a row
+   * open the same way.
+   *
+   *  stack — index above, rule, title. The original.
+   *  hang  — index and label hang in a narrow left margin, title beside them.
+   *  wide  — a full-width rule ABOVE, label left and index right along it,
+   *          title dropped underneath. Reads as a chapter rule in a book.
+   */
+  variant?: "stack" | "hang" | "wide";
 }
 
 /**
  * SectionHeader — each scene opens like a film title.
  *
  * The label appears first; then a hairline of light draws across; then the
- * headline develops in — tracking settles from slightly-spread to normal
- * while it un-blurs, the way a title card locks into place. JP subtitle
- * follows a beat later. Word-wrapping is never touched (whole node animates,
- * not per-character), so EN/JP line breaks stay perfect.
+ * headline develops in — tracking settles as it lands, the way a title card
+ * locks into place. JP subtitle follows a beat later. Word-wrapping is never
+ * touched (the whole node animates, not per-character), so EN/JP line breaks
+ * stay perfect.
  */
 export default function SectionHeader({
   index,
@@ -30,10 +43,86 @@ export default function SectionHeader({
   titleEn,
   jpTitleKey,
   align = "left",
+  variant = "stack",
 }: Props) {
   const { lang } = useLang();
   const reduced = useReducedMotion();
   const alignment = align === "center" ? "text-center mx-auto" : "text-left";
+
+  const title = reduced ? (
+    <h2 className="metallic-still font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.03em]">
+      {titleEn}
+    </h2>
+  ) : (
+    <motion.h2
+      initial={{ opacity: 0, y: 26, letterSpacing: "0.05em" }}
+      whileInView={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 1.5, ease: EASE, delay: 0.16 }}
+      className="metallic-still font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9]"
+      style={{ willChange: "transform, opacity, letter-spacing" }}
+    >
+      {titleEn}
+    </motion.h2>
+  );
+
+  const jp = jpTitleKey ? (
+    <Reveal delay={0.3}>
+      {/* Spacing and value both scaled to the headline: against a 100px
+          mercury cut, a mt-4 silver-muted line sits under the descenders
+          and reads as noise rather than a second voice. */}
+      <p className="mt-7 max-w-xl font-jpserif text-base leading-relaxed tracking-wide text-silver md:text-lg">
+        {tr(jpTitleKey, lang)}
+      </p>
+    </Reveal>
+  ) : null;
+
+  if (variant === "hang") {
+    return (
+      <div className="max-w-6xl">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-10">
+          <Reveal className="md:col-span-3">
+            <div className="flex items-baseline gap-4 text-[10px] uppercase tracking-wider2 text-silver md:flex-col md:items-start md:gap-3">
+              <span className="idx text-silver-bright">{index}</span>
+              <span aria-hidden className="h-px w-10 bg-silver/40 md:w-full" />
+              <span>{tr(labelKey, lang)}</span>
+            </div>
+          </Reveal>
+          <div className="md:col-span-9">
+            {title}
+            {jp}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "wide") {
+    return (
+      <div className="w-full">
+        {!reduced && (
+          <motion.div
+            aria-hidden
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 1.4, ease: EASE }}
+            className="h-px w-full origin-left rule-silver"
+          />
+        )}
+        <Reveal>
+          <div className="mt-5 flex items-baseline justify-between text-[10px] uppercase tracking-wider2 text-silver">
+            <span>{tr(labelKey, lang)}</span>
+            <span className="idx text-silver-bright">{index}</span>
+          </div>
+        </Reveal>
+        <div className="mt-8 max-w-5xl">
+          {title}
+          {jp}
+        </div>
+      </div>
+    );
+  }
 
   return (
     // Wider than the body measure: display type at this scale needs room to
@@ -68,43 +157,10 @@ export default function SectionHeader({
         />
       )}
 
-      {/* Headline — editorial scale, cut in mercury.
-          clamp() rather than breakpoint steps so the title grows with the
-          column instead of jumping at 768 and 1024; negative tracking and
-          0.9 leading because display sizes need both or they just read as
-          enlarged body copy.
-
-          No blur on entry any more: `filter` on a background-clip:text
-          element spawns its own rendering context and browsers routinely
-          drop the clipped fill for the duration. The tracking settle alone
-          carries the "title card locking in" read. */}
-      {reduced ? (
-        <h2 className="metallic-still mt-6 font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.03em]">
-          {titleEn}
-        </h2>
-      ) : (
-        <motion.h2
-          initial={{ opacity: 0, y: 26, letterSpacing: "0.05em" }}
-          whileInView={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 1.5, ease: EASE, delay: 0.16 }}
-          className="metallic-still mt-6 font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9]"
-          style={{ willChange: "transform, opacity, letter-spacing" }}
-        >
-          {titleEn}
-        </motion.h2>
-      )}
-
-      {jpTitleKey && (
-        <Reveal delay={0.3}>
-          {/* Spacing and value both scaled to the headline: against a 100px
-              mercury cut, the old mt-4 / silver-muted subtitle sat under the
-              descenders and read as noise rather than a second voice. */}
-          <p className="mt-7 max-w-xl font-jpserif text-base md:text-lg leading-relaxed text-silver tracking-wide">
-            {tr(jpTitleKey, lang)}
-          </p>
-        </Reveal>
-      )}
+      {/* Headline — editorial scale, cut in mercury. See the shared `title`
+          above for why clamp() and why no blur on entry. */}
+      <div className="mt-6">{title}</div>
+      {jp}
     </div>
   );
 }

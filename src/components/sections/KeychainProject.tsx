@@ -34,6 +34,7 @@ export default function KeychainProject() {
     <section id="keychain" className="relative py-32 md:py-48">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
+        variant="wide"
           index="05"
           labelKey="kc_label"
           titleEn={

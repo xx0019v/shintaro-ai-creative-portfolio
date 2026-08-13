@@ -28,6 +28,7 @@ export default function ClientWork() {
     <section id="client" className="relative py-32 md:py-48">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
+        variant="hang"
           index="04"
           labelKey="cw_label"
           titleEn={

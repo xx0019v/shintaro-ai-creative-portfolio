@@ -91,6 +91,7 @@ export default function Skills() {
     <section id="skills" className="relative py-32 md:py-48">
       <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
         <SectionHeader
+        variant="hang"
           index="07"
           labelKey="sk_label"
           titleEn={
