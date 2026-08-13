@@ -21,8 +21,17 @@ import { onScroll } from "@/lib/scrollBus";
  * One shared rAF (lib/scrollBus). Redraw is skipped when the frame index has
  * not changed. Reduced-motion holds a single frame and never scrubs.
  */
-const FRAMES = 182;
-const CHUNK = 26;
+/**
+ * 477 frames, not 182. The page is ~31 000px of scroll: at 182 the world
+ * advanced once per 173px — a fifth of a screen — and the stepping was
+ * visible as chunder rather than movement. At 477 it is ~65px per frame,
+ * which reads as continuous.
+ *
+ * The extra weight costs nothing up front because loading is chunked: a
+ * reader only ever pulls the ~2MB block they are approaching.
+ */
+const FRAMES = 477;
+const CHUNK = 30;
 const CHUNKS = Math.ceil(FRAMES / CHUNK);
 
 export default function FilmBackdrop() {
