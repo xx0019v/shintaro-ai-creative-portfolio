@@ -89,7 +89,12 @@ export default function Header() {
           <div className="flex items-center justify-between h-16 md:h-20">
             <a href="#top" className="group flex items-center gap-3" aria-label="Home">
               <span className="h-1.5 w-1.5 rounded-full bg-silver group-hover:bg-offwhite transition-colors" />
-              <span className="font-serif text-sm md:text-base tracking-wider2 uppercase text-offwhite">
+              {/* Surname only below md. At 390px the wide-tracked full name
+                  ran straight into the JP/EN toggle with no gap left. */}
+              <span className="font-serif text-sm tracking-wider2 uppercase text-offwhite md:hidden">
+                Avendano
+              </span>
+              <span className="hidden font-serif text-base tracking-wider2 uppercase text-offwhite md:inline">
                 Avendano&nbsp;Shintaro
               </span>
             </a>
