@@ -17,8 +17,8 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionIndex from "@/components/ui/SectionIndex";
-import ShaderBackdrop from "@/components/ui/ShaderBackdrop";
 import CinemaScroll from "@/components/ui/CinemaScroll";
+import FilmBackdrop from "@/components/ui/FilmBackdrop";
 import ProximityField from "@/components/ui/ProximityField";
 import AtelierFrame from "@/components/ui/AtelierFrame";
 import GestureControl from "@/components/ui/GestureControl";
@@ -118,14 +118,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ScrollToTop />
             <EntrySphere />
             <LiquidLoader />
-            <ShaderBackdrop />
+            <FilmBackdrop />
             <CinemaScroll />
             <ProximityField />
-            {/* AmbientBackdrop removed: site-wide drifting dust read as dirt
-                on the lens rather than atmosphere, and it sat on top of the
-                film bands where the footage carries its own grain. The three
-                remaining light layers (shader, CinemaScroll key light, scene
-                memory) give the depth it was there for. */}
+            {/* AmbientBackdrop removed: the drifting dust read as dirt on
+                the lens rather than atmosphere. ShaderBackdrop removed too —
+                it was WebGL running behind an opaque film canvas. */}
             <ScrollProgress />
             <SectionIndex />
             <CustomCursor />

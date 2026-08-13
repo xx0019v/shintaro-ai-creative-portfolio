@@ -63,7 +63,7 @@ export default function AIKameranado() {
   const { lang } = useLang();
 
   return (
-    <section id="projects" className="relative py-32 md:py-48 bg-soft/40">
+    <section id="projects" className="relative py-32 md:py-48">
       <div
         aria-hidden
         className="absolute inset-0 opacity-[0.03]"
