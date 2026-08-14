@@ -92,7 +92,11 @@ export default function AIKameranado() {
           </p>
         </Reveal>
         <Reveal delay={0.18} className="mt-5">
-          <p className="text-sm md:text-base text-silver-muted leading-loose max-w-3xl">
+          {/* ai_note is Japanese copy but carried no font-jp class, so it sat
+              outside the Japanese measure rule and ran to 48 characters a
+              line while its neighbours were capped at 38. Marking it as
+              Japanese is the fix; the cap then applies on its own. */}
+          <p className="font-jpsans text-sm leading-loose text-silver-muted md:text-base">
             {tr("ai_note", lang)}
           </p>
         </Reveal>

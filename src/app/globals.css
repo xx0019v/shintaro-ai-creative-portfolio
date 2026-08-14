@@ -423,6 +423,35 @@ img, video {
   a, button, [role="button"], input, textarea, select { cursor: none; }
 }
 
+/* ── Japanese measure ─────────────────────────────────────────────────
+   A full-width character is exactly 1em, so a max-width in em caps the
+   line at that many characters no matter what size it is set at — which
+   is why this is expressed in em and not rem or px.
+
+   Japanese body text reads at roughly 30–45 characters per line. Measured
+   on the built page, 16 blocks were over 45 and the worst was 82 — about
+   double the ceiling, at which point the eye stops finding the start of
+   the next line. Latin copy tolerates a long measure far better than
+   Japanese does, which is why an inherited max-w-* sized for English
+   quietly breaks the Japanese it also has to carry.
+
+   Scoped to paragraphs on purpose: <dd> and <li> here live inside grids
+   that own their own widths, and capping those would fight the layout. */
+p.font-jpserif,
+p.font-jpsans {
+  max-width: 38em;
+}
+/* A measure cap must never silently left-align copy that was deliberately
+   centred, so centred blocks keep their centring. */
+.text-center p.font-jpserif,
+.text-center p.font-jpsans,
+p.font-jpserif.text-center,
+p.font-jpsans.text-center,
+p.font-jpserif.mx-auto,
+p.font-jpsans.mx-auto {
+  margin-inline: auto;
+}
+
 /* Translation strings use embedded \n for editorial line breaks.
    Apply pre-line to all body copy so dictionary-set breaks render. */
 .font-jpserif, .font-jpsans,
