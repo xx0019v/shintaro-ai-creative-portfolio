@@ -511,6 +511,13 @@ const additions: Dict = {
   entry_copy: { jp: "体験をはじめる", en: "Enter the experience" },
   entry_aria: { jp: "AVENDAÑO の世界に入る", en: "Enter the world of AVENDAÑO" },
   entry_skip: { jp: "スキップ", en: "Skip" },
+  // ─── Keychain XR ────────────────────────────────────────────────────────
+  // Two labels because the two tiers are genuinely different promises: one
+  // puts the object in your room, the other lets you turn it over on screen.
+  // Offering "view in AR" to a device that cannot do it is the lie.
+  kc_xr_ar: { jp: "実物大でARに置く", en: "Place it in AR, life-size" },
+  kc_xr_view: { jp: "3Dで回して見る", en: "Turn it over in 3D" },
+
   entry_cursor: { jp: "TAP", en: "TAP" },
 
   // ─── Signature "The Read" — hero identity + per-work intent lines ────────

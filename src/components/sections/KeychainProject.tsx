@@ -9,6 +9,7 @@ import EditorialFrame from "@/components/ui/EditorialFrame";
 import PlayableCharm from "@/components/ui/PlayableCharm";
 import { useLang } from "@/context/LanguageContext";
 import { tr } from "@/lib/translations";
+import KeychainXR from "@/components/ui/KeychainXR";
 
 const PROCESS = [
   { no: "01", en: "Observe each teacher's personality and features", jpKey: "kc_p01_jp" },
@@ -118,6 +119,15 @@ export default function KeychainProject() {
                 <p className="mt-4 font-jpserif text-sm text-offwhite/80 leading-loose">
                   {tr("kc_w01_body", lang)}
                 </p>
+
+                {/* Renders nothing unless the device can actually do one of
+                    the two tiers — no dead "AR" button on a desktop that has
+                    no camera, and none at all under reduced motion. */}
+                <KeychainXR
+                  texture="/images/keychain/keychain-arisu.jpg"
+                  arLabel={tr("kc_xr_ar", lang)}
+                  label={tr("kc_xr_view", lang)}
+                />
               </div>
               <SilverRule />
               <dl className="grid grid-cols-2 gap-4 text-sm">
