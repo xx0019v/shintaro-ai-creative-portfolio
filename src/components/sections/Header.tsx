@@ -87,7 +87,7 @@ export default function Header() {
       >
         <div className="max-w-editorial mx-auto px-6 md:px-10 lg:px-16">
           <div className="flex items-center justify-between h-16 md:h-20">
-            <a href="#top" className="group flex items-center gap-3" aria-label="Home">
+            <a href="#top" className="group -mx-2 inline-flex min-h-[44px] items-center gap-3 px-2" aria-label="Home">
               <span className="h-1.5 w-1.5 rounded-full bg-silver group-hover:bg-offwhite transition-colors" />
               {/* Surname only below md. At 390px the wide-tracked full name
                   ran straight into the JP/EN toggle with no gap left. */}
@@ -106,7 +106,7 @@ export default function Header() {
                     key={item.href}
                     href={item.href}
                     active={activeNav === item.id}
-                    className="text-[12px] tracking-wider2 uppercase text-offwhite/75 hover:text-offwhite transition-colors"
+                    className="inline-flex min-h-[44px] items-center text-[12px] tracking-wider2 uppercase text-offwhite/75 transition-colors hover:text-offwhite focus-visible:text-offwhite"
                   >
                     {tr(item.key, lang)}
                   </MagneticLink>
@@ -119,7 +119,7 @@ export default function Header() {
               <LanguageToggle />
               <button
                 aria-label="Open menu"
-                className="p-2 -mr-2 text-offwhite/85"
+                className="-mr-2 grid h-11 w-11 place-items-center text-offwhite/85"
                 onClick={() => setOpen(true)}
               >
                 <Menu size={20} strokeWidth={1.25} />

@@ -50,7 +50,7 @@ export default function Footer() {
 
           <a
             href="#top"
-            className="group inline-flex items-center gap-2 text-[10px] tracking-wider2 uppercase text-offwhite/70 hover:text-silver-bright transition-colors"
+            className="group -mx-2 inline-flex min-h-[44px] items-center gap-2 px-2 text-[10px] tracking-wider2 uppercase text-offwhite/70 transition-colors hover:text-silver-bright focus-visible:text-silver-bright"
           >
             <ArrowUp
               size={14}

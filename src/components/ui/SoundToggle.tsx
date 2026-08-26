@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLang } from "@/context/LanguageContext";
+import { tr } from "@/lib/translations";
 
 /**
  * SoundToggle — the gallery's optional soundtrack.
@@ -18,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * lazily on the first user gesture (autoplay-policy safe).
  */
 export default function SoundToggle() {
+  const { lang } = useLang();
   const [on, setOn] = useState(false);
   const [mounted, setMounted] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
@@ -108,7 +111,7 @@ export default function SoundToggle() {
     <button
       onClick={toggle}
       aria-pressed={on}
-      aria-label={on ? "Sound on — click to mute" : "Sound off — click to enable"}
+      aria-label={tr(on ? "sound_on_aria" : "sound_off_aria", lang)}
       data-cursor={on ? "MUTE" : "SOUND"}
       data-prox
       className="lg-btn lg-btn--quiet group fixed bottom-6 right-6 z-[70] hidden gap-2.5 px-4 text-[9px] uppercase tracking-[0.3em] text-silver-bright md:inline-flex"

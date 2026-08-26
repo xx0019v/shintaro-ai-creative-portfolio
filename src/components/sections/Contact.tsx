@@ -25,24 +25,26 @@ export default function Contact() {
         <motion.div
           aria-hidden
           className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[700px] w-[700px] rounded-full blur-3xl"
-          initial={reduced ? { opacity: 0.12 } : { opacity: 0.04, scale: 0.7 }}
-          whileInView={reduced ? { opacity: 0.12 } : { opacity: 0.16, scale: 1 }}
+          initial={{ opacity: 0.04, scale: 0.7 }}
+          whileInView={{ opacity: 0.16, scale: 1 }}
           viewport={{ once: false, amount: 0.4 }}
-          transition={{ duration: 2.2, ease: easeLuxe }}
+          transition={reduced ? { duration: 0 } : { duration: 2.2, ease: easeLuxe }}
           style={{
             background:
               "radial-gradient(circle, #E5E5E5 0%, rgba(229,229,229,0.16) 38%, transparent 70%)",
           }}
         />
-        {!reduced && (
-          <motion.div
-            aria-hidden
-            initial={{ x: "30%" }}
-            animate={{ x: "-30%" }}
-            transition={{ duration: 38, ease: "linear", repeat: Infinity, repeatType: "mirror" }}
-            className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-silver/30 to-transparent"
-          />
-        )}
+        <motion.div
+          aria-hidden
+          initial={{ x: "30%" }}
+          animate={{ x: "-30%" }}
+          transition={
+            reduced
+              ? { duration: 0, repeat: 0 }
+              : { duration: 38, ease: "linear", repeat: Infinity, repeatType: "mirror" }
+          }
+          className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-silver/30 to-transparent"
+        />
 
         {/* Final ritual — light converges on the ask: two hairline beams
             angle in toward the CTA and a pool of silver gathers behind it,

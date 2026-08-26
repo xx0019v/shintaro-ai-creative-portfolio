@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "portfolio-luxury",
+      "name": "shintaro-portfolio",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "cwd": "/Users/exx/portfolio/shintaro-portfolio-luxury",
+      "cwd": "/Users/exx/portfolio/shintaro-ai-creative-portfolio",
       "port": 3000
     }
   ]

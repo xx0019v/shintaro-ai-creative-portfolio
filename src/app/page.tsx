@@ -13,23 +13,23 @@ import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 
 /**
- * The whole page is one continuous film (see ui/FilmBackdrop): a fixed canvas
- * behind everything, scrubbed by scroll progress across the entire document,
- * running backstage → entrance → the seven looks → finale → the empty water.
+ * The page is one continuous read: sections of text and image over a single
+ * quiet ground, with CinemaScroll's silver key light travelling down it as the
+ * reader goes.
  *
- * So the sections carry no background of their own. They are text and image
- * floating over a world that keeps moving underneath them — which is the
- * point. The earlier arrangement, film only in the gaps between opaque
- * sections, made the footage read as decoration between paragraphs.
+ * It used to run inside a 477-frame film (ui/FilmBackdrop), which is now
+ * retired. app/layout.tsx carries the measurements, but the short version is
+ * that the footage sat under a scrim heavy enough to render it indistinguishable
+ * from the base colour, and it was borrowed imagery rather than this work.
  *
- * FilmScrub and PaperTear are both retired for the same reason: with the film
- * running continuously there is nothing left for a divider to divide.
+ * FilmScrub and PaperTear stay retired for their original reason: they divided
+ * a page that reads better undivided.
  */
 export default function HomePage() {
   return (
     <>
       <Header />
-      <main className="relative z-10">
+      <main id="main" className="relative z-10">
         <Hero />
         <About />
         <AIKameranado />

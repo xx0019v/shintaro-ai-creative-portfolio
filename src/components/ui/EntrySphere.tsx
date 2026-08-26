@@ -48,7 +48,7 @@ const CHAPTER_LABELS = [
  * the moment the sphere unmounts. Honors reduced-motion + touch.
  */
 export default function EntrySphere() {
-  const { launched, launch } = useLaunch();
+  const { launched, introDone, ready, launch, skipIntro } = useLaunch();
   const { lang } = useLang();
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
@@ -176,7 +176,22 @@ export default function EntrySphere() {
     }
   };
 
-  if (!mounted || phase === "gone" || launched) return null;
+  // Escape leaves the opening from anywhere, which is what Escape means
+  // everywhere else on the web. Bound on the window rather than the sphere so
+  // it works before the visitor has focused anything.
+  useEffect(() => {
+    if (!mounted || introDone) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") skipIntro();
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [mounted, introDone, skipIntro]);
+
+  // `ready` keeps the server markup and the first client paint identical while
+  // sessionStorage is read; without it a returning visitor gets a flash of the
+  // sphere before it disappears.
+  if (!mounted || !ready || introDone || phase === "gone" || launched) return null;
 
   const activating = phase === "activating";
 
@@ -425,14 +440,19 @@ export default function EntrySphere() {
           </span>
         </motion.div>
 
-        {/* skip — quiet, bottom-right */}
+        {/* Skip, and it now actually skips.
+            It used to call the same begin() as tapping the sphere, so it
+            started a 1.6s exit and then the full 9.95s loader: the control
+            labelled "skip" was a ten second wait. It also sat at 10px in
+            silver-muted/60 over black, under every contrast and touch-target
+            floor there is. */}
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
-            begin();
+            skipIntro();
           }}
-          aria-label={tr("entry_skip", lang)}
-          className="absolute bottom-7 right-7 text-[10px] tracking-[0.3em] uppercase text-silver-muted/60 hover:text-silver-bright transition-colors"
+          className="absolute bottom-4 right-4 min-h-[44px] min-w-[44px] px-4 py-3 text-[11px] tracking-[0.3em] uppercase text-silver-bright/80 hover:text-offwhite focus-visible:text-offwhite transition-colors"
         >
           {tr("entry_skip", lang)}
         </button>

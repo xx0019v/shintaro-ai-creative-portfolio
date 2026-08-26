@@ -32,6 +32,7 @@ export default function ShatterText({
   useEffect(() => {
     if (typeof window === "undefined" || !ref.current) return;
     if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const root = ref.current;
     const spans = Array.from(
@@ -48,6 +49,7 @@ export default function ShatterText({
     const io = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting;
+        if (visible && !raf && !document.hidden) raf = requestAnimationFrame(tick);
       },
       { threshold: 0 }
     );
@@ -60,10 +62,11 @@ export default function ShatterText({
 
     const tick = () => {
       raf = 0;
-      if (!visible) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
+      // Offscreen or backgrounded: stop. This used to re-arm the frame
+      // unconditionally, so the loop ran at 60fps for the lifetime of the page
+      // whether or not the text was anywhere near the viewport. The observer
+      // below restarts it when the text comes back.
+      if (!visible || document.hidden) return;
 
       const now = performance.now();
       const r2 = radius * radius;
@@ -105,11 +108,21 @@ export default function ShatterText({
       raf = requestAnimationFrame(tick);
     };
 
+    const onVis = () => {
+      if (document.hidden) {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      } else if (visible && !raf) {
+        raf = requestAnimationFrame(tick);
+      }
+    };
+
     window.addEventListener("mousemove", onMove, { passive: true });
-    raf = requestAnimationFrame(tick);
+    document.addEventListener("visibilitychange", onVis);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("visibilitychange", onVis);
       cancelAnimationFrame(raf);
       io.disconnect();
     };

@@ -25,7 +25,7 @@ function LangButton({
       aria-pressed={active}
       aria-label={code === "jp" ? "日本語に切り替え" : "Switch to English"}
       title={code === "jp" ? "日本語" : "English"}
-      className={`relative z-10 px-3 py-1.5 transition-colors duration-300 ${
+      className={`relative z-10 inline-flex min-h-[44px] items-center px-4 transition-colors duration-300 ${
         active ? "text-base" : "text-silver hover:text-offwhite"
       }`}
     >

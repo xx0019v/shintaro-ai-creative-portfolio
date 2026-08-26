@@ -10,7 +10,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import SilverRule from "@/components/ui/SilverRule";
 import EditorialFrame from "@/components/ui/EditorialFrame";
 import { useLang } from "@/context/LanguageContext";
-import { tr } from "@/lib/translations";
+import { tr, type Lang } from "@/lib/translations";
 import { easeLuxe } from "@/lib/motion";
 
 const ANALYZES = [
@@ -38,9 +38,9 @@ const KEYWORDS = [
 ];
 
 const ZONES = [
-  { name: "Operation", range: "0.3 – 0.8m", desc: "Actual operation position", jpKey: "ai_zone_op_jp" },
-  { name: "Approach", range: "0.8 – 1.8m", desc: "People approaching the machine", jpKey: "ai_zone_ap_jp" },
-  { name: "AdView", range: "1.8 – 3.5m", desc: "Potential signage viewing area", jpKey: "ai_zone_ad_jp" },
+  { name: "Operation", range: "0.3-0.8m", desc: "Actual operation position", jpKey: "ai_zone_op_jp" },
+  { name: "Approach", range: "0.8-1.8m", desc: "People approaching the machine", jpKey: "ai_zone_ap_jp" },
+  { name: "AdView", range: "1.8-3.5m", desc: "Potential signage viewing area", jpKey: "ai_zone_ad_jp" },
   { name: "Passing", range: "3.5m +", desc: "People passing by", jpKey: "ai_zone_pa_jp" },
 ] as const;
 
@@ -110,7 +110,7 @@ export default function AIKameranado() {
             intent={tr("ai_intent", lang)}
             eyebrow={tr("intent_eyebrow", lang)}
           >
-            <DashboardMock />
+            <DashboardMock lang={lang} />
           </IntentScan>
         </Reveal>
 
@@ -302,19 +302,23 @@ export default function AIKameranado() {
   );
 }
 
-/* ---------- Dashboard Mock (silver chrome) ---------- */
-function DashboardMock() {
+/* ---------- Dashboard Mock (silver chrome) ----------
+   This panel is an interface design, not a readout.
+   `bars` is a fixed array and the figures beside it are illustrative, so the
+   header used to be the most dangerous label on the site: a hardcoded dataset
+   badged "Live", next to a pulsing status dot, with numbers precise to one
+   decimal. Anyone who opens the source finds that out in about four seconds,
+   and from then on they discount every other claim on the page.
+   Labelled honestly it costs nothing and the design still reads. */
+function DashboardMock({ lang }: { lang: Lang }) {
   const bars = [42, 58, 71, 64, 80, 92, 78, 88, 96, 84, 70, 55];
   return (
-    <div className="relative hairline-silver overflow-hidden bg-base/80">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-offwhite/[0.08] text-[10px] tracking-wider2 uppercase text-silver-muted">
-        <div className="flex items-center gap-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
-          ai-camera.console
-        </div>
-        <div className="hidden sm:flex items-center gap-6">
-          <span>Site 01 · Floor 2F</span>
-          <span className="text-silver-bright">Live</span>
+    <figure className="relative hairline-silver overflow-hidden bg-base/80 m-0">
+      <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-offwhite/[0.08] text-[10px] tracking-wider2 uppercase text-silver-muted">
+        <span>ai-camera.console</span>
+        <div className="flex items-center gap-6">
+          <span className="hidden sm:inline">Site 01 · Floor 2F</span>
+          <span className="text-silver-bright">{tr("ai_console_sample", lang)}</span>
         </div>
       </div>
 
@@ -325,7 +329,7 @@ function DashboardMock() {
               Hourly viewing index
             </p>
             <p className="text-[10px] tracking-wider2 uppercase text-silver-muted">
-              09:00 — 21:00
+              09:00 / 21:00
             </p>
           </div>
           <div className="mt-8 flex items-end gap-2 h-40">
@@ -349,7 +353,7 @@ function DashboardMock() {
           <Stat label="Detections / day" value="1,284" trend="+12.4%" />
           <Stat label="Avg dwell" value="3.8s" trend="+0.6s" />
           <Stat label="Ad-view rate" value="34.2%" trend="+4.1%" />
-          <Stat label="Peak hour" value="18:00" trend="—" muted />
+          <Stat label="Peak hour" value="18:00" trend="" muted />
         </div>
 
         <div className="col-span-12 md:col-span-7 bg-base p-6 md:p-8">
@@ -394,7 +398,11 @@ function DashboardMock() {
           </ul>
         </div>
       </div>
-    </div>
+
+      <figcaption className="border-t border-offwhite/[0.08] px-5 py-3 text-[10px] leading-relaxed tracking-wider2 uppercase text-silver-muted">
+        {tr("ai_console_caption", lang)}
+      </figcaption>
+    </figure>
   );
 }
 

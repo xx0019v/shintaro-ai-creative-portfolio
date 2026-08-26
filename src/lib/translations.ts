@@ -10,7 +10,7 @@ export const t: Dict = {
   nav_contact: { jp: "Contact", en: "Contact" },
 
   // Hero
-  hero_kicker: { jp: "Portfolio — Volume 02", en: "Portfolio — Volume 02" },
+  hero_kicker: { jp: "Portfolio, Volume 02", en: "Portfolio, Volume 02" },
   hero_name: { jp: "Avendaño Shintaro", en: "Avendaño Shintaro" },
   hero_role: { jp: "AI Creative Developer", en: "AI Creative Developer" },
   hero_h1_a: { jp: "Turning Ideas", en: "Turning Ideas" },
@@ -281,10 +281,10 @@ export const t: Dict = {
   ed_school_a: { jp: "中央情報大学校", en: "Chuo Information College" },
   ed_school_a_dept: { jp: "高度ICTデザイン学科", en: "Advanced ICT Design Department" },
   ed_school_a_note: { jp: "卒業見込：2028", en: "Expected graduation · 2028" },
-  ed_school_a_period: { jp: "2024 — 現在", en: "2024 — Present" },
+  ed_school_a_period: { jp: "2024-現在", en: "2024-Present" },
   ed_school_b: { jp: "群馬県立前橋工業高等学校", en: "Maebashi Technical High School" },
   ed_school_b_dept: { jp: "工学・設計の基礎", en: "Foundations in engineering and design" },
-  ed_school_b_period: { jp: "2021 — 2024", en: "2021 — 2024" },
+  ed_school_b_period: { jp: "2021-2024", en: "2021-2024" },
   ed_certs: { jp: "Certifications", en: "Certifications" },
   ed_cert_1_en: { jp: "Second-Class Electrician", en: "Second-Class Electrician" },
   ed_cert_1_jp: { jp: "第二種電気工事士", en: "" },
@@ -323,6 +323,23 @@ export const t: Dict = {
    ========================================================================= */
 
 const additions: Dict = {
+  // ─── Ambient sound toggle: state carried in the accessible name ───────
+  sound_on_aria: { jp: "サウンド オン。押すとミュート", en: "Sound on. Press to mute" },
+  sound_off_aria: { jp: "サウンド オフ。押すと再生", en: "Sound off. Press to enable" },
+  // ─── AI CAMERA console: labelled as the interface mock it is ──────────
+  ai_console_sample: { jp: "サンプル", en: "Sample" },
+  ai_console_caption: {
+    jp: "画面設計のサンプル表示です。数値は実測値ではありません。",
+    en: "Interface design shown with sample figures. Not measured results.",
+  },
+  // ─── Signage films (now play on request, not on arrival) ───────────────
+  signage_play: { jp: "サイネージ映像を再生", en: "Play signage film" },
+  signage_loading: { jp: "読み込み中", en: "Loading" },
+  signage_onsite: { jp: "店頭サイネージ", en: "On-site signage" },
+  signage_meta: { jp: "ループ / 音声なし", en: "Loop / muted" },
+  signage_unavailable_title: { jp: "デジタルサイネージ", en: "Digital signage" },
+  signage_unavailable_body: { jp: "映像を読み込めません", en: "Video unavailable" },
+
   // ─── AI CAMERA — value list ─────────────────────────────────────────────
   ai_value_li_1: {
     jp: "効果を勘ではなく数値で読める",

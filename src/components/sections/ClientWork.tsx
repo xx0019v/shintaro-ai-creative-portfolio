@@ -238,7 +238,7 @@ function BrowserMock() {
           className="hidden sm:flex items-center gap-1.5 hover:text-offwhite transition-colors"
           aria-label="Open TSC English Academy in a new tab"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
+          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright" />
           Public
           <ArrowUpRight size={11} strokeWidth={1.25} />
         </a>
@@ -288,14 +288,14 @@ function BrowserMock() {
       {/* footer ribbon */}
       <div className="bg-base/80 px-5 py-3 border-t border-offwhite/[0.08] flex items-center justify-between text-[10px] tracking-wider2 uppercase text-silver-muted">
         <span className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright animate-glow" />
+          <span className="h-1.5 w-1.5 rounded-full bg-silver-bright" />
           Live · xx0019v.github.io/TSC
         </span>
         <a
           href={LIVE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-silver-bright hover:text-offwhite transition-colors inline-flex items-center gap-1.5"
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-silver-bright transition-colors hover:text-offwhite focus-visible:text-offwhite"
         >
           Open full site
           <ArrowUpRight size={11} strokeWidth={1.25} />

@@ -368,7 +368,7 @@ export default function GestureControl() {
           aria-label={tr("gesture_aria", lang)}
           aria-pressed={running}
           data-cursor={running ? "OFF" : "ENTER"}
-          className="group flex items-center gap-2.5 px-3.5 py-2 hairline-silver bg-base/50 backdrop-blur-sm text-[9px] tracking-[0.3em] uppercase text-silver-bright hover:text-offwhite transition-colors duration-500"
+          className="group flex min-h-[44px] items-center gap-2.5 px-3.5 hairline-silver bg-base/50 backdrop-blur-sm text-[9px] tracking-[0.3em] uppercase text-silver-bright hover:text-offwhite transition-colors duration-500"
         >
           {/* state dot — quiet, breathing while active */}
           <span

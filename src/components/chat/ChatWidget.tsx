@@ -203,7 +203,7 @@ export default function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={tr("chat_input_ph", lang)}
-                  className="flex-1 bg-transparent text-sm text-offwhite placeholder:text-silver-muted/60 focus:outline-none"
+                  className="flex-1 rounded-sm bg-transparent text-sm text-offwhite placeholder:text-silver-muted/60 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-silver-bright"
                   disabled={pending}
                 />
                 <button

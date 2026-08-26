@@ -133,10 +133,47 @@
 
   /* One motion language for glass + metal. */
   --e-luxe: cubic-bezier(0.19, 1, 0.22, 1);
-  --e-glass: cubic-bezier(0.32, 1.28, 0.42, 1); /* slight overshoot, iOS-like */
+  /* This used to carry a y-control point above 1, which overshoots and reads
+     as bounce. Real mass decelerates without springing back, so it is now
+     ease-out-quint, matching --e-luxe rather than fighting it. */
+  --e-glass: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html { scroll-behavior: smooth; }
+
+/* ─── Guideline fixes (Web Interface Guidelines audit) ───────────────────
+
+   color-scheme tells the engine this document is dark, so native furniture
+   (scrollbars, form controls, the flash before CSS lands) is rendered dark
+   instead of light. Without it a dark site shows light system chrome.
+
+   scroll-margin-top exists because the header is fixed at 64-80px: an anchor
+   jump used to land with the section's own heading sitting underneath it.
+
+   The skip link is visually hidden until focused. It is not `display: none`,
+   because a hidden-from-everyone skip link helps nobody.
+   ───────────────────────────────────────────────────────────────────── */
+html {
+  color-scheme: dark;
+}
+
+section[id],
+[id="main"] {
+  scroll-margin-top: 6rem;
+}
+
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 
 html, body {
   background: var(--bg);
@@ -208,7 +245,9 @@ html, body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: mercuryDrift 11s var(--e-luxe) infinite alternate;
+  /* One pass, then it holds. It used to alternate forever, which put a
+     perpetual animation behind every mercury headline on the page. */
+  animation: mercuryDrift 4.5s var(--e-luxe) 1 forwards;
 }
 @keyframes mercuryDrift {
   from { background-position: 50% 14%; }
@@ -417,10 +456,18 @@ img, video {
   user-select: none;
 }
 
-/* Hide native cursor on hover-capable devices — CustomCursor takes over */
-@media (hover: hover) and (pointer: fine) {
-  html, body { cursor: none; }
-  a, button, [role="button"], input, textarea, select { cursor: none; }
+/* The native cursor stays.
+   This used to be `cursor: none` on html, body and every interactive element,
+   with a JS-drawn cursor painted on top. Two problems, one of them serious:
+   the replacement lags the real pointer by design, and if its script fails to
+   mount for any reason the visitor is left with no pointer at all on a page
+   whose primary action is a link. A portfolio cannot spend its reliability
+   budget on a cursor. */
+a, button, [role="button"], summary {
+  cursor: pointer;
+}
+button:disabled, [role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
 }
 
 /* ── Japanese measure ─────────────────────────────────────────────────
@@ -1064,7 +1111,9 @@ header *, nav *, button, a button, .idx, [role="button"] *,
    ───────────────────────────────────────────────────────────────────── */
 .kinetic-char {
   display: inline-block;
-  will-change: transform, opacity, filter;
+  /* No will-change here. This class lands on every character, so a blanket
+     promotion meant one compositor layer per glyph, held for the lifetime of
+     the page. Measured 94 promoted elements before this was removed. */
 }
 
 /* ── Orbit rings — the Hero portrait as an atelier specimen ────────────
@@ -1424,7 +1473,11 @@ header *, nav *, button, a button, .idx, [role="button"] *,
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: kineticSheen 3s linear infinite;
+  /* The travelling specular band used to run `kineticSheen 3s linear
+     infinite` here. This selector lands on every character, so a headline of
+     35 glyphs held 35 perpetual animations, forever, for a shimmer nobody is
+     looking directly at. Measured 42 running animations against a budget of
+     3. The chrome gradient below is the identity; the band was the tax. */
 }
 /* a bright specular band travels across the chrome letters */
 @keyframes kineticSheen {

@@ -28,6 +28,18 @@ import {
  *             and rises as you scroll down.
  *   fade      also fade 0.6 → 1 across entry (default false).
  *   lift      also scale 0.985 → 1 across entry (default false).
+ *
+ * Split into two components on purpose. The motion hooks all live in
+ * ParallaxMotion, which is only mounted when the effect is actually wanted.
+ *
+ * Previously everything sat in one component with an `if (!enabled) return`
+ * after the hooks, because hooks cannot be called conditionally. That returned
+ * a plain div, but `useSpring` had still been created and was still subscribed
+ * to `useScroll`, so framer-motion kept a frame loop alive for a value nothing
+ * rendered. Measured: one continuous 60/s rAF loop on desktop with
+ * prefers-reduced-motion enabled, where the budget is zero. Mounting or not
+ * mounting the hook-owning component is the fix; a guard after the hooks
+ * cannot be.
  */
 export default function Parallax({
   children,
@@ -43,7 +55,6 @@ export default function Parallax({
   className?: string;
 }) {
   const reduced = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
@@ -53,6 +64,37 @@ export default function Parallax({
     const narrow = window.matchMedia("(max-width: 768px)").matches;
     setEnabled(!reduced && !coarse && !narrow);
   }, [reduced]);
+
+  if (!enabled) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <ParallaxMotion
+      distance={distance}
+      fade={fade}
+      lift={lift}
+      className={className}
+    >
+      {children}
+    </ParallaxMotion>
+  );
+}
+
+function ParallaxMotion({
+  children,
+  distance,
+  fade,
+  lift,
+  className,
+}: {
+  children: ReactNode;
+  distance: number;
+  fade: boolean;
+  lift: boolean;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -79,10 +121,6 @@ export default function Parallax({
     [0, 0.5, 1],
     lift ? [0.985, 1, 1] : [1, 1, 1]
   );
-
-  if (!enabled) {
-    return <div className={className}>{children}</div>;
-  }
 
   return (
     <motion.div

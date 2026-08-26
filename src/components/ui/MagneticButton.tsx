@@ -26,6 +26,7 @@ export default function MagneticButton({
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const wrap = wrapRef.current;
     const inner = innerRef.current;
     if (!wrap || !inner) return;

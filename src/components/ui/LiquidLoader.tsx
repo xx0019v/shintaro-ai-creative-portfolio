@@ -3,6 +3,8 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLaunch } from "@/context/LaunchContext";
+import { useLang } from "@/context/LanguageContext";
+import { tr } from "@/lib/translations";
 
 const TEXT = "AVENDAÑO";
 
@@ -31,15 +33,29 @@ const EASE_IO = [0.83, 0, 0.17, 1] as const;
  *               sub-label
  *   dissolve  : chrome and ambient lift away — gentle handoff to Hero
  */
+/**
+ * Retimed from ~9.95s to ~3.7s.
+ *
+ * Every phase survives, so the sequence still reads as written above: dark,
+ * emerge, vortex, fusion, morph into the wordmark, chrome sweep, hold,
+ * dissolve. What changed is that it no longer asks for ten seconds before the
+ * first line of the page. With the EntrySphere's own 1.6s hand-off in front
+ * of it, time to content was about 11.2 seconds, and the control labelled
+ * "skip" started the whole thing anyway.
+ *
+ * The vortex keeps the largest share because it is the phase people actually
+ * watch; hold and dissolve give up the most because they are the part where
+ * the visitor already knows what it says.
+ */
 const T = {
-  dark: 250,
-  emerge: 700,
-  orbit: 3000,
-  fusion: 700,
-  morph: 2100,
-  chrome: 1100,
-  hold: 1300,
-  dissolve: 800,
+  dark: 100,
+  emerge: 320,
+  orbit: 900,
+  fusion: 280,
+  morph: 800,
+  chrome: 500,
+  hold: 400,
+  dissolve: 400,
 } as const;
 
 const STAGE = {
@@ -223,7 +239,8 @@ function makeDroplets(
 
 export default function LiquidLoader() {
   const reduced = useReducedMotion();
-  const { launched } = useLaunch();
+  const { launched, introDone, ready, skipIntro, finishIntro } = useLaunch();
+  const { lang } = useLang();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(true);
   const [phase, setPhase] = useState<Phase>("dark");
@@ -284,11 +301,25 @@ export default function LiquidLoader() {
     timers.push(
       setTimeout(() => {
         setActive(false);
+        finishIntro();
         if (typeof window !== "undefined") window.scrollTo(0, 0);
       }, STAGE.end)
     );
     return () => timers.forEach(clearTimeout);
-  }, [mounted, active, droplets.length, launched]);
+  }, [mounted, active, droplets.length, launched, finishIntro]);
+
+  // Escape ends the opening from here too, matching the sphere.
+  useEffect(() => {
+    if (!mounted || !active) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setActive(false);
+        skipIntro();
+      }
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [mounted, active, skipIntro]);
 
   // Pre-compute orbit keyframes (one set per droplet) — keeps motion smooth
   // and GPU-friendly via Framer's keyframe interpolation.
@@ -341,7 +372,9 @@ export default function LiquidLoader() {
     });
   }, [droplets, viewport]);
 
-  if (!mounted) return null;
+  // `ready` gates on sessionStorage having been read, so a returning visitor
+  // never sees a frame of the opening they already sat through.
+  if (!mounted || !ready || introDone) return null;
 
   const pct = (xp: number, yp: number) => ({
     x: (xp / 100) * viewport.w,
@@ -361,10 +394,23 @@ export default function LiquidLoader() {
           exit={{ opacity: 0 }}
           transition={{ duration: T.dissolve / 1000, ease: EASE_IO }}
           className="fixed inset-0 z-[100] pointer-events-auto overflow-hidden"
-          aria-hidden
-          role="presentation"
         >
-          <div className="absolute inset-0 bg-base">
+          {/* A way out of the opening that is visible while the opening is
+              playing. The wrapper is no longer aria-hidden, because an
+              aria-hidden container cannot hold a control anyone can reach;
+              the decorative layers below carry their own aria-hidden. */}
+          <button
+            type="button"
+            onClick={() => {
+              setActive(false);
+              skipIntro();
+            }}
+            className="absolute bottom-4 right-4 z-10 min-h-[44px] min-w-[44px] px-4 py-3 text-[11px] tracking-[0.3em] uppercase text-silver-bright/80 hover:text-offwhite focus-visible:text-offwhite transition-colors"
+          >
+            {tr("entry_skip", lang)}
+          </button>
+
+          <div className="absolute inset-0 bg-base" aria-hidden>
             {/* SVG defs — goo filter + scan grid */}
             <svg
               className="absolute inset-0 w-full h-full"

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { useLaunch } from "@/context/LaunchContext";
 import { tr } from "@/lib/translations";
@@ -19,12 +19,15 @@ const EASE = [0.19, 1, 0.22, 1] as const;
  * competing for the first three seconds. That is the shape of a CV, and no
  * amount of polish on the parts fixes it.
  *
- * Now the whole page runs inside a continuous film (ui/FilmBackdrop), so the
- * Hero does not need to supply its own imagery: the world is already moving
- * behind it. What it needs to supply is one sentence, said at full size and
- * held. Everything cut from here still exists further down — the portrait
- * opens About, the disciplines are the Skills section — so nothing is lost,
- * it is just no longer shouted at the door.
+ * What it needs to supply is one sentence, said at full size and held.
+ * Everything cut from here still exists further down: the portrait opens
+ * About, the disciplines are the Skills section. Nothing is lost, it is just
+ * no longer shouted at the door.
+ *
+ * The film that used to run behind this is retired (see app/layout.tsx for the
+ * measurements), so the ground is now the base colour under CinemaScroll's
+ * key light. The statement carries the screen on its own, which is what it
+ * was rebuilt to do.
  */
 export default function Hero() {
   const reduced = useReducedMotion();
@@ -126,20 +129,12 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <motion.a
-        href="#about"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2, ease: EASE, delay: 1.2 }}
-        className="group absolute bottom-10 z-10 flex flex-col items-center gap-3 text-[9px] uppercase tracking-[0.42em] text-silver-muted transition-colors hover:text-offwhite"
-      >
-        {tr("hero_scroll", lang)}
-        <ArrowDown
-          size={13}
-          strokeWidth={1.25}
-          className="transition-transform duration-700 group-hover:translate-y-1"
-        />
-      </motion.a>
+      {/* The "Scroll" cue that used to sit here is gone.
+          Someone looking at the first screen has not scrolled yet, which is
+          the only reason a page ever shows this label, and it tells them a
+          thing they already know in the one place the composition can least
+          afford a fifth element. The two CTAs above it are the actual
+          instruction. */}
     </section>
   );
 }
@@ -161,14 +156,22 @@ function Line({
   delay: number;
   reduced: boolean;
 }) {
-  if (reduced) return <span className="block">{children}</span>;
+  // Same DOM in both motion modes, deliberately.
+  //
+  // This used to return a bare <span> under reduced motion and the masked
+  // motion.span otherwise. The server always renders with reduced=false, so a
+  // visitor with the OS setting on hydrated a different tree than was sent and
+  // React threw #425 once per headline line. Varying only the motion props
+  // keeps the markup identical and still starts the line at rest.
   return (
     <span className="block overflow-hidden pb-[0.08em]">
       <motion.span
         className="block"
         initial={{ y: "108%" }}
         animate={{ y: 0 }}
-        transition={{ duration: 1.5, ease: EASE, delay }}
+        transition={
+          reduced ? { duration: 0 } : { duration: 1.5, ease: EASE, delay }
+        }
       >
         {children}
       </motion.span>

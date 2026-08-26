@@ -49,18 +49,21 @@ export default function SectionHeader({
   const reduced = useReducedMotion();
   const alignment = align === "center" ? "text-center mx-auto" : "text-left";
 
-  const title = reduced ? (
-    <h2 className="metallic-still font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9] tracking-[-0.03em]">
-      {titleEn}
-    </h2>
-  ) : (
+  // One tree in both motion modes. This used to return a bare <h2> under
+  // reduced motion and a motion.h2 otherwise, which mismatched hydration on
+  // every section heading for anyone with the OS setting on.
+  const title = (
     <motion.h2
       initial={{ opacity: 0, y: 26, letterSpacing: "0.05em" }}
       whileInView={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
       viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 1.5, ease: EASE, delay: 0.16 }}
+      transition={
+        reduced ? { duration: 0 } : { duration: 1.5, ease: EASE, delay: 0.16 }
+      }
       className="metallic-still font-serif text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.9]"
-      style={{ willChange: "transform, opacity, letter-spacing" }}
+      // letter-spacing is not a compositable property, so naming it here
+      // bought a layer and still forced layout on every frame.
+      style={{ willChange: "transform, opacity" }}
     >
       {titleEn}
     </motion.h2>
@@ -100,16 +103,14 @@ export default function SectionHeader({
   if (variant === "wide") {
     return (
       <div className="w-full">
-        {!reduced && (
-          <motion.div
-            aria-hidden
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 1.4, ease: EASE }}
-            className="h-px w-full origin-left rule-silver"
-          />
-        )}
+        <motion.div
+          aria-hidden
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={reduced ? { duration: 0 } : { duration: 1.4, ease: EASE }}
+          className="h-px w-full origin-left rule-silver"
+        />
         <Reveal>
           <div className="mt-5 flex items-baseline justify-between text-[10px] uppercase tracking-wider2 text-silver">
             <span>{tr(labelKey, lang)}</span>
@@ -141,21 +142,21 @@ export default function SectionHeader({
       </Reveal>
 
       {/* film-title hairline — light draws across before the title lands */}
-      {!reduced && (
-        <motion.div
-          aria-hidden
-          initial={{ scaleX: 0, opacity: 0 }}
-          whileInView={{ scaleX: 1, opacity: 1 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 1.1, ease: EASE, delay: 0.05 }}
-          className={`mt-6 h-px w-24 ${align === "center" ? "mx-auto" : "origin-left"}`}
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(229,229,229,0.75), transparent)",
-            transformOrigin: align === "center" ? "center" : "left",
-          }}
-        />
-      )}
+      <motion.div
+        aria-hidden
+        initial={{ scaleX: 0, opacity: 0 }}
+        whileInView={{ scaleX: 1, opacity: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={
+          reduced ? { duration: 0 } : { duration: 1.1, ease: EASE, delay: 0.05 }
+        }
+        className={`mt-6 h-px w-24 ${align === "center" ? "mx-auto" : "origin-left"}`}
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(229,229,229,0.75), transparent)",
+          transformOrigin: align === "center" ? "center" : "left",
+        }}
+      />
 
       {/* Headline — editorial scale, cut in mercury. See the shared `title`
           above for why clamp() and why no blur on entry. */}
