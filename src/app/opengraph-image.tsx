@@ -1,11 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-export const alt = "Avendano Shintaro — AI Creative Developer Portfolio";
+export const alt = "Avendaño Shintaro — Creative Technologist";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function OpengraphImage() {
+export default function OpengraphImage() {
   return new ImageResponse(
     (
       <div
@@ -15,80 +14,31 @@ export default async function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "72px 80px",
-          background:
-            "radial-gradient(circle at 30% 30%, rgba(229,229,229,0.16) 0%, transparent 55%), linear-gradient(135deg, #050505 0%, #111111 100%)",
-          color: "#F5F5F5",
-          fontFamily: "serif",
+          padding: "58px 66px",
+          background: "#F3F0E8",
+          color: "#171713",
+          fontFamily: "sans-serif",
+          border: "20px solid #3157FF",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 18,
-            letterSpacing: 6,
-            textTransform: "uppercase",
-            fontSize: 18,
-            color: "#E5E5E5",
-          }}
-        >
-          <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 9999,
-              background: "#E5E5E5",
-              display: "block",
-            }}
-          />
-          Portfolio · Volume 02
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 18, letterSpacing: 2 }}>
+          <span style={{ fontWeight: 700 }}>AVENDAÑO SHINTARO</span>
+          <span>PORTFOLIO / 2026</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div
-            style={{
-              fontSize: 36,
-              letterSpacing: 8,
-              textTransform: "uppercase",
-              color: "#C0C0C0",
-              marginBottom: 24,
-            }}
-          >
-            Avendano Shintaro
+          <div style={{ display: "flex", flexDirection: "column", fontSize: 88, lineHeight: 0.96, letterSpacing: -5, fontWeight: 700 }}>
+            <span>Think with AI.</span>
+            <span>Build for the web.</span>
           </div>
-          <div
-            style={{
-              fontSize: 112,
-              lineHeight: 1.02,
-              letterSpacing: -2,
-              maxWidth: 1040,
-            }}
-          >
-            Turning Ideas into{" "}
-            <span style={{ fontStyle: "italic", opacity: 0.85 }}>Systems,</span>{" "}
-            Visuals, &amp; Experiences.
+          <div style={{ marginTop: 22, color: "#3157FF", fontSize: 42, fontWeight: 700 }}>
+            Shape the whole experience.
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            fontSize: 20,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-            color: "rgba(245,245,245,0.7)",
-          }}
-        >
-          <div style={{ display: "flex", gap: 24 }}>
-            <span>AI</span>
-            <span>Web</span>
-            <span>Branding</span>
-            <span>Direction</span>
-          </div>
-          <div style={{ color: "#E5E5E5" }}>AI Creative Developer</div>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 17, letterSpacing: 2 }}>
+          <span>AI · WEB · VISUAL DIRECTION</span>
+          <span>CREATIVE TECHNOLOGIST</span>
         </div>
       </div>
     ),

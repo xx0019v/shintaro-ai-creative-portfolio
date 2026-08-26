@@ -5,37 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#050505",
-        soft: "#111111",
-        charcoal: "#1A1A1A",
-        silver: "#C0C0C0",
-        "silver-bright": "#E5E5E5",
-        "silver-muted": "#8E8E8E",
-        offwhite: "#F5F5F5",
+        paper: "#F3F0E8",
+        ink: "#171713",
+        cobalt: "#3157FF",
       },
       fontFamily: {
-        serif: ["var(--font-playfair)", "var(--font-cormorant)", "serif"],
-        display: ["var(--font-dm-serif)", "serif"],
-        sans: ["var(--font-inter)", "var(--font-noto-sans-jp)", "system-ui", "sans-serif"],
-        jpserif: ["var(--font-noto-serif-jp)", "var(--font-shippori)", "serif"],
-        jpsans: ["var(--font-noto-sans-jp)", "system-ui", "sans-serif"],
+        display: ["var(--font-space-grotesk)", "var(--font-noto-sans-jp)", "sans-serif"],
+        sans: ["var(--font-noto-sans-jp)", "var(--font-space-grotesk)", "sans-serif"],
+        mono: ["var(--font-plex-mono)", "monospace"],
       },
-      letterSpacing: { editorial: "0.22em", wider2: "0.32em" },
-      maxWidth: { editorial: "1440px" },
-      keyframes: {
-        shine: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        glow: {
-          "0%, 100%": { opacity: "0.35" },
-          "50%": { opacity: "0.6" },
-        },
-      },
-      animation: {
-        shine: "shine 8s linear infinite",
-        glow: "glow 6s ease-in-out infinite",
-      },
+      maxWidth: { studio: "1440px" },
     },
   },
   plugins: [],

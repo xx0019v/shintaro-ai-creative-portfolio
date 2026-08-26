@@ -1,58 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Inter,
-  Playfair_Display,
-  Cormorant_Garamond,
-  DM_Serif_Display,
-  Noto_Sans_JP,
-  Noto_Serif_JP,
-  Shippori_Mincho,
-} from "next/font/google";
-import "./globals.css";
+import { IBM_Plex_Mono, Noto_Sans_JP, Space_Grotesk } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { LaunchProvider } from "@/context/LaunchContext";
-import EntrySphere from "@/components/ui/EntrySphere";
-import LiquidLoader from "@/components/ui/LiquidLoader";
-import ScrollToTop from "@/components/ui/ScrollToTop";
-import CustomCursor from "@/components/ui/CustomCursor";
-import ScrollProgress from "@/components/ui/ScrollProgress";
-import CinemaScroll from "@/components/ui/CinemaScroll";
-import FilmBackdrop from "@/components/ui/FilmBackdrop";
-import ProximityField from "@/components/ui/ProximityField";
-import GestureControl from "@/components/ui/GestureControl";
-import SoundToggle from "@/components/ui/SoundToggle";
-import ChatWidget from "@/components/chat/ChatWidget";
+import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
-const cormorant = Cormorant_Garamond({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-cormorant",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
-const dmSerif = DM_Serif_Display({
+
+const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-dm-serif",
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
+
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-noto-sans-jp",
-  display: "swap",
-});
-const notoSerifJP = Noto_Serif_JP({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-noto-serif-jp",
-  display: "swap",
-});
-const shippori = Shippori_Mincho({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-shippori",
   display: "swap",
 });
 
@@ -60,46 +27,29 @@ const SITE_URL = "https://shintaro-ai-creative-portfolio.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Avendano Shintaro | AI Creative Developer Portfolio",
-    template: "%s | Avendano Shintaro",
-  },
+  title: "Avendaño Shintaro — Creative Technologist",
   description:
-    "Portfolio of Avendano Shintaro — AI Creative Developer. AI camera analytics, web production, branding, visual design, and project direction.",
-  keywords: [
-    "AI Creative Developer",
-    "ICT Design Student",
-    "Web Design",
-    "AI Camera",
-    "Portfolio",
-    "Branding",
-    "Visual Design",
-    "Fragrance Vending Machine",
-    "Online English Website",
-    "Character Design",
-    "Avendano Shintaro",
-  ],
-  authors: [{ name: "Avendano Shintaro" }],
-  creator: "Avendano Shintaro",
+    "AIカメラ、Web、ブランド表現を横断し、企画から実装まで手を動かすICTデザイン学生 Avendaño Shintaro のポートフォリオ。",
+  authors: [{ name: "Avendaño Shintaro" }],
+  creator: "Avendaño Shintaro",
   openGraph: {
     type: "website",
     locale: "ja_JP",
     alternateLocale: "en_US",
-    title: "Avendano Shintaro | AI Creative Developer Portfolio",
-    description:
-      "AI camera analytics, web production, branding, and visual design — by Avendano Shintaro.",
-    siteName: "Avendano Shintaro Portfolio",
+    title: "Avendaño Shintaro — Creative Technologist",
+    description: "AIで考え、Webで動かす。体験までつくるICTデザイン学生。",
+    siteName: "Avendaño Shintaro Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Avendano Shintaro | AI Creative Developer Portfolio",
-    description: "AI · Web · Branding · Visual Design",
+    title: "Avendaño Shintaro — Creative Technologist",
+    description: "AI · Web · Visual Direction",
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050505",
+  themeColor: "#f3f0e8",
   width: "device-width",
   initialScale: 1,
 };
@@ -108,36 +58,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="ja"
-      className={`${inter.variable} ${playfair.variable} ${cormorant.variable} ${dmSerif.variable} ${notoSansJP.variable} ${notoSerifJP.variable} ${shippori.variable}`}
+      className={`${spaceGrotesk.variable} ${plexMono.variable} ${notoSansJP.variable}`}
     >
-      <body className="bg-base text-offwhite font-sans antialiased">
-        <LanguageProvider>
-          <LaunchProvider>
-            <ScrollToTop />
-            <EntrySphere />
-            <LiquidLoader />
-            <FilmBackdrop />
-            <CinemaScroll />
-            <ProximityField />
-            {/* AmbientBackdrop removed: the drifting dust read as dirt on
-                the lens rather than atmosphere. ShaderBackdrop removed too —
-                it was WebGL running behind an opaque film canvas. */}
-            <ScrollProgress />
-            <CustomCursor />
-            {children}
-            {/* AtelierFrame and SectionIndex are gone.
-                Between them they drew a border, four corner ticks, a ruler, a
-                marker, a chapter label and a signature ticker over every
-                screen, plus a column of nav dots — all decoration, all
-                permanent. A 100px mercury headline surrounded by instruments
-                reads as a dashboard, not as work. The reference this site is
-                aimed at puts NOTHING in the corners. ScrollProgress already
-                reports position, so the dots were saying it twice. */}
-            <GestureControl />
-            <SoundToggle />
-            <ChatWidget />
-          </LaunchProvider>
-        </LanguageProvider>
+      <body>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

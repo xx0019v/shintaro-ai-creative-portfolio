@@ -2,1661 +2,1292 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Entry Sphere — mobile dust (CSS-only, no rAF) ────────────────────
-   Eight quiet silver motes drift around the sphere via pure CSS keyframes.
-   On activate, JS adds .is-pulling to collapse them to the core. */
-.entry-mote {
-  position: absolute;
-  left: 0;
-  top: 0;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(245, 245, 245, 0.9), rgba(192, 192, 192, 0));
-  /* base position set inline via --tx/--ty; float layered on top */
-  transform: translate3d(var(--tx), var(--ty), 0);
-  animation: entryMoteFloat var(--dur, 7s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-  will-change: transform, opacity;
-}
-@keyframes entryMoteFloat {
-  0%, 100% {
-    transform: translate3d(var(--tx), var(--ty), 0);
-    opacity: var(--op, 0.4);
-  }
-  50% {
-    transform: translate3d(calc(var(--tx) + var(--fx, 0px)), calc(var(--ty) + var(--fy, 0px)), 0);
-    opacity: calc(var(--op, 0.4) * 1.5);
-  }
-}
-/* collapse to core on activation */
-.entry-dust-m.is-pulling .entry-mote {
-  transform: translate3d(0, 0, 0) scale(0.4);
-  opacity: 0;
-  transition: transform 700ms cubic-bezier(0.19, 1, 0.22, 1),
-    opacity 700ms cubic-bezier(0.19, 1, 0.22, 1);
-  animation: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .entry-mote {
-    animation: none;
-  }
-}
-
-/* ── Entry Sphere — chapter labels ────────────────────────────────────
-   Museum signage, not a menu: thin uppercase silver held far off the
-   sphere, so the room tells you what it contains without competing with
-   the object in the middle.
-
-   Placement is polar. The ring container carries --ring (a clamped
-   radius) and each label carries a unitless cos/sin multiplier, so the
-   whole constellation scales with the viewport in pure CSS — no resize
-   listener, no rAF, no measurement.
-
-   Two nested spans on purpose: the outer one owns the ring position (and
-   the collapse into the sphere on activate), the inner one owns the
-   float. Sharing one transform would make the float fight the layout. */
-.entry-ring {
-  --ring: clamp(148px, 33vmin, 400px);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-.entry-label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  white-space: nowrap;
-  transform: translate(-50%, -50%)
-    translate(calc(var(--ring) * var(--cx)), calc(var(--ring) * var(--cy)));
-  transition: transform 900ms cubic-bezier(0.19, 1, 0.22, 1),
-    opacity 900ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-/* Scoped with the ring on purpose: two classes (0,2,0) outrank the
-   `[role="button"] *` white-space reset further down (0,1,1). The entry
-   overlay carries role="button", so unscoped rules here lose to it and
-   "CLIENT WORK" breaks across two lines. */
-.entry-ring .entry-label-i {
-  display: block;
-  white-space: nowrap;
-  font-size: 9px;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--silver-bright);
-  /* Nearer the sphere reads brighter — --near is 1 at the tightest ring
-     radius and falls off outward, set per label. Cursor proximity adds on
-     top via --prox, which ProximityField already writes to [data-prox]. */
-  opacity: calc((0.2 + 0.26 * var(--near, 0.5)) + 0.42 * var(--prox, 0));
-  animation: entryLabelFloat var(--dur, 11s) ease-in-out infinite alternate;
-  animation-delay: var(--delay, 0s);
-  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1);
-  will-change: transform, opacity;
-}
-@keyframes entryLabelFloat {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(var(--fx, 0px), var(--fy, 0px), 0); }
-}
-/* On activate the labels are drawn into the sphere with the dust. */
-.entry-ring.is-pulling .entry-label {
-  transform: translate(-50%, -50%) scale(0.55);
-  opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  .entry-ring .entry-label-i { animation: none; }
-}
-
-
 :root {
-  --bg: #050505;
-  --bg-soft: #111111;
-  --bg-charcoal: #1A1A1A;
-  --silver: #C0C0C0;
-  --silver-bright: #E5E5E5;
-  --silver-muted: #8E8E8E;
-  --offwhite: #F5F5F5;
-
-  /* ── Mercury ramp (2.0) ───────────────────────────────────────────────
-     Flat silver reads as brushed aluminium because its values sit in a
-     narrow mid band. Mercury reads as LIQUID because it is a mirror: a
-     razor-thin blown-out specular sitting directly against a near-black
-     reflection of the room, with a faint cool cast. The wide range —
-     not more grey — is what sells it. Every chrome surface samples this
-     ramp so the whole site reflects the same imaginary environment. */
-  --hg-spec: #ffffff;   /* blown specular hit */
-  --hg-1:    #f4f7fa;   /* highlight roll-off (cool) */
-  --hg-2:    #cfd5dc;   /* lit body */
-  --hg-3:    #949ba5;   /* terminator */
-  --hg-4:    #4a5058;   /* reflected shadow */
-  --hg-5:    #23272c;   /* dark room reflection — the "liquid" band */
-  --hg-6:    #0d0f12;   /* deepest reflection */
-
-  /* One motion language for glass + metal. */
-  --e-luxe: cubic-bezier(0.19, 1, 0.22, 1);
-  --e-glass: cubic-bezier(0.32, 1.28, 0.42, 1); /* slight overshoot, iOS-like */
+  --paper: #f3f0e8;
+  --paper-deep: #e7e2d7;
+  --ink: #171713;
+  --muted: #686860;
+  --line: rgba(23, 23, 19, 0.2);
+  --accent: #3157ff;
+  --cream: #d9c7a8;
+  --white: #fffef9;
+  --display: var(--font-space-grotesk), var(--font-noto-sans-jp), sans-serif;
+  --body: var(--font-noto-sans-jp), var(--font-space-grotesk), sans-serif;
+  --mono: var(--font-plex-mono), monospace;
 }
 
-html { scroll-behavior: smooth; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
-  background: var(--bg);
-  color: var(--offwhite);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.7;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body,
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 ::selection {
-  background: rgba(229, 229, 229, 0.22);
-  color: #ffffff;
+  background: var(--accent);
+  color: white;
 }
 
-/* Silver hairlines */
-.hairline { border: 1px solid rgba(229, 229, 229, 0.08); }
-.hairline-silver { border: 1px solid rgba(192, 192, 192, 0.32); }
-
-/* Mercury rule — a bead of liquid metal rather than a flat grey line:
-   the highlight is off-centre and the falloff is uneven, so it catches
-   light the way a rolling meniscus does. */
-.rule-silver {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba(147, 155, 165, 0) 0%,
-    rgba(147, 155, 165, 0.28) 18%,
-    var(--hg-1) 44%,
-    var(--hg-spec) 52%,
-    rgba(207, 213, 220, 0.5) 62%,
-    rgba(147, 155, 165, 0.22) 84%,
-    rgba(147, 155, 165, 0) 100%
-  );
-}
-
-.vrule-silver {
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    rgba(192, 192, 192, 0) 0%,
-    rgba(229, 229, 229, 0.5) 50%,
-    rgba(192, 192, 192, 0) 100%
-  );
-}
-
-/* Metallic text — liquid mercury.
-   Two things make this read as mercury rather than grey text:
-   (1) the ramp slams a blown specular straight into the near-black
-       reflection band (--hg-5) with almost no transition, the way a
-       mirrored meniscus does;
-   (2) the ramp is taller than the text and drifts, so the highlight
-       crawls across the letterforms like a surface that hasn't settled. */
-.metallic {
-  background: linear-gradient(
-    177deg,
-    var(--hg-spec) 0%,
-    var(--hg-1) 12%,
-    var(--hg-2) 26%,
-    var(--hg-4) 42%,
-    var(--hg-5) 50%,
-    var(--hg-3) 58%,
-    var(--hg-1) 74%,
-    var(--hg-spec) 86%,
-    var(--hg-2) 100%
-  );
-  background-size: 100% 280%;
-  background-position: 50% 22%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: mercuryDrift 11s var(--e-luxe) infinite alternate;
-}
-@keyframes mercuryDrift {
-  from { background-position: 50% 14%; }
-  to   { background-position: 50% 78%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .metallic { animation: none; background-position: 50% 30%; }
-}
-
-/* ── Mercury sphere ───────────────────────────────────────────────────
-   A single radial gradient reads as matte clay, because a smooth falloff
-   from light to dark is what a DIFFUSE surface does. Mercury is a mirror:
-   it doesn't shade, it REFLECTS — so the surface has to show a room.
-
-   Four stacked backgrounds, topmost first:
-     1. specular    the light source itself: small, hard-edged, blown out
-     2. kick        a dimmer bounce from the lower right
-     3. fresnel     edge darkening with a bright rim, so the silhouette
-                    reads as a sphere turning away from the viewer
-     4. environment the room. A compressed HORIZON — bright sky slammed
-                    against near-black ground across ~4% of the height — is
-                    the single detail that makes metal read as liquid. Real
-                    chrome balls have that hard band; clay never does.
-
-   All on one element so the liquid border-radius morph carries them. */
-.mercury-sphere {
-  background:
-    /* specular — a hard glint, ~7% of the ball. Any softer and the eye reads
-       a diffuse surface no matter what the rest of the stack does. */
-    radial-gradient(
-      ellipse 8% 6% at 31% 23%,
-      #ffffff 0%,
-      #ffffff 52%,
-      rgba(255, 255, 255, 0.35) 74%,
-      rgba(255, 255, 255, 0) 100%
-    ),
-    /* second, smaller glint — real metal never has exactly one */
-    radial-gradient(
-      ellipse 3.5% 2.6% at 44% 17%,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0) 100%
-    ),
-    /* bounce from the lower right */
-    radial-gradient(
-      ellipse 26% 19% at 70% 80%,
-      rgba(226, 233, 240, 0.45) 0%,
-      rgba(226, 233, 240, 0) 66%
-    ),
-    /* fresnel — the surface turns away into shadow, then the very edge
-       catches the room again. Widened to ~7% so it is actually visible at
-       a 210px sphere instead of being a sub-pixel line. */
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(0, 0, 0, 0) 55%,
-      rgba(0, 0, 0, 0.55) 80%,
-      rgba(0, 0, 0, 0.62) 89%,
-      rgba(216, 226, 234, 0.55) 95%,
-      rgba(248, 251, 253, 0.95) 99%,
-      rgba(255, 255, 255, 1) 100%
-    ),
-    /* the room. Two rules matter: the horizon is slammed to pure black over
-       ~2% of the height, and the mid-tones sit LOW — a bright average makes
-       the glints stop reading as glints. */
-    linear-gradient(
-      176deg,
-      /* the bright sky band sits at 7%, not 0%: the drift window clips the
-         first few percent, and a highlight parked outside the ball is the
-         same as no highlight at all */
-      #cdd6df 0%,
-      #ffffff 7%,
-      #a4aeb9 15%,
-      #59626d 25%,
-      #262d36 34%,
-      #0b0e14 42%,
-      #000000 47.5%,
-      #000000 49.5%,
-      #03050a 51.5%,
-      #1b222b 56%,
-      #3d4550 62%,
-      #1c222a 70%,
-      #4b535e 80%,
-      #97a1ac 88%,
-      #dfe6ec 95%,
-      #ffffff 100%
-    );
-  /* 108% with a small drift keeps BOTH ends of the ramp — the sky and the
-     bottom bounce — inside the ball. At 150% they fell outside it entirely,
-     which is what flattened the first attempt into a pearl. */
-  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 108%;
-  background-position: 0 0, 0 0, 0 0, 0 0, 50% 40%;
-  animation: mercurySphereDrift 14s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
-}
-/* The horizon slides, so the reflection looks like a surface that has not
-   settled rather than a texture painted on a ball. */
-@keyframes mercurySphereDrift {
-  from { background-position: 0 0, 0 0, 0 0, 0 0, 50% 22%; }
-  to   { background-position: 0 0, 0 0, 0 0, 0 0, 50% 62%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mercury-sphere { animation: none; }
-}
-
-/* Mercury, held still.
-   The drifting variant repaints its background on every frame, which is
-   fine for the one Hero headline and wasteful across a dozen section
-   titles. Same ramp, parked at the position where the specular sits just
-   above the baseline of a large display cut. */
-.metallic-still {
-  background: linear-gradient(
-    177deg,
-    var(--hg-spec) 0%,
-    var(--hg-1) 12%,
-    var(--hg-2) 26%,
-    var(--hg-4) 42%,
-    var(--hg-5) 50%,
-    var(--hg-3) 58%,
-    var(--hg-1) 74%,
-    var(--hg-spec) 86%,
-    var(--hg-2) 100%
-  );
-  background-size: 100% 180%;
-  background-position: 50% 26%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Mercury surface — for small chrome plates, dots, ticks, mark shapes. */
-.mercury-surface {
-  background:
-    radial-gradient(120% 90% at 32% 12%, var(--hg-spec) 0%, transparent 42%),
-    linear-gradient(
-      168deg,
-      var(--hg-1) 0%,
-      var(--hg-2) 22%,
-      var(--hg-5) 52%,
-      var(--hg-3) 66%,
-      var(--hg-1) 88%,
-      var(--hg-spec) 100%
-    );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.75),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.45);
-}
-
-/* Editorial frame for color-heavy assets */
-.editorial-frame {
-  position: relative;
-  padding: 14px;
-  background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-  border: 1px solid rgba(229, 229, 229, 0.12);
-}
-.editorial-frame::before,
-.editorial-frame::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border-color: rgba(229, 229, 229, 0.55);
-}
-.editorial-frame::before {
-  top: 4px; left: 4px;
-  border-top: 1px solid; border-left: 1px solid;
-}
-.editorial-frame::after {
-  bottom: 4px; right: 4px;
-  border-bottom: 1px solid; border-right: 1px solid;
-}
-
-/* tabular numerals for index labels */
-.idx {
-  font-feature-settings: "tnum", "lnum";
-  font-variant-numeric: tabular-nums;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #050505; }
-::-webkit-scrollbar-thumb { background: rgba(192,192,192,0.18); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(229,229,229,0.32); }
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Editorial polish — section caps for breathing room on mobile */
-@media (max-width: 640px) {
-  section { padding-top: 5rem !important; padding-bottom: 5rem !important; }
-}
-
-/* Smooth chrome on focus rings */
 :focus-visible {
-  outline: 1px solid rgba(229, 229, 229, 0.55);
-  outline-offset: 3px;
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
 }
 
-/* Image quality */
-img, video {
-  -webkit-user-drag: none;
-  user-select: none;
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 12px;
+  z-index: 100;
+  transform: translateY(-160%);
+  background: var(--accent);
+  color: white;
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
 }
 
-/* Hide native cursor on hover-capable devices — CustomCursor takes over */
-@media (hover: hover) and (pointer: fine) {
-  html, body { cursor: none; }
-  a, button, [role="button"], input, textarea, select { cursor: none; }
+.skip-link:focus {
+  transform: translateY(0);
 }
 
-/* ── Japanese measure ─────────────────────────────────────────────────
-   A full-width character is exactly 1em, so a max-width in em caps the
-   line at that many characters no matter what size it is set at — which
-   is why this is expressed in em and not rem or px.
-
-   Japanese body text reads at roughly 30–45 characters per line. Measured
-   on the built page, 16 blocks were over 45 and the worst was 82 — about
-   double the ceiling, at which point the eye stops finding the start of
-   the next line. Latin copy tolerates a long measure far better than
-   Japanese does, which is why an inherited max-w-* sized for English
-   quietly breaks the Japanese it also has to carry.
-
-   Scoped to paragraphs on purpose: <dd> and <li> here live inside grids
-   that own their own widths, and capping those would fight the layout. */
-p.font-jpserif,
-p.font-jpsans {
-  max-width: 38em;
-}
-/* A measure cap must never silently left-align copy that was deliberately
-   centred, so centred blocks keep their centring. */
-.text-center p.font-jpserif,
-.text-center p.font-jpsans,
-p.font-jpserif.text-center,
-p.font-jpsans.text-center,
-p.font-jpserif.mx-auto,
-p.font-jpsans.mx-auto {
+.site-shell {
+  width: min(100% - 40px, 1440px);
   margin-inline: auto;
 }
 
-/* Translation strings use embedded \n for editorial line breaks.
-   Apply pre-line to all body copy so dictionary-set breaks render. */
-.font-jpserif, .font-jpsans,
-p.font-jpserif, p.font-jpsans,
-h2, h3, p {
-  white-space: pre-line;
-}
-/* But not inside nav, header chrome, or button labels */
-header *, nav *, button, a button, .idx, [role="button"] *,
-.tracking-wider2, .tracking-wider, .tracking-editorial,
-[class*="tracking-["] {
-  white-space: normal;
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
 }
 
-/* ── Premium Hover ────────────────────────────────────────────────
-   A thin chrome edge-light + a single diagonal sheen sweep on hover /
-   focus. Tilt is applied via JS (useTilt) on .ph-tilt. All motion uses
-   the site easing. Disabled tilt on touch / reduced-motion; the edge
-   light + sweep still play on :hover and :focus-within. */
-.premium-hover {
-  position: relative;
-}
-.premium-hover .ph-tilt {
-  transition: transform 700ms cubic-bezier(0.19, 1, 0.22, 1);
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-/* chrome edge line */
-.premium-hover .ph-edge {
-  position: absolute;
-  inset: 0;
-  border: 1px solid transparent;
-  pointer-events: none;
-  transition: border-color 600ms cubic-bezier(0.19, 1, 0.22, 1),
-    box-shadow 600ms cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 3;
-}
-.premium-hover:hover .ph-edge,
-.premium-hover:focus-within .ph-edge {
-  border-color: rgba(229, 229, 229, 0.45);
-  box-shadow: inset 0 0 0 1px rgba(229, 229, 229, 0.08),
-    0 0 24px -8px rgba(229, 229, 229, 0.25);
-}
-/* diagonal sheen sweep */
-.premium-hover .ph-sweep {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 500ms cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 2;
-}
-.premium-hover:hover .ph-sweep,
-.premium-hover:focus-within .ph-sweep {
-  opacity: 1;
-}
-.premium-hover .ph-sweep::before {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: 0;
-  width: 36%;
-  height: 220%;
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    rgba(229, 229, 229, 0.0) 30%,
-    rgba(245, 245, 245, 0.5) 50%,
-    rgba(229, 229, 229, 0.0) 70%,
-    transparent 100%
-  );
-  transform: translateX(-160%) rotate(8deg);
-  mix-blend-mode: screen;
-}
-.premium-hover:hover .ph-sweep::before,
-.premium-hover:focus-within .ph-sweep::before {
-  animation: phSweep 1.25s cubic-bezier(0.19, 1, 0.22, 1);
-}
-@keyframes phSweep {
-  to {
-    transform: translateX(450%) rotate(8deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .premium-hover .ph-tilt {
-    transform: none !important;
-    transition: none;
-  }
-  .premium-hover .ph-sweep::before {
-    animation: none;
-  }
+.header-row {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 30px;
 }
 
-/* Subtle glass-card token */
-.glass {
-  background: linear-gradient(180deg, rgba(20,20,20,0.55) 0%, rgba(10,10,10,0.35) 100%);
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  border: 1px solid rgba(229,229,229,0.08);
+.identity {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--display);
 }
 
-/* Liquid glass — Apple-style refraction surrogate built in pure CSS.
-   A heavy backdrop blur reads the silver shader behind it; layered
-   highlights fake the specular sheen + inner refraction of real glass.
-   Robust everywhere, zero JS, mobile-safe. */
-.liquid-glass {
-  position: relative;
-  background:
-    linear-gradient(180deg, rgba(26,26,26,0.50) 0%, rgba(10,10,10,0.30) 100%);
-  backdrop-filter: blur(22px) saturate(135%) brightness(1.05);
-  -webkit-backdrop-filter: blur(22px) saturate(135%) brightness(1.05);
-  border: 1px solid rgba(229,229,229,0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.10),       /* top edge catch-light */
-    inset 0 0 28px rgba(255,255,255,0.04),       /* inner refraction wash */
-    0 24px 60px -24px rgba(0,0,0,0.7);           /* lifted depth shadow */
-  isolation: isolate;
-}
-/* Diagonal specular streak — the sheen that sells the glass */
-.liquid-glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(125deg,
-      rgba(255,255,255,0.14) 0%,
-      rgba(255,255,255,0.04) 18%,
-      transparent 38%,
-      transparent 72%,
-      rgba(229,229,229,0.06) 100%);
-  mix-blend-mode: screen;
-  opacity: 0.9;
-}
-/* Bright hairline rim that brightens the convex edge */
-.liquid-glass::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border: 1px solid transparent;
-  background: linear-gradient(135deg,
-      rgba(255,255,255,0.22), transparent 40%,
-      transparent 60%, rgba(192,192,192,0.16)) border-box;
-  -webkit-mask:
-    linear-gradient(#000 0 0) padding-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+.identity-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-/* ══ Liquid Glass controls (2.0) ══════════════════════════════════════════
-   iOS-style glass buttons. What makes real Liquid Glass read as a physical
-   lens rather than a frosted rectangle is four layers stacked in order:
+.identity-role {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-     1. LENS      backdrop blur + saturate — the scene behind is bent, and
-                  colour is pushed, so the button samples the room.
-     2. BODY      a top-lit vertical wash: light pools at the top edge and
-                  the base sits in its own shadow, giving the pill volume.
-     3. SPECULAR  a bright point that TRACKS THE CURSOR. This is the tell —
-                  static glass is a sticker, glass whose highlight follows
-                  you is a curved surface. Driven by --px/--py/--prox,
-                  which ProximityField already writes to [data-prox]; no
-                  new listener, no React re-render.
-     4. RIM       a mercury-bright hairline that is strongest where the
-                  light hits and fades round the back of the form.
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-   Fully rounded (999px), ≥44px tall, press-scales with a slight overshoot,
-   and degrades to an opaque plate where backdrop-filter is unsupported.
-
-   Declared in @layer components so Tailwind utilities still win — a
-   `hidden md:flex` or `w-full` on a .lg-btn behaves the way you'd expect. */
-@layer components {
-.lg-btn {
-  position: relative;
-  isolation: isolate;
+.main-nav a,
+.language-switch button {
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  min-height: 44px;
-  padding: 0 1.5rem;
-  border-radius: 999px;
-  overflow: hidden;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  color: var(--offwhite);
-
-  /* 2. BODY — light pools top, base falls into shadow */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.10) 0%,
-    rgba(255, 255, 255, 0.038) 46%,
-    rgba(255, 255, 255, 0.015) 72%,
-    rgba(0, 0, 0, 0.18) 100%
-  );
-  /* 1. LENS */
-  backdrop-filter: blur(26px) saturate(185%) brightness(1.08);
-  -webkit-backdrop-filter: blur(26px) saturate(185%) brightness(1.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),    /* top catch-light */
-    inset 0 -1px 0 rgba(255, 255, 255, 0.07),   /* bottom bounce */
-    inset 0 0 24px rgba(255, 255, 255, 0.045),  /* inner refraction wash */
-    0 1px 2px rgba(0, 0, 0, 0.55),              /* contact shadow */
-    0 14px 34px -14px rgba(0, 0, 0, 0.9);       /* lift */
-  transition:
-    transform 320ms var(--e-glass),
-    box-shadow 520ms var(--e-luxe),
-    background 520ms var(--e-luxe),
-    color 420ms var(--e-luxe);
-  will-change: transform;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
 
-/* 3. SPECULAR — a soft highlight that rides the cursor across the lens */
-.lg-btn::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(
-    68% 140% at var(--px, 50%) var(--py, 0%),
-    rgba(255, 255, 255, 0.26) 0%,
-    rgba(229, 233, 238, 0.10) 34%,
-    transparent 68%
-  );
-  opacity: calc(0.34 + 0.66 * var(--prox, 0));
-  mix-blend-mode: screen;
-  transition: opacity 420ms var(--e-luxe);
+.main-nav a {
+  border-bottom: 2px solid transparent;
 }
 
-/* 4. RIM — mercury hairline, brightest at the lit edge */
-.lg-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    170deg,
-    rgba(255, 255, 255, calc(0.42 + 0.34 * var(--prox, 0))) 0%,
-    rgba(207, 213, 220, 0.22) 28%,
-    rgba(74, 80, 88, 0.16) 54%,
-    rgba(207, 213, 220, 0.26) 82%,
-    rgba(255, 255, 255, calc(0.20 + 0.24 * var(--prox, 0))) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  transition: background 420ms var(--e-luxe);
+.main-nav a:hover {
+  border-color: var(--ink);
 }
 
-.lg-btn:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.155) 0%,
-    rgba(255, 255, 255, 0.06) 46%,
-    rgba(255, 255, 255, 0.02) 72%,
-    rgba(0, 0, 0, 0.16) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.46),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.10),
-    inset 0 0 30px rgba(255, 255, 255, 0.07),
-    0 1px 2px rgba(0, 0, 0, 0.55),
-    0 20px 44px -16px rgba(0, 0, 0, 0.95);
+.language-switch {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 44px);
+  border: 1px solid var(--ink);
 }
 
-/* Press — iOS compresses the glass toward the finger, then releases with a
-   hair of overshoot. Transform only; the layout never moves. */
-.lg-btn:active { transform: scale(0.962); transition-duration: 130ms; }
-
-.lg-btn:focus-visible {
-  outline: 1px solid rgba(244, 247, 250, 0.75);
-  outline-offset: 3px;
+.language-switch button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
 }
 
-/* Primary — a pill of settled mercury. Dark type on bright metal. */
-.lg-btn--primary {
-  color: #08090a;
-  background: linear-gradient(
-    174deg,
-    var(--hg-spec) 0%,
-    var(--hg-1) 26%,
-    var(--hg-2) 54%,
-    #b3bac2 74%,
-    var(--hg-1) 100%
-  );
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -2px 7px rgba(0, 0, 0, 0.20),
-    0 1px 2px rgba(0, 0, 0, 0.6),
-    0 16px 38px -16px rgba(0, 0, 0, 0.95);
-}
-.lg-btn--primary::before {
-  background: radial-gradient(
-    62% 130% at var(--px, 50%) var(--py, 0%),
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.28) 32%,
-    transparent 64%
-  );
-  mix-blend-mode: soft-light;
-  opacity: calc(0.5 + 0.5 * var(--prox, 0));
-}
-.lg-btn--primary:hover {
-  background: linear-gradient(
-    174deg,
-    var(--hg-spec) 0%,
-    #ffffff 30%,
-    var(--hg-1) 58%,
-    var(--hg-2) 78%,
-    var(--hg-spec) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -2px 7px rgba(0, 0, 0, 0.16),
-    0 1px 2px rgba(0, 0, 0, 0.6),
-    0 22px 48px -18px rgba(0, 0, 0, 1);
-}
-.lg-btn--primary::after {
-  background: linear-gradient(
-    170deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.3) 40%,
-    rgba(35, 39, 44, 0.28) 70%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
+.language-switch button + button {
+  border-left: 1px solid var(--ink);
 }
 
-/* Quiet — the third-tier action. Same physics, less presence. */
-.lg-btn--quiet {
-  color: rgba(245, 245, 245, 0.86);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.018) 55%,
-    rgba(0, 0, 0, 0.14) 100%
-  );
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 10px 26px -14px rgba(0, 0, 0, 0.8);
-}
-.lg-btn--quiet:hover { color: var(--offwhite); }
-
-/* Large — the hero-scale contact plate */
-.lg-btn--lg { min-height: 68px; padding: 0 2rem; border-radius: 999px; }
-
-/* Squared variant for panel-shaped glass (chat sheet, cards) */
-.lg-btn--panel { border-radius: 22px; }
-
-@media (max-width: 640px) {
-  .lg-btn { min-height: 48px; padding: 0 1.25rem; }
-  .lg-btn--lg { min-height: 60px; padding: 0 1.25rem; }
+.language-switch button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
 }
 
-/* No backdrop-filter (older Firefox): fall back to an opaque plate so the
-   label never sits on unreadable transparency. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .lg-btn { background: linear-gradient(180deg, #1c1f23 0%, #101215 100%); }
-  .lg-btn--quiet { background: linear-gradient(180deg, #141619 0%, #0b0d0f 100%); }
+.hero {
+  min-height: calc(100svh - 72px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.72fr);
+  align-items: stretch;
+  gap: clamp(42px, 7vw, 112px);
+  padding-block: clamp(56px, 8vw, 118px) 44px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .lg-btn { transition: none; }
-  .lg-btn:active { transform: none; }
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
 }
 
-/* Touch devices never get a cursor-tracked specular — pin it to the top
-   edge so the pill still reads as top-lit glass rather than flat. */
-@media (hover: none), (pointer: coarse) {
-  .lg-btn::before { opacity: 0.55; }
+.kicker,
+.case-mark,
+.profile-label,
+.contact-index,
+.hero-media-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
 }
-} /* @layer components */
 
-/* ── Paper tear (⑤) — the one "page tears to the next chapter" hinge ──
-   A torn deckle seam draws across; two paper shadows part to reveal the
-   chapter label. Fires once via IntersectionObserver (.is-torn). */
-.paper-tear {
-  position: relative;
-  height: 200px;
-  margin: 2.5rem 0;
-  overflow: hidden;
-  pointer-events: none;
+.kicker {
+  margin: 0 0 clamp(34px, 5vw, 72px);
 }
-@media (max-width: 640px) {
-  .paper-tear { height: 132px; margin: 1.25rem 0; }
+
+.hero h1 {
+  margin: 0;
+  max-width: 900px;
+  font-family: var(--display);
+  font-size: clamp(3.2rem, 6.7vw, 7rem);
+  font-weight: 600;
+  letter-spacing: -0.075em;
+  line-height: 0.95;
+  text-wrap: balance;
 }
-.paper-tear__above,
-.paper-tear__below {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 50%;
-  transition: transform 1200ms cubic-bezier(0.19, 1, 0.22, 1),
-    opacity 1200ms cubic-bezier(0.19, 1, 0.22, 1);
+
+.hero h1 span {
+  color: var(--accent);
 }
-.paper-tear__above {
-  top: 0;
-  background: linear-gradient(180deg, transparent, rgba(10, 10, 10, 0.5));
-  transform: translateY(0);
+
+.hero-intro {
+  max-width: 660px;
+  margin: clamp(30px, 4vw, 54px) 0 0;
+  font-size: clamp(1rem, 1.4vw, 1.22rem);
+  line-height: 1.95;
+  text-wrap: pretty;
 }
-.paper-tear__below {
-  bottom: 0;
-  background: linear-gradient(0deg, transparent, rgba(10, 10, 10, 0.5));
-  transform: translateY(0);
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+  margin-top: 34px;
 }
-.paper-tear.is-torn .paper-tear__above { transform: translateY(-30px); opacity: 0.55; }
-.paper-tear.is-torn .paper-tear__below { transform: translateY(30px); opacity: 0.55; }
-/* the torn seam — a silver deckle that draws across on reveal */
-.paper-tear__seam {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  transform: translateY(-50%);
-}
-.paper-tear__seam path {
-  fill: none;
-  stroke: rgba(240, 240, 240, 0.8);
-  stroke-width: 1.25;
-  vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 8px rgba(229, 229, 229, 0.55));
-  stroke-dasharray: 1400;
-  stroke-dashoffset: 1400;
-  transition: stroke-dashoffset 1600ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.paper-tear.is-torn .paper-tear__seam path { stroke-dashoffset: 0; }
-.paper-tear__label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, calc(-50% + 30px));
+
+.button {
+  min-height: 52px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 36px;
+  border: 1px solid currentColor;
+  padding: 0 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition: background-color 160ms ease-out, color 160ms ease-out, transform 160ms ease-out;
+}
+
+.button-primary {
+  min-width: 205px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.button-primary:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.button:active,
+.text-link:active,
+.contact-email:active {
+  transform: translateY(1px);
+}
+
+.text-link {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  transition: color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.text-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.hero-facts {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.8fr 1.15fr 1fr;
+  gap: 0;
+  margin: auto 0 0;
+  padding-top: 54px;
+}
+
+.hero-facts div {
+  min-width: 0;
+  border-top: 1px solid var(--ink);
+  padding: 13px 20px 0 0;
+}
+
+.hero-facts div + div {
+  border-left: 1px solid var(--line);
+  padding-left: 20px;
+}
+
+.hero-facts dt,
+.project-meta dt,
+.profile-table dt,
+.archive-copy dt,
+.tsc-browser dt {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-family: var(--mono);
   font-size: 9px;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--silver-bright);
-  opacity: 0;
-  transition: opacity 900ms cubic-bezier(0.19, 1, 0.22, 1) 500ms,
-    transform 900ms cubic-bezier(0.19, 1, 0.22, 1) 500ms;
-}
-.paper-tear.is-torn .paper-tear__label {
-  opacity: 0.85;
-  transform: translate(-50%, calc(-50% + 22px));
-}
-.paper-tear__no { color: var(--offwhite); }
-.paper-tear__sep { width: 22px; height: 1px; background: rgba(229, 229, 229, 0.4); }
-@media (prefers-reduced-motion: reduce) {
-  .paper-tear__above, .paper-tear__below,
-  .paper-tear__seam path, .paper-tear__label { transition: none; }
 }
 
-/* Soft chrome border that brightens on hover */
-.chrome-edge {
-  border: 1px solid rgba(192,192,192,0.18);
-  transition: border-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.chrome-edge:hover {
-  border-color: rgba(229,229,229,0.55);
+.hero-facts dd,
+.project-meta dd,
+.profile-table dd,
+.archive-copy dd,
+.tsc-browser dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   Bento — asymmetric editorial grid (CSS-only, no dashboard cards).
-   A dense 12-col / auto-row grid; cells opt into spans so a few pieces
-   read large and the rest settle quietly around them. Cells reuse the
-   liquid-glass / hairline language, never a boxed template card.
-   ───────────────────────────────────────────────────────────────────── */
-.bento {
+.hero-media {
+  position: relative;
+  align-self: stretch;
+  margin: 0;
+  background: var(--accent);
+  overflow: hidden;
+  animation: hero-media-in 700ms cubic-bezier(0.2, 0.72, 0.22, 1) both;
+}
+
+@keyframes hero-media-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-media > img {
+  width: 100%;
+  height: calc(100% - 54px);
+  min-height: 520px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hero-media-label {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background: var(--accent);
+  color: white;
+  padding: 11px 14px;
+}
+
+.hero-media figcaption {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 14px;
+  background: var(--accent);
+  color: white;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.project-index {
+  border-block: 1px solid var(--ink);
+  background: var(--white);
+  padding-block: 72px 24px;
+}
+
+.index-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(280px, 0.52fr);
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 56px;
+}
+
+.index-intro h2,
+.case-heading h2,
+.fragrance-heading h2,
+.archive h2,
+.profile h2,
+.contact h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.index-intro h2 {
+  font-size: clamp(2.3rem, 4.3vw, 5rem);
+}
+
+.index-intro p {
+  max-width: 580px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.project-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-list li {
+  border-top: 1px solid var(--line);
+}
+
+.project-list a {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: 56px minmax(220px, 1.1fr) minmax(220px, 0.8fr) minmax(140px, 0.45fr) 36px;
+  align-items: center;
+  gap: 18px;
+  transition: color 160ms ease-out, padding 180ms ease-out;
+}
+
+.project-list a:hover {
+  color: var(--accent);
+  padding-inline: 10px;
+}
+
+.project-no,
+.project-type,
+.project-status {
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.project-title {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.4vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.project-type,
+.project-status {
+  color: var(--muted);
+}
+
+.project-arrow {
+  justify-self: end;
+  font-size: 21px;
+}
+
+.case {
+  padding-block: clamp(78px, 8vw, 124px);
+}
+
+.case-heading {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.35fr) minmax(0, 1.1fr) minmax(280px, 0.62fr);
+  align-items: start;
+  gap: 38px;
+  margin-bottom: clamp(48px, 6vw, 82px);
+}
+
+.case-mark {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-top: 8px;
+}
+
+.case-mark span:first-child {
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.case-heading h2,
+.fragrance-heading h2 {
+  font-size: clamp(3rem, 5.6vw, 6.25rem);
+}
+
+.case-heading > p,
+.fragrance-heading > p {
+  margin: 6px 0 0;
+  line-height: 1.95;
+  text-wrap: pretty;
+}
+
+.ai-media-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.62fr);
+  align-items: end;
+  gap: clamp(20px, 4vw, 62px);
+}
+
+.ai-media-grid figure,
+.fragrance-hero,
+.fragrance-support figure {
+  margin: 0;
+}
+
+.ai-media-primary {
+  padding: clamp(20px, 4vw, 52px);
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+
+.ai-media-secondary {
+  margin-bottom: -6vw !important;
+}
+
+.ai-media-secondary figcaption,
+.fragrance-support figcaption {
+  padding-top: 12px;
+  border-top: 1px solid var(--ink);
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+}
+
+.case-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1.2fr);
+  gap: clamp(56px, 10vw, 160px);
+  margin-top: clamp(100px, 14vw, 210px);
+}
+
+.project-meta {
+  margin: 0;
+}
+
+.project-meta div {
+  border-top: 1px solid var(--line);
+  padding-block: 16px 24px;
+}
+
+.decision-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decision-list li {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 24px;
+  border-top: 1px solid var(--ink);
+  padding-block: 24px 32px;
+}
+
+.decision-list > li > span {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.decision-list h3 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.decision-list p {
+  max-width: 660px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.case-fragrance {
+  border-top: 1px solid var(--ink);
+  background: #dfcfb5;
+  padding-top: clamp(80px, 10vw, 150px);
+}
+
+.fragrance-heading {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.32fr) minmax(0, 1.15fr) minmax(280px, 0.58fr);
+  gap: 38px;
+  align-items: start;
+  padding-bottom: clamp(54px, 8vw, 110px);
+}
+
+.fragrance-heading .case-mark span:first-child {
+  color: #7d4f17;
+}
+
+.fragrance-hero {
+  background: #cab38e;
+}
+
+.fragrance-hero > img {
+  width: 100%;
+  height: min(86vw, 1050px);
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.fragrance-hero figcaption {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.fragrance-support {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.62fr);
+  gap: clamp(26px, 7vw, 100px);
+  align-items: start;
+  padding-block: clamp(74px, 11vw, 160px);
+}
+
+.fragrance-support figure:last-child {
+  margin-top: clamp(60px, 10vw, 160px);
+}
+
+.case-tsc {
+  background: #171713;
+  color: var(--paper);
+  padding-block: clamp(94px, 13vw, 190px);
+}
+
+.tsc-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.66fr) minmax(0, 1.1fr);
+  gap: clamp(50px, 9vw, 140px);
+  align-items: center;
+}
+
+.case-mark-light span:first-child {
+  color: #83ff56;
+}
+
+.case-tsc h2 {
+  margin: clamp(38px, 6vw, 74px) 0 0;
+  font-family: var(--display);
+  font-size: clamp(3.4rem, 7vw, 8rem);
+  font-weight: 600;
+  letter-spacing: -0.075em;
+  line-height: 0.9;
+}
+
+.tsc-lead {
+  max-width: 590px;
+  margin: 34px 0 0;
+  color: rgba(243, 240, 232, 0.76);
+  line-height: 1.95;
+}
+
+.button-light {
+  margin-top: 34px;
+  border-color: var(--paper);
+  color: var(--paper);
+}
+
+.button-light:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.tsc-browser {
+  border: 1px solid rgba(243, 240, 232, 0.4);
+}
+
+.browser-bar {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgba(243, 240, 232, 0.25);
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.browser-bar span:last-child {
+  color: #83ff56;
+}
+
+.browser-content {
+  min-height: 570px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(30px, 5vw, 72px);
+}
+
+.browser-content > p {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.browser-content h3 {
+  margin: 50px 0 auto;
+  font-family: var(--display);
+  font-size: clamp(3.2rem, 6vw, 6.8rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+}
+
+.browser-content dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 60px 0 0;
+}
+
+.browser-content dl div {
+  border-top: 1px solid rgba(243, 240, 232, 0.3);
+  padding-top: 12px;
+}
+
+.tsc-browser dt {
+  color: rgba(243, 240, 232, 0.54);
+}
+
+.archive {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.5fr) minmax(0, 1.15fr);
+  gap: clamp(56px, 10vw, 160px);
+  padding-block: clamp(78px, 10vw, 142px);
+}
+
+.archive-copy {
+  align-self: start;
+  position: sticky;
+  top: 112px;
+}
+
+.archive-no {
+  display: block;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 18px;
+  margin-bottom: 52px;
+}
+
+.archive h2 {
+  font-size: clamp(2.7rem, 5vw, 5.6rem);
+}
+
+.archive-copy > p {
+  margin: 32px 0 0;
+  color: var(--muted);
+  line-height: 1.95;
+}
+
+.archive-copy dl {
+  margin: 54px 0 0;
+}
+
+.archive-copy dl div {
+  border-top: 1px solid var(--line);
+  padding-block: 14px 20px;
+}
+
+.archive-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
-@media (min-width: 768px) {
-  .bento {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-auto-rows: minmax(128px, auto);
-    gap: 28px;
-  }
-}
-/* Quiet editorial cell — almost no fill, one hairline, generous air.
-   Reads as a framed region on paper, not a filled dashboard card. */
-.bento-cell {
-  position: relative;
-  border-radius: 10px;
-  padding: 1.75rem;
-  overflow: hidden;
-  border: 1px solid rgba(229, 229, 229, 0.06);
-  background: linear-gradient(180deg, rgba(18,18,18,0.28) 0%, rgba(9,9,9,0.10) 100%);
-  transition: border-color 600ms cubic-bezier(0.19,1,0.22,1),
-              background-color 600ms cubic-bezier(0.19,1,0.22,1);
-}
-@media (min-width: 768px) {
-  .bento-cell { padding: 2.25rem; }
-  /* hero cells (the big asymmetric anchors) breathe wider and carry a faint
-     corner light so the hierarchy is unmistakable at a glance */
-  .bento-cell.bento-row-2 { padding: 3rem; }
-  .bento-cell.bento-row-2::after {
-    background:
-      radial-gradient(60% 45% at 8% 0%, rgba(229, 229, 229, 0.07), transparent 65%),
-      radial-gradient(220px circle at var(--px, 50%) var(--py, 50%),
-        rgba(229, 229, 229, 0.14),
-        rgba(192, 192, 192, 0.05) 40%,
-        transparent 66%);
-  }
-}
-/* thin reflected top line — the "glass edge" catch-light, kept faint */
-.bento-cell::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(229,229,229,0.14), transparent);
-  opacity: 0.5;
-}
-.bento-cell:hover { border-color: rgba(192,192,192,0.20); }
-/* Compact variant — dense spec plates in a narrow column (Client Work). */
-.bento-spec { gap: 10px; }
-@media (min-width: 768px) {
-  .bento-spec { gap: 12px; grid-auto-rows: auto; }
-  .bento-spec .bento-cell { padding: 1.1rem 1.25rem; }
-}
-/* span helpers (desktop only — mobile stacks to 1–2 col) */
-@media (min-width: 768px) {
-  .bento-col-4  { grid-column: span 4; }
-  .bento-col-5  { grid-column: span 5; }
-  .bento-col-6  { grid-column: span 6; }
-  .bento-col-7  { grid-column: span 7; }
-  .bento-col-8  { grid-column: span 8; }
-  .bento-col-12 { grid-column: span 12; }
-  .bento-row-2  { grid-row: span 2; }
-}
 
-/* ─────────────────────────────────────────────────────────────────────
-   Proximity-reactive — elements marked [data-prox] gather a faint silver
-   glow that tracks the cursor as it nears, then settle when it leaves.
-   Values (--prox 0..1, --px/--py local %) are written by ProximityField.
-   Pure CSS paint; no per-element JS state.
-   ───────────────────────────────────────────────────────────────────── */
-/* Typed so calc(var(--prox) * n) resolves reliably inside opacity, and so
-   the value can be smoothly interpolated rather than snapped. */
-@property --prox {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-[data-prox] {
-  --prox: 0;
-  --px: 50%;
-  --py: 50%;
-}
-[data-prox]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  /* cap the glow well under full so it never shouts — a hint, not a spotlight */
-  opacity: calc(var(--prox) * 0.85);
-  background: radial-gradient(
-    200px circle at var(--px) var(--py),
-    rgba(229, 229, 229, 0.09),
-    rgba(192, 192, 192, 0.03) 42%,
-    transparent 68%
-  );
-  mix-blend-mode: screen;
-  transition: opacity 650ms cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 1;
-}
-/* bento cells lift a hair toward the cursor — via shadow, not transform,
-   so it never fights framer-motion's inline transform on the same element.
-   Kept gentle: a soft depth shadow, no inner wash. */
-.bento-cell[data-prox] {
-  box-shadow: 0 calc(var(--prox) * 8px) calc(var(--prox) * 22px)
-    rgba(0, 0, 0, calc(var(--prox) * 0.30));
-  transition: box-shadow 650ms cubic-bezier(0.19, 1, 0.22, 1),
-              border-color 600ms cubic-bezier(0.19, 1, 0.22, 1),
-              background-color 600ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-@media (hover: none), (pointer: coarse) {
-  /* mobile: no proximity paint; keep a quiet tap feedback via :active */
-  [data-prox]::after { display: none; }
-  .bento-cell[data-prox] { box-shadow: none; }
-  .bento-cell:active { border-color: rgba(192,192,192,0.30); }
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-prox]::after { display: none; }
-  .bento-cell[data-prox] { box-shadow: none; }
-}
-
-/* ─────────────────────────────────────────────────────────────────────
-   Kinetic characters — per-letter reveal handled by <KineticText>. This
-   just declares the paint hint; the transform/opacity come from framer.
-   ───────────────────────────────────────────────────────────────────── */
-.kinetic-char {
-  display: inline-block;
-  will-change: transform, opacity, filter;
-}
-
-/* ── Orbit rings — the Hero portrait as an atelier specimen ────────────
-   Two thin dashed silver rings counter-rotate slowly around the portrait,
-   like instrument tracks around an object under study. */
-.orbit-ring {
-  position: absolute;
-  border-radius: 9999px;
-  border: 1px dashed rgba(229, 229, 229, 0.22);
-  pointer-events: none;
-}
-.orbit-ring-a {
-  inset: -26px;
-  animation: orbitSpin 46s linear infinite;
-}
-.orbit-ring-b {
-  inset: -12px;
-  border-color: rgba(192, 192, 192, 0.14);
-  animation: orbitSpin 30s linear infinite reverse;
-}
-@keyframes orbitSpin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .orbit-ring { animation: none; }
-}
-
-/* ── ATELIER FRAME — the signature: the site sits inside an instrument ──
-   Ultra-thin hairlines + corner ticks around the viewport, a live chapter
-   readout, a right-edge ruler with a position marker, and the atelier
-   signature with a live scroll coordinate. Everything silver, everything
-   quiet — but unmistakably an operated space, not a page. */
-.atelier-frame { opacity: 0; animation: afIn 1.6s cubic-bezier(0.19,1,0.22,1) 0.8s forwards; }
-@keyframes afIn { to { opacity: 1; } }
-.af-line { position: absolute; background: rgba(229,229,229,0.13); }
-.af-top    { top: 14px; left: 14px; right: 14px; height: 1px; }
-.af-bottom { bottom: 14px; left: 14px; right: 14px; height: 1px; }
-.af-left   { left: 14px; top: 14px; bottom: 14px; width: 1px; }
-.af-right  { right: 14px; top: 14px; bottom: 14px; width: 1px; }
-.af-tick {
-  position: absolute;
-  width: 14px; height: 14px;
-  border-color: rgba(229,229,229,0.55);
-  border-style: solid; border-width: 0;
-}
-.af-tl { top: 14px; left: 14px; border-top-width: 1px; border-left-width: 1px; }
-.af-tr { top: 14px; right: 14px; border-top-width: 1px; border-right-width: 1px; }
-.af-bl { bottom: 14px; left: 14px; border-bottom-width: 1px; border-left-width: 1px; }
-.af-br { bottom: 14px; right: 14px; border-bottom-width: 1px; border-right-width: 1px; }
-/* chapter readout — top centre, swaps with a quiet develop */
-.af-chapter {
-  position: absolute;
-  top: 8px; left: 50%;
-  transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 14px;
-  background: rgba(5,5,5,0.85);
-  font-size: 9px; letter-spacing: 0.34em; text-transform: uppercase;
-  color: rgba(229,229,229,0.85);
-  line-height: 13px;
-}
-.af-chapter-dot {
-  width: 3px; height: 3px; border-radius: 9999px;
-  background: var(--silver-bright);
-  box-shadow: 0 0 6px rgba(229,229,229,0.8);
-}
-.af-chapter-text { animation: afChapter 900ms cubic-bezier(0.19,1,0.22,1); }
-@keyframes afChapter {
-  0% { opacity: 0; filter: blur(4px); }
-  100% { opacity: 1; filter: blur(0); }
-}
-/* right ruler — fine ticks + live position marker */
-.af-ruler {
-  position: absolute;
-  right: 8px; top: 14%; bottom: 14%;
-  width: 5px;
-  background: repeating-linear-gradient(
-    180deg,
-    rgba(229,229,229,0.35) 0 1px,
-    transparent 1px 22px
-  );
-}
-.af-marker {
-  position: absolute;
-  right: -2px;
-  width: 9px; height: 1px;
-  background: #f5f5f5;
-  box-shadow: 0 0 8px rgba(229,229,229,0.9);
-  transition: top 300ms cubic-bezier(0.19,1,0.22,1);
-}
-/* atelier signature — bottom-left, with live Y coordinate */
-.af-sig {
-  position: absolute;
-  bottom: 8px; left: 26px;
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 0 10px;
-  background: rgba(5,5,5,0.85);
-  font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: rgba(142,142,142,0.9);
-  line-height: 13px;
-}
-.af-sig-sep { width: 14px; height: 1px; background: rgba(229,229,229,0.3); }
-@media (prefers-reduced-motion: reduce) {
-  .af-chapter-text { animation: none; }
-  .af-marker { transition: none; }
-}
-
-/* ── Hidden signature moment — hover the name, the light signs it again ─ */
-.sig-name::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 100%;
-  bottom: -4px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(245, 245, 245, 0.95), transparent);
-  box-shadow: 0 0 10px rgba(229, 229, 229, 0.6);
-  opacity: 0;
-  pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .sig-name:hover::after {
-    animation: sigSign 1100ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  }
-}
-@keyframes sigSign {
-  0%   { right: 100%; opacity: 0; }
-  15%  { opacity: 1; }
-  70%  { right: 0%; opacity: 1; }
-  100% { right: 0%; opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sig-name:hover::after { animation: none; }
-}
-
-/* ── Light wipe — a film-cut between scenes ────────────────────────────
-   A thin silver filament sweeps the full viewport width once when the
-   marker enters view. Sparingly placed (into About, into Contact). */
-.light-wipe {
-  position: relative;
-  height: 1px;
-  overflow: visible;
-  pointer-events: none;
-}
-/* the light front — a soft luminous air-change with a hairline core,
-   like the light pass in a watch commercial */
-.light-wipe__beam {
-  position: absolute;
-  top: -70px;
-  left: 0;
-  width: 46vw;
-  height: 140px;
-  transform: translateX(-50vw) skewX(-12deg);
-  animation: lightWipeSweep 1400ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  background:
-    /* soft veil of light */
-    radial-gradient(60% 100% at 50% 50%, rgba(229, 229, 229, 0.14), transparent 70%),
-    /* hairline core */
-    linear-gradient(
-      90deg,
-      transparent 46%,
-      rgba(229, 229, 229, 0.85) 49.6%,
-      #ffffff 50%,
-      rgba(229, 229, 229, 0.85) 50.4%,
-      transparent 54%
-    );
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 18px rgba(192, 192, 192, 0.35));
-}
-@keyframes lightWipeSweep {
-  0%   { transform: translateX(-50vw) skewX(-12deg); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translateX(110vw) skewX(-12deg); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .light-wipe__beam { display: none; }
-}
-
-/* ── Layered depth — Hero ambient layers drift at different rates ──────
-   Driven by the --scroll custom property CinemaScroll already writes to
-   :root (0..1 page progress). Pure CSS, no extra listeners. */
-.depth-slow  { transform: translateY(calc(var(--scroll, 0) * -60px)); }
-.depth-mid   { transform: translateY(calc(var(--scroll, 0) * -140px)); }
-.depth-fast  { transform: translateY(calc(var(--scroll, 0) * -240px)); }
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .depth-slow, .depth-mid, .depth-fast { transform: none; }
-}
-
-/* ── Lightning — a rare silver arc across the dark (Hero backdrop) ─────
-   Thin chrome-white filament, draws + flashes + gone. Monochrome, low peak
-   opacity, soft glow. Never neon. */
-.lightning-fx {
-  position: absolute;
-  inset: 0;
+.archive-gallery img {
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-.lightning-bolt,
-.lightning-glow,
-.lightning-branch {
-  fill: none;
-  stroke: #f5f5f5;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1600;
-  stroke-dashoffset: 1600;
-}
-/* sharp core */
-.lightning-bolt {
-  stroke-width: 1.4;
-  filter: drop-shadow(0 0 6px rgba(229, 229, 229, 0.85))
-    drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
-  animation: lightningStrike 340ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-/* forked branches — thinner, dimmer */
-.lightning-branch {
-  stroke-width: 1;
-  stroke: #e5e5e5;
-  filter: drop-shadow(0 0 4px rgba(229, 229, 229, 0.6));
-  animation: lightningStrike 340ms cubic-bezier(0.19, 1, 0.22, 1) 40ms forwards;
-  opacity: 0;
-}
-/* ionization afterglow — blurred, lingers a beat longer */
-.lightning-glow {
-  stroke-width: 4;
-  stroke: rgba(229, 229, 229, 0.6);
-  filter: blur(5px) drop-shadow(0 0 12px rgba(192, 192, 192, 0.5));
-  animation: lightningAfterglow 560ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-@keyframes lightningStrike {
-  0%   { stroke-dashoffset: 1600; opacity: 0; }
-  18%  { opacity: 0.9; }
-  30%  { stroke-dashoffset: 0; opacity: 0.55; }
-  46%  { opacity: 0.95; }   /* flicker */
-  62%  { opacity: 0.4; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-@keyframes lightningAfterglow {
-  0%   { stroke-dashoffset: 1600; opacity: 0; }
-  30%  { stroke-dashoffset: 0; opacity: 0.5; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-/* ambient bloom — a whisper of light lifts the whole dark frame on strike */
-.lightning-bloom {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  background: radial-gradient(
-    120% 80% at 50% 8%,
-    rgba(229, 229, 229, 0.12),
-    rgba(192, 192, 192, 0.04) 42%,
-    transparent 70%
-  );
-  mix-blend-mode: screen;
-}
-.lightning-bloom.is-lit {
-  animation: lightningBloom 420ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-@keyframes lightningBloom {
-  0%   { opacity: 0; }
-  16%  { opacity: 1; }
-  38%  { opacity: 0.35; }
-  52%  { opacity: 0.8; }   /* matches the core flicker */
-  100% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lightning-fx,
-  .lightning-bloom { display: none; }
+  object-fit: cover;
+  border: 1px solid var(--line);
 }
 
-/* ── Chrome Lens Reveal — trace a work and its silver nature surfaces ──
-   Inside a soft circular lens that follows the cursor, the work turns
-   chrome-monochrome and slightly brighter — as if a loupe of the Avendano
-   world were held over it. Uses the --px/--py the ProximityField already
-   writes to the premium-hover wrapper (custom props inherit). Desktop
-   hover only; zero cost at rest. */
-@media (hover: hover) and (pointer: fine) {
-  .editorial-frame .chrome-lens {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    opacity: 0;
-    backdrop-filter: grayscale(1) brightness(1.32) contrast(1.12);
-    -webkit-backdrop-filter: grayscale(1) brightness(1.32) contrast(1.12);
-    -webkit-mask-image: radial-gradient(
-      circle 170px at var(--px, 50%) var(--py, 50%),
-      #000 0 42%,
-      transparent 74%
-    );
-    mask-image: radial-gradient(
-      circle 170px at var(--px, 50%) var(--py, 50%),
-      #000 0 42%,
-      transparent 74%
-    );
-    transition: opacity 500ms cubic-bezier(0.19, 1, 0.22, 1);
-  }
-  .premium-hover:hover .chrome-lens { opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .editorial-frame .chrome-lens { display: none; }
+.archive-gallery img:first-child {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 10;
 }
 
-/* ── Exhibit case — works sit under a cone of gallery light ────────────
-   A faint top light-cone, a cursor-linked specular that shifts angle with
-   the pointer, and a pedestal shadow below. The piece reads as an object
-   in a case, not an image on a card. */
-.editorial-frame .case-light {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background:
-    radial-gradient(90% 55% at 50% -8%, rgba(229, 229, 229, 0.10), transparent 60%),
-    radial-gradient(220px circle at var(--px, 50%) var(--py, 30%), rgba(245, 245, 245, 0.08), transparent 70%);
-  mix-blend-mode: screen;
-  opacity: 0.8;
-  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.premium-hover:hover .case-light { opacity: 1; }
-.editorial-frame .case-shadow {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: -18px;
-  height: 18px;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
-  filter: blur(6px);
-  opacity: 0.7;
-}
-@media (hover: none), (pointer: coarse) {
-  .editorial-frame .case-light {
-    background: radial-gradient(90% 55% at 50% -8%, rgba(229, 229, 229, 0.10), transparent 60%);
-  }
-}
-/* Liquid-metal letters — each glyph rendered in chrome, with a slow specular
-   drift so the metal reads as molten, not flat. Kept legible (dark contrast
-   holds via the mid-grey band). */
-.kinetic-metallic .kinetic-char {
-  background: linear-gradient(
-    108deg,
-    #a8a8a8 0%,
-    #f5f5f5 18%,
-    #ffffff 30%,
-    #9a9a9a 46%,
-    #c8c8c8 60%,
-    #ffffff 78%,
-    #8a8a8a 100%
-  );
-  background-size: 280% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: kineticSheen 3s linear infinite;
-}
-/* a bright specular band travels across the chrome letters */
-@keyframes kineticSheen {
-  0% { background-position: 180% 0%; }
-  100% { background-position: -80% 0%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .kinetic-metallic .kinetic-char { animation: none; }
+.archive-gallery img:not(:first-child) {
+  aspect-ratio: 1;
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   Signature — "The Read" / IntentScan.
-   A chrome reading-line sweeps a work once on engage; a viewfinder frames
-   it and the single line of intent develops. Monochrome, one pass, no loop.
-   ───────────────────────────────────────────────────────────────────── */
-.intent-scan {
-  position: relative;
-  isolation: isolate;
+.profile {
+  border-block: 1px solid var(--ink);
+  background: var(--white);
+  padding-block: clamp(106px, 14vw, 210px);
 }
 
-/* the reading line — a thin chrome hairline with a soft trailing wash */
-.intent-scan .scan-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 2px;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 4;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(229, 229, 229, 0.85) 45%,
-    rgba(255, 255, 255, 0.95) 50%,
-    rgba(229, 229, 229, 0.85) 55%,
-    transparent
-  );
-  box-shadow: 0 0 14px rgba(229, 229, 229, 0.5),
-    0 18px 34px -12px rgba(229, 229, 229, 0.22);
-}
-.intent-scan.is-reading .scan-line {
-  animation: intentSweep 1150ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(0, 1fr);
+  gap: clamp(60px, 11vw, 170px);
 }
 
-/* interactive light scan — after the sweep, a quieter line follows the
-   cursor's gaze (position via --sy written on pointermove) */
-.intent-scan .scan-follow {
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  top: var(--sy, 50%);
-  height: 1px;
-  pointer-events: none;
-  z-index: 3;
-  opacity: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(229, 229, 229, 0.55) 50%,
-    transparent
-  );
-  box-shadow: 0 0 10px rgba(229, 229, 229, 0.35);
-  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 900ms,
-    top 350ms cubic-bezier(0.19, 1, 0.22, 1);
+.profile-label {
+  margin: 0 0 52px;
 }
-.intent-scan.is-reading .scan-follow { opacity: 1; }
 
-/* vertical measure line — completes the inspection crosshair */
-.intent-scan .scan-follow-x {
-  position: absolute;
-  top: 8%;
-  bottom: 8%;
-  left: var(--sx, 50%);
-  width: 1px;
-  pointer-events: none;
-  z-index: 3;
-  opacity: 0;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(229, 229, 229, 0.35) 50%,
-    transparent
-  );
-  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 900ms,
-    left 350ms cubic-bezier(0.19, 1, 0.22, 1);
+.profile h2 {
+  font-size: clamp(3rem, 6vw, 6.8rem);
 }
-.intent-scan.is-reading .scan-follow-x { opacity: 0.6; }
 
-/* measure ruler — fine gallery-caliper ticks along the top edge */
-.intent-scan .measure-ruler {
-  position: absolute;
-  top: 10px;
-  left: 12%;
-  right: 12%;
-  height: 6px;
-  pointer-events: none;
-  z-index: 3;
-  opacity: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(229, 229, 229, 0.5) 0 1px,
-    transparent 1px 24px
-  );
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
-  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1) 400ms;
+.profile-body > p {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.42rem);
+  line-height: 2;
+  text-wrap: pretty;
 }
-.intent-scan.is-reading .measure-ruler { opacity: 0.8; }
 
-/* inspection meta — small vertical readout on the right edge while reading */
-.intent-scan .measure-meta {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  writing-mode: vertical-rl;
-  pointer-events: none;
-  z-index: 3;
-  font-size: 8px;
-  letter-spacing: 0.38em;
+.profile-table {
+  margin: clamp(60px, 9vw, 120px) 0 0;
+}
+
+.profile-table div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-block: 18px 24px;
+}
+
+.contact {
+  padding-block: clamp(82px, 12vw, 172px) clamp(70px, 9vw, 130px);
+}
+
+.contact-index {
+  margin: 0 0 clamp(46px, 7vw, 90px);
+}
+
+.contact h2 {
+  max-width: 1100px;
+  font-size: clamp(3.4rem, 8vw, 9rem);
+}
+
+.contact > p:not(.contact-index) {
+  max-width: 680px;
+  margin: 38px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.9;
+}
+
+.contact-email {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: clamp(56px, 8vw, 104px);
+  border-block: 1px solid var(--ink);
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 4vw, 4.6rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  transition: color 160ms ease-out, padding 180ms ease-out;
+  overflow-wrap: anywhere;
+}
+
+.contact-email:hover {
+  color: var(--accent);
+  padding-inline: 10px;
+}
+
+.site-footer {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.footer-row {
+  min-height: 96px;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(229, 229, 229, 0.75);
-  opacity: 0;
-  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1) 500ms;
-}
-.intent-scan.is-reading .measure-meta { opacity: 1; }
-@keyframes intentSweep {
-  0% { top: 0%; opacity: 0; }
-  10% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
 }
 
-/* viewfinder ticks — quiet corner brackets that frame the exhibit */
-.intent-scan .is-tick {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 4;
-  border-color: rgba(229, 229, 229, 0.7);
-  border-style: solid;
-  border-width: 0;
-  transition: opacity 600ms cubic-bezier(0.19, 1, 0.22, 1);
+.footer-row span:nth-child(2) {
+  text-align: center;
 }
-.intent-scan .tick-tl { top: 14px; left: 14px; border-top-width: 1px; border-left-width: 1px; }
-.intent-scan .tick-tr { top: 14px; right: 14px; border-top-width: 1px; border-right-width: 1px; }
-.intent-scan .tick-bl { bottom: 14px; left: 14px; border-bottom-width: 1px; border-left-width: 1px; }
-.intent-scan .tick-br { bottom: 14px; right: 14px; border-bottom-width: 1px; border-right-width: 1px; }
-.intent-scan.is-reading .is-tick { opacity: 0.85; }
 
-/* exhibit plate — always shown; the curatorial wall label */
-.intent-scan .exhibit-plate {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 4;
+.footer-row a {
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  font-size: 9px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(245, 245, 245, 0.82);
-  background: rgba(8, 8, 8, 0.42);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(229, 229, 229, 0.1);
-  border-radius: 2px;
-}
-/* the plate sits under the top-left tick while reading — nudge the tick in */
-.intent-scan.is-reading .tick-tl { opacity: 0; } /* avoid overlap with plate */
-.intent-scan .exhibit-no { color: var(--silver-bright); }
-.intent-scan .exhibit-sep {
-  width: 12px;
-  height: 1px;
-  background: rgba(229, 229, 229, 0.3);
 }
 
-/* intent line — the single thought, developed by the reading line */
-.intent-scan .intent-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 48px 20px 20px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 700ms cubic-bezier(0.19, 1, 0.22, 1) 220ms,
-    transform 700ms cubic-bezier(0.19, 1, 0.22, 1) 220ms;
-  background: linear-gradient(180deg, transparent, rgba(5, 5, 5, 0.78) 62%);
-}
-.intent-scan.is-reading .intent-line {
-  opacity: 1;
-  transform: translateY(0);
-}
-.intent-scan .intent-eyebrow {
-  font-size: 9px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--silver-bright);
-}
-.intent-scan .intent-text {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-size: clamp(1rem, 2.1vw, 1.5rem);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--offwhite);
+@media (max-width: 1050px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.58fr);
+    gap: 40px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.2rem, 7.4vw, 5.8rem);
+  }
+
+  .case-heading,
+  .fragrance-heading {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+
+  .case-heading > p,
+  .fragrance-heading > p {
+    grid-column: 2;
+    max-width: 720px;
+  }
+
+  .tsc-grid {
+    grid-template-columns: 0.72fr 1fr;
+    gap: 50px;
+  }
 }
 
-/* Static mode (touch + already-interactive child): intent is simply present,
-   no sweep, no toggle — the reading is shown, not performed. */
-.intent-scan.is-static .scan-line { display: none; }
-.intent-scan.is-static .intent-line { transition: opacity 500ms cubic-bezier(0.19,1,0.22,1); }
+@media (max-width: 800px) {
+  html {
+    scroll-padding-top: 108px;
+  }
 
-/* Reduced-motion: no sweep, the intent simply is there on engage. */
+  .site-shell {
+    width: min(100% - 28px, 1440px);
+  }
+
+  .site-header {
+    position: relative;
+  }
+
+  .header-row {
+    min-height: 108px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 16px;
+    padding-block: 12px 8px;
+  }
+
+  .identity {
+    display: block;
+  }
+
+  .identity-name,
+  .identity-role {
+    display: block;
+  }
+
+  .identity-role {
+    margin-top: 2px;
+  }
+
+  .main-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: space-between;
+    border-top: 1px solid var(--line);
+  }
+
+  .main-nav a {
+    flex: 1;
+    padding-inline: 6px;
+  }
+
+  .language-switch {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .hero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 52px;
+    padding-block: 48px 28px;
+  }
+
+  .kicker {
+    margin-bottom: 38px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 14vw, 5.4rem);
+    letter-spacing: -0.07em;
+  }
+
+  .hero-intro {
+    max-width: 34rem;
+    margin-top: 30px;
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .hero-facts {
+    grid-template-columns: 1fr;
+    margin-top: 54px;
+    padding-top: 0;
+  }
+
+  .hero-facts div {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+    gap: 16px;
+    padding: 13px 0 15px;
+  }
+
+  .hero-facts div + div {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .hero-media > img {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .hero-media figcaption {
+    display: grid;
+    gap: 2px;
+    padding-block: 10px;
+  }
+
+  .project-index {
+    padding-top: 56px;
+  }
+
+  .index-intro {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 46px;
+  }
+
+  .project-list a {
+    min-height: 112px;
+    grid-template-columns: 38px minmax(0, 1fr) 28px;
+    gap: 6px 12px;
+    padding-block: 20px;
+  }
+
+  .project-title {
+    grid-column: 2;
+    font-size: 1.45rem;
+  }
+
+  .project-type {
+    grid-column: 2;
+  }
+
+  .project-status {
+    display: none;
+  }
+
+  .project-arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+
+  .case {
+    padding-block: 72px 88px;
+  }
+
+  .case-heading,
+  .fragrance-heading {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .case-heading > p,
+  .fragrance-heading > p {
+    grid-column: auto;
+  }
+
+  .case-heading h2,
+  .fragrance-heading h2 {
+    font-size: clamp(2.85rem, 12.2vw, 4.7rem);
+  }
+
+  .ai-media-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .ai-media-primary {
+    padding: 14px;
+  }
+
+  .ai-media-secondary {
+    width: 72%;
+    margin: -60px 0 0 auto !important;
+  }
+
+  .case-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 54px;
+    margin-top: 108px;
+  }
+
+  .fragrance-heading {
+    padding-bottom: 58px;
+  }
+
+  .fragrance-hero > img {
+    height: 132vw;
+    object-position: 55% center;
+  }
+
+  .fragrance-hero figcaption {
+    min-height: 80px;
+    display: grid;
+    gap: 3px;
+    padding-block: 12px;
+  }
+
+  .fragrance-support {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-block: 72px 96px;
+  }
+
+  .fragrance-support figure:last-child {
+    width: 74%;
+    margin: 0 0 0 auto;
+  }
+
+  .case-tsc {
+    padding-block: 84px;
+  }
+
+  .tsc-grid {
+    grid-template-columns: 1fr;
+    gap: 64px;
+  }
+
+  .case-tsc h2 {
+    font-size: clamp(3.4rem, 15vw, 6rem);
+  }
+
+  .browser-content {
+    min-height: 470px;
+    padding: 26px 20px;
+  }
+
+  .browser-content h3 {
+    font-size: clamp(3.2rem, 15vw, 5.5rem);
+  }
+
+  .browser-content dl {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 44px;
+  }
+
+  .archive {
+    grid-template-columns: 1fr;
+    gap: 58px;
+    padding-block: 82px;
+  }
+
+  .archive-copy {
+    position: static;
+  }
+
+  .archive-no {
+    margin-bottom: 34px;
+  }
+
+  .archive-gallery {
+    gap: 8px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 54px;
+  }
+
+  .profile-label {
+    margin-bottom: 34px;
+  }
+
+  .profile h2 {
+    font-size: clamp(3rem, 14vw, 5.4rem);
+  }
+
+  .profile-table div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .contact h2 {
+    font-size: clamp(3.2rem, 15vw, 6rem);
+  }
+
+  .contact-email {
+    min-height: 88px;
+    font-size: clamp(1.15rem, 5.4vw, 2rem);
+  }
+
+  .footer-row {
+    min-height: 120px;
+    grid-template-columns: 1fr auto;
+    gap: 4px 20px;
+    padding-block: 22px;
+  }
+
+  .footer-row span:nth-child(2) {
+    grid-column: 1;
+    text-align: left;
+  }
+
+  .footer-row a {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-shell {
+    width: min(100% - 24px, 1440px);
+  }
+
+  .identity-name {
+    font-size: 13px;
+  }
+
+  .identity-role {
+    font-size: 8px;
+  }
+
+  .hero h1 {
+    font-size: 12.8vw;
+  }
+
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .button-primary {
+    width: 100%;
+  }
+
+  .text-link {
+    align-self: flex-start;
+  }
+
+  .decision-list li {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .contact-email {
+    gap: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .intent-scan .scan-line { display: none; }
-  .intent-scan.is-reading .intent-line { transition: opacity 200ms linear; }
-}
+  html {
+    scroll-behavior: auto;
+  }
 
-/* ── Film scrub dividers ──────────────────────────────────────────────
-   Scroll distance for the chapter leaders cut from THE WALK. Shorter on
-   small screens so a divider is not a dozen thumb-swipes of scrolling. */
-.film-scrub { height: 260vh; }
-@media (max-width: 1024px) { .film-scrub { height: 210vh; } }
-@media (max-width: 768px)  { .film-scrub { height: 170vh; } }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
