@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-
-export type Lang = "jp" | "en";
+import type { Lang } from "@/lib/translations";
 
 interface LangContextValue {
   lang: Lang;
@@ -16,8 +15,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("jp");
 
   useEffect(() => {
-    document.documentElement.lang = lang === "jp" ? "ja" : "en";
-  }, [lang]);
+    const saved = typeof window !== "undefined"
+      ? (localStorage.getItem("lang") as Lang | null)
+      : null;
+    if (saved === "en" || saved === "jp") setLangState(saved);
+  }, []);
 
   const setLang = (l: Lang) => {
     setLangState(l);
